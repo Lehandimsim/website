@@ -1,0 +1,11 @@
+# Keep LF line endings in the working tree. The prompt-log hook appends LF lines, and a CRLF
+# checkout would leave Memos/prompt_log.md with mixed endings.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.pdf binary
+*.woff2 binary

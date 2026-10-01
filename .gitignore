@@ -1,0 +1,14 @@
+# Personal Claude Code settings (the shared .claude/settings.json IS tracked)
+.claude/settings.local.json
+
+# OS and sync clutter
+desktop.ini
+Thumbs.db
+.DS_Store
+*conflicted copy*
+.dropbox
+.dropbox.attr
+
+# Local scratch
+_scratch/
+*.tmp

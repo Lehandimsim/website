@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "args": [
+              "-NoProfile",
+              "-NonInteractive",
+              "-ExecutionPolicy",
+              "Bypass",
+              "-Command",
+              "$d = $env:CLAUDE_PROJECT_DIR; if (-not $d) { $d = (Get-Location).Path }; & (Join-Path $d '.claude/hooks/log_prompt.ps1')"
+            ],
+            "timeout": 20
+          }
+        ]
+      }
+    ]
+  }
+}
