@@ -186,6 +186,7 @@ LIFE/website/                      <- project root, in Dropbox. Git repo (.git e
 ├── tools/
 │   ├── screenshot.py              <- headless-Edge screenshots + JS error check (§6 Verification)
 │   ├── make_photos.py             <- one photo of Lehan -> every crop the site uses + the link-preview card; updates content.js
+│   ├── prerender.py               <- static copy of the JS-drawn text in index.html + classic/*.html, for crawlers (--check: is it stale?)
 │   └── audit/                     <- axe-core, keyboard flows, tap targets, links, reduced motion (README.md); outputs go to %TEMP%
 └── site/                          <- the website. ONLY this folder is ever published.
 ```
@@ -234,7 +235,12 @@ The first three follow directly from the brief ("load easily as a typical html/w
 overrule.
 
 - **No build step, no framework, no package manager.** Vanilla HTML, CSS and JS that anyone can open
-  and edit. No minified first-party code.
+  and edit. No minified first-party code. **One generated piece (Lehan, 2026-10-06):**
+  `tools/prerender.py` writes a static copy of the text that the scripts draw into `index.html` and
+  `classic/*.html`, between `<!-- prerendered -->` marks, for crawlers that don't run JavaScript. The
+  pages still draw everything from `content.js` at run time. **After any change to `content.js`,
+  `classic.js` or `config.js` `funVersions`, run it** (`--check` reports stale files). Never edit
+  between the marks by hand.
 - **Must work from `file://` (double-click) as well as on a static host.** That means:
   - no ES modules (`<script type="module">` is blocked on `file://` in Chrome);
   - no `fetch()`/XHR of local files (also blocked on `file://`). Content loads through a classic
@@ -266,7 +272,9 @@ overrule.
   only facts already on the site). When the bio or affiliation in `content.js` changes, update them,
   and `lastmod` in `sitemap.xml`. The start page, `pages.html`, `privacy.html` and the classic pages
   have a `<link rel="canonical">` under `https://www.lehanzhang.com/` and favicon files (not `data:`
-  URIs, which Google Search ignores).
+  URIs, which Google Search ignores). Since 2026-10-06 every page in the sitemap has its own
+  description and `og:`/`twitter:` preview tags (card: `assets/img/social-card.png`); keep a page's
+  description true when its content changes, and its `lastmod` current.
 - **Photos:** `tools/make_photos.py <photo>` makes every crop (avatar, portrait, slide photo, Kitchen
   face, social card) from one photo and updates `content.js`. Don't crop by hand.
 - **Do not ship copyrighted third-party assets:** not Microsoft's "Bliss" wallpaper photograph,
@@ -410,6 +418,7 @@ overrule.
 | 2026-10-06 (round 4 follow-up) | `pages.html`, `privacy.html` and `404.html` also use the sans font for headings, so no page of the start-page family has a serif. | Lehan. |
 | 2026-10-06 (round 4 follow-up) | Overleaf edits are not sent to Lehan: `Code.gs` takes drawings only (no edit-log tab, no daily digest); the client's sending code and `endpoints.editLog` are gone; History stays as the visitor's own record; the wording and privacy page say edits stay in the browser (memo 2026-10-06_backend_analytics_fonts §2). | Lehan ("No need to send overleaf edits to me"); the client and privacy page follow so nothing claims otherwise. |
 | 2026-10-06 (round 4 follow-up) | PostHog: project 296254 on the EU cloud; its key is in `config.js`; mode `memory` until Lehan chooses. Privacy page adds "how quickly the pages load" (the project has web vitals on). | Lehan made the project; region checked against PostHog's servers. |
+| 2026-10-06 | SEO: `tools/prerender.py` saves a static copy of the JS-drawn text in the start page and classic pages (the one generated piece; §5); each classic page has its own description; every page in the sitemap has link-preview tags with the social card; sitemap `lastmod` updated; the "needs JavaScript" notices on those pages removed (they work without it now). | Lehan (SEO review A, B, C, F). Without the copy, crawlers that don't run JavaScript saw empty classic pages. |
 | 2026-10-06 | Git remote: the private GitHub repo https://github.com/Lehandimsim/website; the whole project (not only `site/`) is pushed to `main`; Netlify publishes only `site/` (`netlify.toml`). | Lehan made the repo and asked to push. It is private (checked: GitHub's public API cannot see it), so the private notes may live there (§5 Privacy). |
 | 2026-10-06 | Paint sends drawings for real: Lehan's Apps Script URL in `config.js` `endpoints.drawings`. | Lehan deployed the backend. |
 | 2026-10-05 (round 3 follow-up) | Dvořák performance: "Slavonic Dances, Op. 46" (Lehan wrote Op. 42). On the classic site Scholar stays on the home page only; read as not affecting the start page and fun versions (to confirm). | Lehan. |
@@ -439,6 +448,9 @@ Needed before going live (details: memo 2026-10-02_go_live_and_round_2 §10, `GO
    LinkedIn, X/Bluesky, CEPR author page still to come (only ones Lehan confirms).
 8. **Link the GitHub repo in Netlify** (`GO_LIVE.md` step 3b): the private repo exists and `main` is
    pushed (2026-10-06).
+8a. **SEO proposals D and E** (memo 2026-10-06_seo_review §3; A, B, C, F done 2026-10-06): photo and
+   institutions in the JSON-LD; redirect the Netlify address and self-canonicals on the fun
+   versions. Do them?
 9. **Wording** written by Claude and the builders (memo 2026-10-02_go_live_and_round_2 §8; earlier:
    memo 2026-10-02_review_round_1 §5).
 

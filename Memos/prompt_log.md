@@ -1666,3 +1666,13 @@ This may or may not be related to the current task.
 ### 2026-10-06 18:59 | session a78c8de0
 
 > 1) commit and push. 2) check the seo of the website, is there anything i should obtimize and change?  
+
+### 2026-10-06 19:07 | session a78c8de0
+
+_IDE: `UPDATING.md` was open_
+
+> 1) is the repo linked in netlify? the new talk is not on the live site yet 2) do the tool that solves the static text for crawlers problem. 3) make different search descriptions for each page 4) add [octure for shared links, make the preview tags. 5) fix f  
+
+### 2026-10-06 19:16 | session a78c8de0
+
+> commit and push. then tell me if the linked netify github auto updates. the HEC lausanne talk i manually uploaded /site folder  

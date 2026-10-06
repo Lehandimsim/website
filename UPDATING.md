@@ -5,7 +5,7 @@ How to change lehanzhang.com after it is live. (Going live the first time: `GO_L
 ## How publishing works
 
 ```
-edit files in site/  →  check them on this computer  →  commit  →  push to GitHub  →  Netlify publishes
+edit files in site/  →  refresh the search-engine copy  →  check on this computer  →  commit  →  push  →  Netlify publishes
 ```
 
 - **GitHub** (https://github.com/Lehandimsim/website, **private**) holds the whole project.
@@ -65,8 +65,27 @@ Almost all text is in **`site/content.js`**. Change it there and it changes in a
 - To put a double quote inside a text, write `\"`.
 - Copy an existing entry and change it, rather than typing a new one from scratch.
 
+**After changing `content.js`, refresh the search-engine copy.** The start page and the classic pages
+also carry a saved copy of their text, between `<!-- prerendered -->` marks, for search engines that
+don't run JavaScript. In PowerShell, in this folder:
+
+```powershell
+python tools/prerender.py
+```
+
+It takes about ten seconds. Visitors always see the live text from `content.js`; only search
+engines would see a stale copy if you forget. `python tools/prerender.py --check` tells you whether
+it's needed. Never edit the text between the `prerendered` marks by hand: the next run overwrites it.
+Claude does this step for you. Also run it after changing `classic.js`, or the list of fun versions
+in `config.js`.
+
+**Each page's search description and link preview** are in its `<head>`: the
+`<meta name="description">` and the `og:` lines. If a page's content changes a lot, ask Claude to
+update its description. Also update the page's `<lastmod>` date in `site/sitemap.xml`.
+
 ## Check before publishing
 
+0. If you changed `content.js`: `python tools/prerender.py` (above).
 1. Double-click `site/index.html`. The start page should show the Classic door **and the four fun
    tiles**.
 2. Open the classic site and each fun version, and look at the page you changed.
