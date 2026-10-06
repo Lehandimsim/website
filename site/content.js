@@ -122,7 +122,8 @@ window.SITE = {
         { event: "4th CEPR Workshop on Media, Technology, Politics, and Society", month: 6, detail: "June, EIEF", note: "coauthor presentation" },
         { event: "Women in Political Economics Workshop", month: 9, detail: "September, WU Vienna" },
         { event: "Zurich Political Economy Seminar Series", month: 10, detail: "October, ETHZ/UZH" },
-        { event: "Digital Publics Conference", month: 10, detail: "October, DSI UZH" }
+        { event: "Digital Publics Conference", month: 10, detail: "October, DSI UZH" },
+        { event: "OB Research Seminar", month: 11, detail: "November, HEC Lausanne", note: "invited talk" }   // Lehan, 2026-10-06
       ]
     },
     {

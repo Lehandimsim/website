@@ -180,6 +180,7 @@ LIFE/website/                      <- project root, in Dropbox. Git repo (.git e
 │   ├── settings.json              <- UserPromptSubmit hook -> Memos/prompt_log.md
 │   └── hooks/log_prompt.ps1
 ├── GO_LIVE.md                     <- Lehan's go-live checklist: backend, PostHog, Netlify, Google, renewals
+├── UPDATING.md                    <- Lehan's guide to changing the live site: where things live, check, commit, push, roll back
 ├── netlify.toml                   <- for Git deploys: publish only site/, no build command
 ├── backend/                       <- NOT published. apps-script/Code.gs (receives Paint drawings) + README.md (set-up)
 ├── tools/
