@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en" data-root="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lehan Zhang · Economist and data scientist, ETH Zurich</title>
+<!-- Search engines and link previews read this head before any script runs, so it is plain text here.
+     If the bio in content.js changes, update the description, og/twitter tags and the JSON-LD too.
+     The address (www.lehanzhang.com) is also in sitemap.xml and robots.txt. -->
+<meta name="description" content="Lehan Zhang is an economist and data scientist and a PhD candidate in the AI & Economics Lab at ETH Zurich. Research on political economics, media, and culture.">
+<link rel="canonical" href="https://www.lehanzhang.com/">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Lehan Zhang">
+<meta property="og:title" content="Lehan Zhang · Economist and data scientist, ETH Zurich">
+<meta property="og:description" content="PhD candidate in the AI & Economics Lab at ETH Zurich. Research on political economics, media, and culture.">
+<meta property="og:url" content="https://www.lehanzhang.com/">
+<meta property="og:image" content="https://www.lehanzhang.com/assets/img/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lehan Zhang: economist and data scientist, PhD Candidate, AI & Economics Lab, ETH Zurich">
+<meta property="profile:first_name" content="Lehan">
+<meta property="profile:last_name" content="Zhang">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "url": "https://www.lehanzhang.com/",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Lehan Zhang",
+    "url": "https://www.lehanzhang.com/",
+    "email": "mailto:lehan.zhang@gess.ethz.ch",
+    "jobTitle": "PhD Candidate",
+    "description": "Economist and data scientist. Research on political economics, media, and culture.",
+    "affiliation": { "@type": "CollegeOrUniversity", "name": "ETH Zurich" },
+    "memberOf": { "@type": "Organization", "name": "AI & Economics Lab", "url": "https://ai-econ-lab.org/" },
+    "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of New South Wales (UNSW Sydney)" },
+    "knowsAbout": ["Political economics", "Media", "Culture and identity", "Causal inference", "Unstructured data", "NLP/AI"],
+    "sameAs": ["https://scholar.google.com/citations?user=JYuPwdgAAAAJ", "https://lehanzzhang.wixsite.com/photography", "https://congeecosmicbinchicken.wordpress.com/"]
+  }
+}
+</script>
+<style>
+  /* ---------- Start page. Colours and fonts are set here. ---------- */
+  :root {
+    --paper: #f7f4ee;
+    --ink: #1d1d1f;
+    --muted: #5f5b55;
+    --rule: #e2ddd3;
+    --classic: #1f4e8c;
+    /* One font for the whole page, headings included (Lehan, 2026-10-06; was a serif for the headings). */
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font: 17px/1.6 var(--sans);
+    display: flex;
+    flex-direction: column;
+  }
+  a { color: var(--classic); }
+  /* Links inside running text: underlined, otherwise like the words around them. */
+  a.text-link { color: inherit; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: .16em; }
+  a.text-link:hover { text-decoration-thickness: 2px; }
+
+  /* Two columns: about me on the left, the ways in on the right. The right column starts level with
+     the affiliation line, so "Choose your way in" lines up with it (Lehan, 2026-10-02). */
+  .landing {
+    width: 100%;
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: clamp(28px, 6vh, 64px) 24px 32px;
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    grid-template-areas: "intro ." "tagline doors" "bio doors";
+    grid-template-rows: auto auto 1fr;
+    column-gap: clamp(32px, 5vw, 72px);
+    align-content: start;
+  }
+  .intro   { grid-area: intro; }
+  .tagline { grid-area: tagline; }
+  .bio     { grid-area: bio; }
+  .doors   { grid-area: doors; display: flex; flex-direction: column; }
+
+  .avatar {
+    width: 96px; height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #fff;
+    box-shadow: 0 2px 10px rgba(0,0,0,.12);
+  }
+  h1 {
+    font: 600 clamp(38px, 5vw, 54px)/1.1 var(--sans);
+    letter-spacing: -0.01em;
+    margin: 18px 0 8px;
+  }
+  .tagline { margin: 0 0 18px; color: var(--muted); font-size: 15px; letter-spacing: .02em; }
+  .bio p { margin: 0 0 14px; max-width: 34em; }
+  .bio .email { color: var(--muted); margin-bottom: 0; }
+
+  .doors-label, .fun-label {
+    font: 600 13px/1.3 var(--sans);
+    text-transform: uppercase;
+    letter-spacing: .12em;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .doors-label { line-height: 24px; margin-bottom: 8px; }   /* the tagline's line height, so the two share a baseline */
+  .fun-row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-top: 18px; }
+  .fun-row .fun-label { margin-bottom: 10px; }
+
+  /* The classic door. */
+  .door {
+    display: grid;
+    grid-template-columns: 56px 1fr auto;
+    align-items: center;
+    gap: 16px;
+    padding: 15px 22px;
+    border-radius: 16px;
+    text-decoration: none;
+    color: var(--ink);
+    background: #fff;
+    border: 1.5px solid var(--rule);
+    box-shadow: 0 1px 2px rgba(0,0,0,.04);
+    transition: transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .door:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(31,78,140,.14); border-color: #c9d5e6; }
+  .door:focus-visible, .fun-tile:focus-visible, .all-versions:focus-visible { outline: 3px solid var(--classic); outline-offset: 4px; }
+  .door-icon { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 14px; background: #eaf0f8; color: var(--classic); }
+  .door-icon svg { width: 34px; height: 34px; }
+  .door-title { display: block; font: 600 22px/1.25 var(--sans); }
+  .door-sub { display: block; font-size: 15px; line-height: 1.45; margin-top: 3px; color: var(--muted); }
+  .door-cta { font-weight: 600; font-size: 15px; white-space: nowrap; color: var(--classic); }
+
+  /* The four fun versions: a 2 x 2 grid of tiles that fills the rest of the column. */
+  .fun-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 1fr;
+    gap: 12px;
+  }
+  .fun-grid > div { display: flex; min-width: 0; }   /* the list item around each tile */
+  .fun-tile {
+    flex: 1;
+    min-width: 0;
+    --a: #e4572e; --b: #f4a259;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 14px 16px 16px;
+    border-radius: 16px;
+    color: #fff;
+    text-decoration: none;
+    background: linear-gradient(135deg, var(--a), var(--b));
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--a) 30%, transparent);
+    transition: transform .18s ease, box-shadow .18s ease;
+  }
+  .fun-tile:hover { transform: translateY(-3px); box-shadow: 0 12px 28px color-mix(in srgb, var(--a) 42%, transparent); }
+  .fun-head { display: flex; align-items: center; gap: 10px; }
+  .fun-icon { flex: none; width: 38px; height: 38px; display: grid; place-items: center; border-radius: 11px; background: rgba(255,255,255,.22); }
+  .fun-icon svg { width: 26px; height: 26px; }
+  .fun-title { font: 600 19px/1.2 var(--sans); min-width: 0; }
+  .fun-go { margin-left: auto; font-weight: 600; font-size: 18px; transition: transform .18s ease; }
+  .fun-tile:hover .fun-go { transform: translateX(3px); }
+  .fun-blurb { font-size: 14px; line-height: 1.42; opacity: .96; }
+  .fun-tile:hover .fun-icon svg { animation: wiggle .6s ease-in-out; }
+  @keyframes wiggle { 0%,100% { transform: rotate(0); } 25% { transform: rotate(-10deg); } 75% { transform: rotate(8deg); } }
+
+  .all-versions { font-size: 14px; font-weight: 600; white-space: nowrap; }
+
+  footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 18px 24px 26px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  /* Tablets: the tiles' text gets narrow, so stack the blurb under a smaller title row. */
+  @media (max-width: 980px) {
+    .fun-blurb { font-size: 13px; }
+  }
+  /* Phones and portrait tablets: name first, then the ways in, then the bio. (Below about 920px the
+     right-hand column is too narrow for the tiles' titles.) */
+  @media (max-width: 920px) {
+    .landing { grid-template-columns: 1fr; grid-template-areas: "intro" "tagline" "doors" "bio"; grid-template-rows: auto; padding-top: 28px; }
+    .doors { margin: 6px 0 26px; }
+    .door { grid-template-columns: 48px 1fr; padding: 16px; }
+    .door-icon { width: 48px; height: 48px; }
+    .door-cta { display: none; }
+    .fun-grid { gap: 10px; }
+    .fun-tile { padding: 12px 13px 14px; }
+    .fun-icon { width: 32px; height: 32px; }
+    .fun-icon svg { width: 22px; height: 22px; }
+    .fun-title { font-size: 17px; }
+    .avatar { width: 76px; height: 76px; }
+  }
+  /* Narrow phones: in the sans font "PowerPoint" reaches the arrow, so drop the arrows (the whole tile
+     is the link, as the classic door's hidden "Enter" above). */
+  @media (max-width: 440px) {
+    .fun-go { display: none; }
+  }
+  @media (max-width: 360px) {
+    .fun-grid { grid-template-columns: 1fr; }
+  }
+  /* Reduced motion; html.motion-on (shared/site.js) is the reviewers' "show animations anyway". */
+  @media (prefers-reduced-motion: reduce) {
+    html:not(.motion-on) .door, html:not(.motion-on) .door:hover,
+    html:not(.motion-on) .fun-tile, html:not(.motion-on) .fun-tile:hover { transition: none; transform: none; }
+    html:not(.motion-on) .fun-tile:hover .fun-icon svg { animation: none; }
+    html:not(.motion-on) .fun-tile:hover .fun-go { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<main class="landing">
+  <section class="intro">
+    <img class="avatar" id="avatar" src="" alt="">
+    <h1 id="name">Lehan Zhang</h1>
+  </section>
+  <p class="tagline" id="tagline"></p>
+
+  <section class="bio" id="bio" aria-label="About"></section>
+
+  <section class="doors" aria-labelledby="doors-label">
+    <h2 class="doors-label" id="doors-label">Choose your way in</h2>
+
+    <a class="door" id="classic-door" href="classic/index.html">
+      <span class="door-icon" id="classic-icon" aria-hidden="true"></span>
+      <span>
+        <span class="door-title">Classic website</span>
+        <span class="door-sub">Standard, academic website. No frills.</span>
+      </span>
+      <span class="door-cta">Enter <span aria-hidden="true">&rarr;</span></span>
+    </a>
+
+    <div class="fun-row">
+      <h2 class="fun-label" id="fun-label">Or view one of four fun versions</h2>
+      <a class="all-versions" href="pages.html">All versions <span aria-hidden="true">&rarr;</span></a>
+    </div>
+    <div class="fun-grid" id="fun-grid" role="list" aria-labelledby="fun-label"></div>
+  </section>
+</main>
+
+<footer id="footer"></footer>
+
+<noscript><p style="text-align:center">This page needs JavaScript. <a href="classic/index.html">Go to the classic website</a>.</p></noscript>
+
+<script src="content.js"></script>
+<script src="config.js"></script>
+<script src="shared/site.js"></script>
+<script>
+(function () {
+  "use strict";
+  var U = SiteUtil, P = SITE.person, H = SITE.home;
+
+  // Intro and bio, from content.js.
+  var avatar = document.getElementById("avatar");
+  avatar.src = U.url(P.photo.headshot);
+  avatar.alt = P.photo.alt;
+  document.getElementById("name").textContent = H.heading;
+  document.getElementById("tagline").innerHTML = U.inline(P.affiliation);
+  document.getElementById("bio").innerHTML =
+    H.paragraphs.map(function (p) { return "<p>" + U.inline(p) + "</p>"; }).join("") +
+    '<p class="email">Email: <a href="mailto:' + U.esc(P.email) + '">' + U.esc(P.email) + "</a></p>";
+
+  document.getElementById("classic-icon").innerHTML = U.versionIcon("classic");
+
+  // The four fun versions, in the order of config.js (the default one first).
+  var versions = SITE_CONFIG.funVersions.slice().sort(function (a, b) {
+    return (b.id === SITE_CONFIG.defaultFun) - (a.id === SITE_CONFIG.defaultFun);
+  });
+  document.getElementById("fun-grid").innerHTML = versions.map(function (v) {
+    var c = U.versionColours(v.id);
+    return '<div role="listitem"><a class="fun-tile" href="' + U.esc(U.url(v.path)) + '" style="--a:' + c[0] + ";--b:" + c[1] + '"' +
+      ' aria-label="' + U.esc(v.label + ": " + v.blurb) + '">' +
+      '<span class="fun-head"><span class="fun-icon" aria-hidden="true">' + U.versionIcon(v.id) + "</span>" +
+      '<span class="fun-title">' + U.esc(v.label) + '</span><span class="fun-go" aria-hidden="true">&rarr;</span></span>' +
+      '<span class="fun-blurb">' + U.esc(v.blurb) + ".</span></a></div>";
+  }).join("");
+
+  // Statistics (no-op unless analytics is on): which door visitors take.
+  Array.prototype.forEach.call(document.querySelectorAll("#classic-door, .fun-tile"), function (a, i) {
+    a.addEventListener("click", function () {
+      U.track("start_version_chosen", { version: i === 0 ? "classic" : versions[i - 1].id });
+    });
+  });
+
+  document.getElementById("footer").innerHTML =
+    "&copy; " + new Date().getFullYear() + " " + U.esc(P.name) +
+    ' &middot; <a ' + U.linkAttrs(P.links.scholar) + ">Google Scholar</a>" +
+    ' &middot; <a href="' + U.esc(U.url(P.links.cv)) + '">CV (PDF)</a>' +
+    ' &middot; <a ' + U.linkAttrs(P.links.photography) + ">Photography</a>" +
+    ' &middot; <a ' + U.linkAttrs(P.links.blog) + ">Blog</a>" +
+    ' &middot; <a href="privacy.html">Privacy</a>';
+})();
+</script>
+</body>
+</html>

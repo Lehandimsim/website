@@ -1,0 +1,365 @@
+/* ==========================================================================
+   shared/xp/xp.css — a Windows XP desktop (homage), shared by the Paint,
+   PowerPoint and Overleaf versions. Behaviour lives in xp.js.
+
+   Everything is drawn in CSS/SVG: the wallpaper is a "green hill, blue sky"
+   scene, not Microsoft's photograph, and the icons are original.
+
+   Page skeleton:
+     <body class="xp">
+       <div class="xp-desktop">
+         <div class="xp-icons"> ...desktop icons... </div>
+         <div class="xp-window" id="app" data-title="..." data-icon="paint"> ...app... </div>
+       </div>
+       (xp.js adds the taskbar and start menu)
+   ========================================================================== */
+
+:root {
+  --xp-taskbar-h: 30px;
+  --xp-font: Tahoma, Verdana, "Segoe UI", sans-serif;
+  --xp-title-font: "Trebuchet MS", Tahoma, "Segoe UI", sans-serif;
+  --xp-face: #ece9d8;        /* window body ("Luna" beige) */
+  --xp-frame: #0b4fe0;       /* window frame blue */
+  --xp-select: #316ac5;      /* selection / menu highlight */
+}
+
+html, body.xp { margin: 0; height: 100%; overflow: hidden; }
+body.xp {
+  font: 11px/1.35 var(--xp-font);
+  color: #000;
+  background: #3a6ea5;
+  -webkit-tap-highlight-color: transparent;
+}
+body.xp *, body.xp *::before, body.xp *::after { box-sizing: border-box; }
+
+/* ---------- Desktop and wallpaper ---------- */
+.xp-desktop {
+  position: fixed;
+  inset: 0 0 var(--xp-taskbar-h) 0;
+  overflow: hidden;
+  background-color: #5d9be8;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 1000' preserveAspectRatio='xMidYMid slice'%3E%3Cdefs%3E%3ClinearGradient id='s' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%231b5ccf'/%3E%3Cstop offset='.5' stop-color='%235b9ae6'/%3E%3Cstop offset='.78' stop-color='%23a9cff6'/%3E%3Cstop offset='1' stop-color='%23d9ecfb'/%3E%3C/linearGradient%3E%3ClinearGradient id='h' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%2387d14a'/%3E%3Cstop offset='.35' stop-color='%2358aa2c'/%3E%3Cstop offset='1' stop-color='%23276b12'/%3E%3C/linearGradient%3E%3ClinearGradient id='g' x1='0' y1='0' x2='0' y2='1'%3E%3Cstop offset='0' stop-color='%236fb048'/%3E%3Cstop offset='1' stop-color='%23336f25'/%3E%3C/linearGradient%3E%3Cfilter id='b' x='-20%25' y='-50%25' width='140%25' height='200%25'%3E%3CfeGaussianBlur stdDeviation='16'/%3E%3C/filter%3E%3C/defs%3E%3Crect width='1600' height='1000' fill='url(%23s)'/%3E%3Cg fill='%23fff' filter='url(%23b)'%3E%3Cellipse cx='250' cy='160' rx='220' ry='40' opacity='.9'/%3E%3Cellipse cx='430' cy='128' rx='140' ry='32' opacity='.8'/%3E%3Cellipse cx='1180' cy='110' rx='270' ry='46' opacity='.9'/%3E%3Cellipse cx='1360' cy='182' rx='170' ry='32' opacity='.75'/%3E%3Cellipse cx='800' cy='250' rx='200' ry='28' opacity='.7'/%3E%3Cellipse cx='1460' cy='400' rx='210' ry='48' opacity='.8'/%3E%3Cellipse cx='150' cy='420' rx='170' ry='38' opacity='.75'/%3E%3Cellipse cx='620' cy='420' rx='150' ry='26' opacity='.55'/%3E%3C/g%3E%3Cpath d='M0 650C300 575 520 610 770 655S1260 705 1600 610V1000H0Z' fill='url(%23g)' opacity='.95'/%3E%3Cpath d='M0 715C270 548 640 530 930 610S1420 770 1600 790V1000H0Z' fill='url(%23h)'/%3E%3C/svg%3E");
+  background-size: cover;
+  background-position: center bottom;
+}
+
+/* ---------- Desktop icons ---------- */
+.xp-icons {
+  position: absolute;
+  top: 10px; left: 8px;
+  display: flex; flex-direction: column; flex-wrap: wrap;
+  gap: 12px;
+  max-height: calc(100% - 20px);
+  z-index: 1;
+}
+.xp-icon {
+  width: 78px;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  padding: 3px 2px;
+  border: 1px solid transparent;
+  background: none;
+  color: #fff;
+  font: 11px/1.25 var(--xp-font);
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 1px 1px 1px #000, 0 0 3px rgba(0,0,0,.6);
+  cursor: pointer;
+}
+.xp-icon .xp-ico { width: 34px; height: 34px; filter: drop-shadow(1px 2px 1px rgba(0,0,0,.35)); }
+.xp-icon span { padding: 0 2px; }
+.xp-icon.is-selected span, .xp-icon:focus-visible span { background: var(--xp-select); outline: 1px dotted #fff; }
+.xp-icon:focus { outline: none; }
+
+/* ---------- Windows ---------- */
+.xp-window {
+  position: absolute;
+  display: flex; flex-direction: column;
+  min-width: 260px; min-height: 140px;
+  background: var(--xp-face);
+  border: 3px solid var(--xp-frame);
+  border-top: 0;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 0 8px 26px rgba(0,0,0,.38), inset 0 0 0 1px rgba(255,255,255,.15);
+  z-index: 10;
+}
+.xp-window.is-minimized, .xp-window[hidden] { display: none; }
+.xp-window.is-maximized {
+  left: 0 !important; top: 0 !important;
+  width: 100% !important; height: 100% !important;
+  border-radius: 0;
+}
+.xp-titlebar {
+  flex: none;
+  height: 30px;
+  margin: 0 -3px;               /* spans the side frame, like XP */
+  padding: 0 5px 0 7px;
+  display: flex; align-items: center; gap: 6px;
+  color: #fff;
+  user-select: none;
+  touch-action: none;
+  border-radius: 7px 7px 0 0;
+  background: linear-gradient(to bottom, #0997ff 0%, #0053ee 8%, #0050ee 40%, #0066ff 88%, #0066ff 93%, #005bff 95%, #003dd7 96%, #003dd7 100%);
+}
+.xp-window.is-maximized .xp-titlebar { border-radius: 0; }
+.xp-window.is-inactive .xp-titlebar {
+  background: linear-gradient(to bottom, #7697e7 0%, #94afe8 6%, #82a5e4 14%, #7996de 25%, #7b99e1 56%, #82a9e9 81%, #7b96e1 94%, #abbae3 100%);
+}
+.xp-window.is-inactive { border-color: #7b99e1; }
+.xp-title-icon { width: 16px; height: 16px; flex: none; }
+.xp-title {
+  flex: 1; min-width: 0;
+  font: bold 13px/1 var(--xp-title-font);
+  text-shadow: 1px 1px #0f1089;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.xp-tbtn {
+  width: 21px; height: 21px;
+  flex: none;
+  padding: 0;
+  display: grid; place-items: center;
+  border: 1px solid #fff;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #4b97ff 0%, #2a6ae8 45%, #1b4fca 100%);
+  box-shadow: inset 1px 1px 1px rgba(255,255,255,.45), inset -1px -1px 1px rgba(0,0,0,.2);
+  cursor: pointer;
+}
+.xp-tbtn:hover { filter: brightness(1.18); }
+.xp-tbtn:active { filter: brightness(.9); }
+.xp-tbtn:focus-visible { outline: 1px dotted #fff; outline-offset: 1px; }
+.xp-tbtn--close { background: linear-gradient(135deg, #ef8a6a 0%, #d95c38 45%, #b9361a 100%); }
+.xp-tbtn svg { width: 11px; height: 11px; display: block; }
+.xp-window-body {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+}
+
+/* ---------- XP form controls (for apps and dialogs) ---------- */
+.xp-button {
+  min-width: 75px; height: 23px;
+  padding: 0 12px;
+  font: 11px var(--xp-font);
+  color: #000;
+  border: 1px solid #003c74;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #ffffff 0%, #f4f4f0 50%, #ecebe6 86%, #d6d0c5 100%);
+  cursor: pointer;
+}
+.xp-button:hover { box-shadow: inset 0 -1px 0 1px #f8b636, inset 0 1px 0 1px #fde39f; }
+.xp-button:active { background: linear-gradient(to bottom, #e3e3db, #e5e4de 50%, #f0f0ea); }
+.xp-button:focus-visible { outline: 1px dotted #000; outline-offset: -4px; }
+
+/* ---------- Taskbar ---------- */
+.xp-taskbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--xp-taskbar-h);
+  display: flex; align-items: stretch;
+  z-index: 1000;
+  color: #fff;
+  font: 11px var(--xp-font);
+  background: linear-gradient(to bottom, #3168d5 0%, #4993e6 3%, #2157d7 6%, #2663e0 10%, #245edb 90%, #1941a5 100%);
+  border-top: 1px solid #0c3daa;
+}
+.xp-start {
+  flex: none;
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 24px 0 9px;
+  margin-right: 8px;
+  border: 0;
+  border-radius: 0 12px 12px 0;
+  color: #fff;
+  font: italic bold 18px/1 var(--xp-title-font);
+  text-shadow: 1px 1px 2px rgba(0,0,0,.55);
+  background: linear-gradient(to bottom, #3c8f2e 0%, #7fc576 6%, #4aa142 12%, #3c9a34 50%, #308a28 88%, #2a7a22 100%);
+  box-shadow: inset -2px 0 3px rgba(0,0,0,.25), 1px 0 2px rgba(0,0,0,.35);
+  cursor: pointer;
+}
+.xp-start:hover { filter: brightness(1.1); }
+.xp-start[aria-expanded="true"] { filter: brightness(.88); box-shadow: inset 1px 1px 4px rgba(0,0,0,.5); }
+.xp-start:focus-visible { outline: 1px dotted #fff; outline-offset: -4px; }
+.xp-start .xp-flag { width: 20px; height: 20px; filter: drop-shadow(1px 1px 1px rgba(0,0,0,.4)); }
+
+.xp-tasks { flex: 1; min-width: 0; display: flex; gap: 3px; padding: 3px 4px 3px 0; }
+.xp-taskbtn {
+  min-width: 0; width: 170px; flex: 0 1 170px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 8px;
+  color: #fff;
+  font: 11px var(--xp-font);
+  text-align: left;
+  border: 1px solid #1c50b8;
+  border-radius: 3px;
+  background: linear-gradient(to bottom, #5d9bf5 0%, #3c81f3 8%, #3a7ef0 50%, #2f6fdf 100%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.3);
+  cursor: pointer;
+  overflow: hidden;
+}
+.xp-taskbtn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.xp-taskbtn .xp-ico { width: 16px; height: 16px; flex: none; }
+.xp-taskbtn:hover { filter: brightness(1.1); }
+.xp-taskbtn[aria-pressed="true"] {
+  background: linear-gradient(to bottom, #1e52b7 0%, #2759c4 50%, #1f4fae 100%);
+  box-shadow: inset 1px 1px 2px rgba(0,0,0,.45);
+}
+.xp-taskbtn:focus-visible { outline: 1px dotted #fff; outline-offset: -3px; }
+
+.xp-tray {
+  flex: none;
+  display: flex; align-items: center; gap: 8px;
+  padding: 0 12px 0 12px;
+  border-left: 1px solid #092e8a;
+  background: linear-gradient(to bottom, #0c59b9 0%, #139ee9 4%, #18b4f3 6%, #0f8be0 12%, #0f8be0 88%, #0e66c6 100%);
+  box-shadow: inset 1px 0 1px #3fb3f6;
+}
+.xp-tray .xp-ico { width: 16px; height: 16px; }
+.xp-tray-btn { background: none; border: 0; padding: 0; cursor: pointer; display: grid; }
+.xp-clock { white-space: nowrap; }
+
+/* ---------- Start menu ---------- */
+.xp-startmenu {
+  position: fixed;
+  left: 0; bottom: var(--xp-taskbar-h);
+  width: 400px; max-width: 100vw;
+  z-index: 1001;
+  display: none;
+  overflow: hidden;
+  border: 1px solid #0831d9;
+  border-radius: 8px 8px 0 0;
+  background: #fff;
+  box-shadow: 3px -2px 10px rgba(0,0,0,.45);
+}
+.xp-startmenu.is-open { display: block; }
+.xp-sm-head {
+  display: flex; align-items: center; gap: 10px;
+  height: 60px;
+  padding: 0 10px;
+  color: #fff;
+  font: bold 14px var(--xp-title-font);
+  text-shadow: 1px 1px 2px rgba(0,0,0,.55);
+  background: linear-gradient(to bottom, #1868ce 0%, #0e60cb 12%, #1667cf 33%, #1e70d9 54%, #2b7ce2 65%, #3e8ced 79%, #5299f2 100%);
+  border-bottom: 2px solid #e8913a;
+}
+.xp-sm-head img { width: 44px; height: 44px; object-fit: cover; border: 2px solid #fff; border-radius: 4px; box-shadow: 1px 1px 3px rgba(0,0,0,.4); }
+.xp-sm-body { display: grid; grid-template-columns: 1fr 1fr; }
+.xp-sm-col { padding: 6px 0; }
+.xp-sm-col--right { background: #d3e5fa; border-left: 1px solid #95bdee; }
+.xp-sm-label { padding: 4px 10px 2px; color: #555; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+.xp-sm-item {
+  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px;
+  border: 0;
+  background: none;
+  color: #000;
+  font: 11px/1.25 var(--xp-font);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.xp-sm-col--right .xp-sm-item { color: #00136b; }
+.xp-sm-item .xp-ico { width: 26px; height: 26px; flex: none; }
+.xp-sm-col--right .xp-sm-item .xp-ico { width: 22px; height: 22px; }
+.xp-sm-item b { font-weight: bold; }
+.xp-sm-item:hover, .xp-sm-item:focus-visible { background: var(--xp-select); color: #fff; outline: none; }
+.xp-sm-sep { height: 1px; margin: 5px 10px; background: linear-gradient(to right, transparent, #c5c5c5 20%, #c5c5c5 80%, transparent); }
+.xp-sm-col--right .xp-sm-sep { background: linear-gradient(to right, transparent, #8db2e3 20%, #8db2e3 80%, transparent); }
+.xp-sm-foot {
+  display: flex; justify-content: flex-end; gap: 4px;
+  padding: 5px 8px;
+  background: linear-gradient(to bottom, #4282d6 0%, #3b85e0 10%, #418ae3 50%, #3f87df 90%, #2a69c9 100%);
+}
+.xp-sm-foot button {
+  display: flex; align-items: center; gap: 5px;
+  padding: 3px 7px;
+  border: 0; border-radius: 3px;
+  background: none;
+  color: #fff;
+  font: 11px var(--xp-font);
+  cursor: pointer;
+}
+.xp-sm-foot button:hover, .xp-sm-foot button:focus-visible { background: rgba(255,255,255,.18); outline: none; }
+.xp-sm-foot .xp-ico { width: 22px; height: 22px; }
+
+/* ---------- Dialogs (XP.alert) ---------- */
+.xp-modal {
+  position: fixed;
+  inset: 0 0 var(--xp-taskbar-h) 0;
+  z-index: 2000;
+  display: grid; place-items: center;
+  background: rgba(0,0,0,.08);
+}
+.xp-dialog { position: relative; width: min(400px, calc(100vw - 24px)); min-height: 0; }
+.xp-dialog .xp-window-body { padding: 14px 14px 12px; gap: 14px; }
+.xp-dialog-msg { display: flex; gap: 12px; align-items: flex-start; font: 11px/1.45 var(--xp-font); }
+.xp-dialog-msg .xp-ico { width: 32px; height: 32px; flex: none; }
+.xp-dialog-msg p { margin: 0 0 6px; }
+.xp-dialog-buttons { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+
+/* ---------- Balloon tip from the tray ---------- */
+.xp-balloon {
+  position: fixed;
+  right: 14px; bottom: calc(var(--xp-taskbar-h) + 12px);
+  width: min(300px, calc(100vw - 28px));
+  padding: 9px 28px 10px 11px;
+  z-index: 1002;
+  color: #000;
+  font: 11px/1.45 var(--xp-font);
+  background: #ffffe1;
+  border: 1px solid #000;
+  border-radius: 9px;
+  box-shadow: 2px 3px 7px rgba(0,0,0,.35);
+  animation: xp-fade-in .25s ease-out;
+}
+.xp-balloon::after {
+  content: "";
+  position: absolute;
+  right: 34px; bottom: -11px;
+  border: 11px solid transparent;
+  border-top-color: #ffffe1;
+  border-bottom: 0;
+  filter: drop-shadow(0 1px 0 #000);
+}
+.xp-balloon > b { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }   /* the title line */
+.xp-balloon > b .xp-ico { width: 16px; height: 16px; }
+.xp-balloon > b { padding-right: 24px; }   /* room for the close button */
+.xp-balloon-x {
+  position: absolute; top: 3px; right: 3px;
+  width: 24px; height: 24px;               /* WCAG 2.5.8: targets at least 24px */
+  padding: 0;
+  border: 1px solid #9a9a9a; border-radius: 3px;
+  background: #fff;
+  font: bold 14px/1 var(--xp-font);
+  cursor: pointer;
+}
+.xp-balloon-x:focus-visible { outline: 2px solid #1b4fca; outline-offset: 1px; }
+@keyframes xp-fade-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Small screens: windows fill the desktop ---------- */
+@media (max-width: 700px) {
+  .xp-window:not(.xp-dialog) {
+    left: 0 !important; top: 0 !important;
+    width: 100% !important; height: 100% !important;
+    border-radius: 0;
+  }
+  .xp-window:not(.xp-dialog) .xp-titlebar { border-radius: 0; }
+  .xp-icons { display: none; }
+  body.xp-all-closed .xp-icons { display: flex; }   /* every window closed: the icons reopen them */
+  .xp-start { padding-right: 14px; font-size: 16px; }
+  .xp-taskbtn { width: auto; flex: 1 1 auto; }
+  .xp-tray .xp-tray-btn:not(.xp-tray-btn--about) { display: none; }   /* the "i" (about) stays */
+  .xp-tray .xp-tray-btn--about { padding: 5px; margin: -5px; }        /* a 26px target around the 16px icon */
+  .xp-startmenu { width: 100vw; border-radius: 0; }
+  /* Windows always fill the screen here, so Minimize and Maximize do nothing useful (a minimised
+     window would leave an empty desktop): only Close, and big enough to tap. */
+  .xp-window:not(.xp-dialog) .xp-tbtn[data-act="min"],
+  .xp-window:not(.xp-dialog) .xp-tbtn[data-act="max"] { display: none; }
+  .xp-tbtn { width: 26px; height: 26px; }
+  .xp-tbtn svg { width: 12px; height: 12px; }
+  .xp-dialog .xp-dialog-buttons .xp-button { min-height: 44px; }   /* easy to tap */
+}
+/* Reduced motion. Write every such rule as html:not(.motion-on) ...: class motion-on (set by
+   shared/site.js) is the reviewers' "show animations anyway". */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-on) .xp-balloon { animation: none; }
+}

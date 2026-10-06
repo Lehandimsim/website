@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en" data-root="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lehan Zhang.pptx - Microsoft PowerPoint</title>
+<meta name="description" content="Lehan Zhang's academic website as a PowerPoint 2007 presentation on a Windows XP desktop. Press From Beginning for the slide show.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='1' y='4' width='30' height='22' rx='3' fill='%23d9541e'/%3E%3Crect x='5' y='8' width='22' height='14' fill='%23fff'/%3E%3Cpath d='M13 10.5v9l7.5-4.5z' fill='%23d9541e'/%3E%3C/svg%3E">
+<!-- Shared Windows XP desktop, then the shared slide design, then this app's chrome. -->
+<link rel="stylesheet" href="../../shared/xp/xp.css">
+<link rel="stylesheet" href="../../shared/slides/slides.css">
+<link rel="stylesheet" href="powerpoint.css">
+</head>
+<body class="xp">
+
+<!-- ===================================================================
+     The XP desktop. xp.js adds the taskbar and the start menu.
+     =================================================================== -->
+<div class="xp-desktop">
+
+  <!-- Desktop icons: built by powerpoint.js from its DESKTOP_ICONS list. -->
+  <nav class="xp-icons" id="pp-icons" aria-label="Desktop"></nav>
+
+  <!-- The PowerPoint 2007 window. xp.js adds its title bar (min / max / close).
+       "pp-office" draws that title bar in the Office 2007 style; remove the class
+       for a plain XP title bar. -->
+  <div class="xp-window pp-office" id="pp" role="main" aria-labelledby="pp-h1" data-title="Lehan Zhang.pptx - Microsoft PowerPoint" data-icon="powerpoint">
+    <div class="xp-window-body pp-app">
+
+      <!-- The page's heading, for screen readers (powerpoint.js fills in the name; wording: PP_H1 in ribbon.js). -->
+      <h1 class="pp-sr" id="pp-h1">Lehan Zhang: website as a PowerPoint presentation</h1>
+
+      <!-- The round Office button and the Quick Access Toolbar sit on the title bar. -->
+      <button type="button" class="pp-orb" id="pp-orb" aria-haspopup="true" aria-expanded="false" aria-controls="pp-omenu"
+              aria-label="Office Button: CV, email, photography, blog and the classic website">
+        <span class="pp-orb-mark" aria-hidden="true">LZ</span>
+      </button>
+      <div class="pp-qat" id="pp-qat" role="toolbar" aria-label="Quick Access Toolbar"></div>
+      <div class="pp-omenu" id="pp-omenu" hidden></div>
+
+      <!-- Ribbon: the tab row, then one panel per tab (both built from ribbon.js). -->
+      <div class="pp-tabrow">
+        <div class="pp-tabs" id="pp-tabs" role="tablist" aria-label="Ribbon"></div>
+        <div class="pp-tabrow-extra">
+          <a class="pp-quicklink" id="pp-link-classic" href="../../classic/index.html" data-pp-icon="st-web">Classic website</a>
+          <a class="pp-quicklink" id="pp-link-cv" href="#" target="_blank" rel="noopener" data-pp-icon="st-pdf">CV</a>
+          <button type="button" class="pp-help" id="pp-help" aria-label="Microsoft Office PowerPoint Help (F1)" title="Help (F1)"></button>
+        </div>
+      </div>
+      <div class="pp-ribbon" id="pp-ribbon"></div>
+
+      <!-- Normal view: slides pane | slide and notes. Slide Sorter replaces both. -->
+      <div class="pp-main">
+        <aside class="pp-side" id="pp-side" aria-label="Slides and outline">
+          <div class="pp-side-tabs" id="pp-side-tabs" role="tablist" aria-label="Slides pane">
+            <button type="button" role="tab" class="pp-side-tab" id="pp-side-tab-slides" aria-selected="true" aria-controls="pp-thumbs-panel" data-pp-icon="pane-slides">Slides</button>
+            <button type="button" role="tab" class="pp-side-tab" id="pp-side-tab-outline" aria-selected="false" aria-controls="pp-outline" tabindex="-1" data-pp-icon="pane-outline">Outline</button>
+          </div>
+          <!-- The tab panel is a wrapper, so the list of thumbnails stays a list for screen readers. -->
+          <div class="pp-thumbs-panel" id="pp-thumbs-panel" role="tabpanel" aria-labelledby="pp-side-tab-slides">
+            <ol class="pp-thumbs" id="pp-thumbs"></ol>
+          </div>
+          <div class="pp-outline" id="pp-outline" role="tabpanel" aria-labelledby="pp-side-tab-outline" hidden></div>
+        </aside>
+
+        <div class="pp-split" id="pp-split" role="separator" aria-orientation="vertical" aria-label="Resize the slides pane"
+             aria-valuemin="170" aria-valuemax="480" aria-valuenow="292" tabindex="0"></div>
+
+        <section class="pp-edit" id="pp-edit" aria-label="Slide">
+          <div class="pp-stage-row">
+            <div class="pp-ruler pp-ruler--h" aria-hidden="true"></div>
+            <div class="pp-ruler pp-ruler--v" aria-hidden="true"></div>
+            <div class="pp-stage" id="pp-stage">
+              <div class="pp-frame" id="pp-frame" role="region"></div>
+            </div>
+            <!-- The scroll bar, with PowerPoint's Previous Slide / Next Slide buttons at its foot. -->
+            <div class="pp-vscroll">
+              <button type="button" class="pp-sb-btn" data-nav="prev" tabindex="-1" aria-label="Previous slide">
+                <svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1 6.5 4.5 3 8 6.5z" fill="#4d6185"/></svg></button>
+              <div class="pp-sb-track" id="pp-sb-track"><div class="pp-sb-thumb" id="pp-sb-thumb"></div></div>
+              <button type="button" class="pp-sb-btn" data-nav="next" tabindex="-1" aria-label="Next slide">
+                <svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1 2.5 4.5 6 8 2.5z" fill="#4d6185"/></svg></button>
+              <button type="button" class="pp-sb-btn pp-sb-page" data-nav="prev" aria-label="Previous Slide" title="Previous Slide">
+                <svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1 4.5 4.5 1 8 4.5M1 8 4.5 4.5 8 8" fill="none" stroke="#4d6185" stroke-width="1.4"/></svg></button>
+              <button type="button" class="pp-sb-btn pp-sb-page" data-nav="next" aria-label="Next Slide" title="Next Slide">
+                <svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1 1 4.5 4.5 8 1M1 4.5 4.5 8 8 4.5" fill="none" stroke="#4d6185" stroke-width="1.4"/></svg></button>
+            </div>
+          </div>
+          <div class="pp-notes" id="pp-notes" role="note" aria-label="Notes"></div>
+        </section>
+
+        <section class="pp-sorter" id="pp-sorter" aria-label="Slide Sorter" hidden></section>
+      </div>
+
+      <!-- Status bar -->
+      <div class="pp-status">
+        <span class="pp-st" id="pp-st-slide">Slide 1 of 9</span>
+        <span class="pp-st pp-st-theme">"Office Theme"</span>
+        <span class="pp-st pp-st-lang" data-pp-icon="st-spell">English (Australia)</span>
+        <span class="pp-st-fill"></span>
+        <div class="pp-views" role="group" aria-label="Views">
+          <button type="button" class="pp-view-btn" data-view="normal" aria-pressed="true" aria-label="Normal" title="Normal" data-pp-icon="st-normal"></button>
+          <button type="button" class="pp-view-btn" data-view="sorter" aria-pressed="false" aria-label="Slide Sorter" title="Slide Sorter" data-pp-icon="st-sorter"></button>
+          <button type="button" class="pp-view-btn" data-view="show" aria-label="Slide Show (Shift+F5)" title="Slide Show (Shift+F5)" data-pp-icon="st-show"></button>
+        </div>
+        <div class="pp-zoom">
+          <button type="button" class="pp-zoom-pct" id="pp-zoom-pct" aria-label="Zoom level" title="Zoom">70%</button>
+          <button type="button" class="pp-zoom-btn" data-zoom="-" aria-label="Zoom Out" title="Zoom Out"><svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1.5 4.5h6" stroke="#2f4f7f" stroke-width="1.6"/></svg></button>
+          <input type="range" id="pp-zoom" min="10" max="200" step="1" value="70" aria-label="Zoom">
+          <button type="button" class="pp-zoom-btn" data-zoom="+" aria-label="Zoom In" title="Zoom In"><svg viewBox="0 0 9 9" aria-hidden="true"><path d="M1.5 4.5h6M4.5 1.5v6" stroke="#2f4f7f" stroke-width="1.6"/></svg></button>
+          <button type="button" class="pp-zoom-fit" data-zoom="fit" aria-label="Fit slide to current window" title="Fit slide to current window" data-pp-icon="st-fit"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================================================================
+     The slide show: fills the page above the XP taskbar.
+     =================================================================== -->
+<div class="pp-show" id="pp-show" role="dialog" aria-modal="true" aria-label="Slide show" tabindex="-1" hidden>
+  <div class="pp-show-stage" id="pp-show-stage"></div>
+  <div class="pp-show-end" id="pp-show-end" hidden><p>End of slide show, click to exit.</p></div>
+  <div class="pp-show-blank" id="pp-show-blank" hidden></div>
+  <!-- Shown for a few seconds on phones held upright. -->
+  <p class="pp-show-hint" aria-hidden="true">Turn your phone sideways for bigger slides</p>
+
+  <!-- Rehearse Timings (Slide Show tab): PowerPoint's little timer box. -->
+  <div class="pp-rehearse" id="pp-rehearse" role="timer" aria-label="Rehearsal" hidden>
+    <b>Rehearsal</b>
+    <button type="button" data-show="next" aria-label="Next">
+      <svg viewBox="0 0 10 10" aria-hidden="true"><path d="M2 1.5 8 5 2 8.5z" fill="#1e395b"/></svg></button>
+    <span class="pp-reh-time" id="pp-reh-slide">0:00:00</span>
+    <span class="pp-reh-total" id="pp-reh-total">0:00:00</span>
+  </div>
+
+  <!-- The control strip, bottom left: appears when the mouse moves. -->
+  <div class="pp-show-strip" id="pp-show-strip" role="toolbar" aria-label="Slide show controls">
+    <button type="button" class="pp-strip-btn" data-show="prev" aria-label="Previous slide" title="Previous">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M8 1.5 3 6l5 4.5z" fill="currentColor"/></svg></button>
+    <button type="button" class="pp-strip-btn" data-show="menu" aria-label="Slide show menu" aria-haspopup="true" title="Menu">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><rect x="1.5" y="2" width="9" height="7" rx=".5" fill="none" stroke="currentColor"/><path d="M3.5 4.5h5M3.5 6.5h3.5" stroke="currentColor"/><path d="M4 10.5h4" stroke="currentColor"/></svg></button>
+    <button type="button" class="pp-strip-btn" data-show="next" aria-label="Next slide" title="Next">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M4 1.5 9 6l-5 4.5z" fill="currentColor"/></svg></button>
+    <span class="pp-show-count" id="pp-show-count" aria-hidden="true">1 / 9</span>
+    <button type="button" class="pp-strip-btn pp-strip-end" data-show="end" aria-label="End show (Esc)" title="End Show (Esc)">
+      <svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 2.5l7 7M9.5 2.5l-7 7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button>
+  </div>
+</div>
+
+<!-- Screen-reader announcements (slide changes) and the ScreenTip box. -->
+<div class="pp-sr" id="pp-live" aria-live="polite"></div>
+<div class="pp-tip" id="pp-tip" role="tooltip" hidden></div>
+
+<noscript><p style="position:fixed;top:40%;left:0;right:0;text-align:center;font:16px Tahoma,sans-serif;color:#fff">
+  This page needs JavaScript. <a href="../../classic/index.html" style="color:#fff">Go to the classic website</a>.</p></noscript>
+
+<!-- Content and shared code first (classic scripts, so double-clicking the file works), then this app. -->
+<script src="../../content.js"></script>
+<script src="../../config.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../../shared/xp/xp.js"></script>
+<script src="../../shared/slides/deck.js"></script>
+<script src="icons.js"></script>
+<script src="ribbon.js"></script>
+<script src="powerpoint.js"></script>
+</body>
+</html>

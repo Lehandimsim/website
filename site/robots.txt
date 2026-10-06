@@ -1,0 +1,5 @@
+# Every page may be indexed.
+User-agent: *
+Allow: /
+
+Sitemap: https://www.lehanzhang.com/sitemap.xml

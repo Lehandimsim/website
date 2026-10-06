@@ -1,0 +1,119 @@
+/* ==========================================================================
+   shared/slides/slides.css — the slide design shared by the PowerPoint (V3)
+   and Overleaf (V4) versions. A plain "Office Theme" look, after
+   References/powerpointMock.png. Built by shared/slides/deck.js.
+
+   A .slide is 16:9 and sizes everything in container-query units (cqw =
+   1% of the slide's width), so the same slide works as a 160px thumbnail
+   or full-screen. Put it in any box with a width; the height follows.
+   ========================================================================== */
+
+.slide {
+  container-type: inline-size;
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #fff;
+  color: #1f1f1f;
+  font-family: Calibri, Carlito, "Segoe UI", Arial, sans-serif;
+  text-align: left;
+  -webkit-font-smoothing: antialiased;
+}
+.slide * { box-sizing: border-box; }
+.slide a { color: #1f5fbf; text-decoration: underline; text-underline-offset: .12em; }
+/* Links inside running text: underlined, otherwise like the words around them (Lehan, 2026-10-02). */
+.slide a.text-link { color: inherit; }
+.slide strong { font-weight: 700; }
+
+/* Text scale: 1cqw = 12.8px on a 1280px-wide slide. */
+.slide-title {
+  margin: 0;
+  padding: 4.2cqw 5cqw 0;
+  font-size: 4.1cqw;
+  line-height: 1.1;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.slide-subtitle {
+  margin: 1cqw 5cqw 0;
+  font-size: 1.85cqw;
+  line-height: 1.35;
+  color: #555;
+}
+.slide-body { padding: 2.4cqw 5cqw 3cqw; }
+
+.slide ul { margin: 0; padding: 0 0 0 2.2cqw; list-style: none; }
+.slide li {
+  position: relative;
+  margin: 0 0 1.25cqw;
+  font-size: 2.15cqw;
+  line-height: 1.3;
+}
+.slide li::before {
+  content: "";
+  position: absolute;
+  left: -1.9cqw; top: .55em;
+  width: .62cqw; height: .62cqw;
+  background: #c4501f;              /* PowerPoint-orange bullets */
+  border-radius: 1px;
+}
+.slide li ul { margin-top: .5cqw; padding-left: 2.2cqw; }
+.slide li li { margin-bottom: .35cqw; font-size: 1.75cqw; color: #444; }
+.slide li li::before { width: .45cqw; height: .45cqw; top: .6em; background: #9a9a9a; border-radius: 50%; }
+
+/* Dense slides (long lists) step the text down. */
+.slide--dense li { font-size: 1.62cqw; margin-bottom: .62cqw; }
+.slide--dense li li { font-size: 1.4cqw; }
+.slide--dense .slide-title { padding-top: 3.4cqw; }
+.slide--dense .slide-body { padding-top: 1.8cqw; }
+
+/* ---------- layout: title (photo left, text right, like the mock) ---------- */
+.slide--title { display: grid; grid-template-columns: 54% 46%; }
+.slide--title .slide-photo { position: relative; overflow: hidden; background: #ddd; }
+.slide--title .slide-photo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.slide--title .slide-text { padding: 0 5cqw 0 5.5cqw; display: flex; flex-direction: column; justify-content: center; }
+.slide--title .slide-title { padding: 0; font-size: 6.3cqw; line-height: 1; margin-bottom: 3.2cqw; }
+.slide--title p { margin: 0 0 1.6cqw; font-size: 1.85cqw; line-height: 1.32; }
+
+/* ---------- layout: two-column ---------- */
+.slide--two-column .slide-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 4cqw; }
+.slide-col-heading {
+  margin: 0 0 1.2cqw;
+  font-size: 2.2cqw;
+  font-weight: 700;
+  color: #c4501f;
+}
+.slide--dense .slide-col-heading { font-size: 1.9cqw; margin-bottom: .9cqw; }
+
+/* ---------- layout: boxes (the mock's Art slide: labelled boxes) ---------- */
+.slide-boxes { display: flex; gap: 3.5cqw; margin-top: 2cqw; }
+.slide-box {
+  flex: 1;
+  display: flex; flex-direction: column;
+  background: #d7e7ea;
+  min-height: 12cqw;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+.slide-box-text { flex: 1; padding: 1.6cqw 1.8cqw; font-size: 1.6cqw; line-height: 1.35; color: #333; }
+.slide-box-label {
+  padding: .8cqw 1.8cqw;
+  background: #12807f;   /* white text 4.75:1 */
+  color: #fff;
+  font-size: 1.9cqw;
+  font-weight: 700;
+}
+a.slide-box:hover .slide-box-label { background: #0d6463; }
+
+/* ---------- layout: abstract (one paper: a labelled box with its abstract) ---------- */
+.slide--abstract .slide-title { font-size: 3.1cqw; line-height: 1.15; }
+.slide-block { background: #eef3f8; border-left: .5cqw solid #c4501f; padding: 1.4cqw 2cqw 1.6cqw; }
+.slide-block-title { margin: 0 0 .7cqw; font-size: 1.9cqw; font-weight: 700; color: #c4501f; }
+.slide-block-text { margin: 0; font-size: 1.5cqw; line-height: 1.42; }
+.slide-meta p { margin: 1.4cqw 0 0; font-size: 1.7cqw; color: #444; }
+
+/* ---------- layout: end ---------- */
+.slide--end { display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; }
+.slide--end .slide-title { padding: 0; font-size: 6cqw; margin-bottom: 3cqw; }
+.slide--end p { margin: 0 0 1.4cqw; font-size: 2.1cqw; }

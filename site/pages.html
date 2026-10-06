@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="en" data-root="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lehan Zhang: homepage</title>
+<meta name="description" content="Every version of Lehan Zhang's website: the classic academic site and four whimsical ones.">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://www.lehanzhang.com/pages.html">
+<!-- "All versions" page (pages.html, renamed from mockups.html on 2026-10-02), linked from the start
+     page: every version of the site, with links into each. -->
+<style>
+  :root {
+    --paper: #f7f4ee; --ink: #1d1d1f; --muted: #5f5b55; --rule: #e2ddd3; --accent: #1f4e8c;
+    /* One font for the whole page, headings included, as on the start page (Lehan, 2026-10-06). */
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 var(--sans); }
+  a { color: var(--accent); }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 40px 24px 56px; }
+  .back { display: inline-block; margin-bottom: 18px; font-size: 14px; font-weight: 600; }
+  h1 { font: 600 clamp(30px, 4.4vw, 40px)/1.15 var(--sans); margin: 0 0 8px; }
+  .intro { color: var(--muted); max-width: 46em; margin: 0 0 28px; }
+  .motion-note {
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+    margin: -8px 0 26px; padding: 14px 18px;
+    background: #fff8d9; border: 1.5px solid #ecd98a; border-radius: 12px;
+    font-size: 15px;
+  }
+  .motion-note p { margin: 0; flex: 1 1 30em; }
+  .motion-note button {
+    font: 600 15px/1 var(--sans); padding: 10px 14px; border-radius: 8px; cursor: pointer;
+    border: 1.5px solid var(--accent); background: var(--accent); color: #fff;
+  }
+  .motion-note button[aria-pressed="true"] { background: #fff; color: var(--accent); }
+  .motion-note button:focus-visible, .open:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 18px; }
+  .card {
+    background: #fff; border: 1.5px solid var(--rule); border-radius: 16px;
+    padding: 20px 22px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .card-head { display: flex; align-items: center; gap: 14px; }
+  .card-icon {
+    flex: none; width: 52px; height: 52px; border-radius: 14px; color: #fff;
+    display: grid; place-items: center;
+  }
+  .card-icon svg { width: 32px; height: 32px; }
+  .card h2 { font: 600 22px/1.2 var(--sans); margin: 0; }
+  .tag { display: inline-block; margin-top: 4px; font: 700 11px/1 var(--sans); letter-spacing: .08em; text-transform: uppercase; padding: 4px 7px; border-radius: 999px; color: #fff; }
+  .card p { margin: 0; color: var(--muted); font-size: 15px; }
+  .open { display: inline-block; font-weight: 600; }
+  .jumps { font-size: 14px; color: var(--muted); }
+  .jumps a { margin-right: 10px; white-space: nowrap; }
+  .note { margin-top: 30px; font-size: 14px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <a class="back" href="index.html">&larr; Start page</a>
+  <h1>Lehan Zhang: homepage</h1>
+  <p class="intro">This website comes in five versions: a standard academic site and four whimsical ones. They all hold the same
+    content (research, talks, CV, art and more), so pick whichever you like. The links under each one jump straight to a page or a moment inside it.</p>
+  <div class="motion-note" id="motion-note" hidden>
+    <p><b>This computer asks websites to reduce motion</b>, so the glowing, pulsing and wiggling in the fun versions is switched off:
+      that is what visitors with this setting will see. (In Windows: Settings &rsaquo; Accessibility &rsaquo; Visual effects &rsaquo; Animation effects.)</p>
+    <button type="button" id="motion-toggle" aria-pressed="false">Show animations anyway</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<script src="content.js"></script>
+<script src="config.js"></script>
+<script src="shared/site.js"></script>
+<script>
+(function () {
+  "use strict";
+  var U = SiteUtil;
+  var label = function (id) { var p = U.page(id); return p ? p.label : id; };
+  // Each version: description, and states worth jumping to (hash or page -> label).
+  var VERSIONS = [
+    { id: "classic", label: "Classic", path: "classic/index.html",
+      blurb: "Standard, academic website. No frills.",
+      jumps: [["classic/research.html", label("research")], ["classic/talks.html", label("talks")],
+              ["classic/experience.html", label("experience")], ["classic/cv.html", label("cv")], ["classic/art.html", label("art")]] },
+    { id: "kitchen",
+      jumps: [["#home", "Home"], ["#research", "Rice → Research"], ["#recipe-book", "Recipe book"], ["#finale", "Dinner is served"],
+              ["fun/kitchen/index.html?sky=night#kitchen", "At night"], ["#about", "About"]] },
+    { id: "paint",
+      jumps: [["#start", "Start button"], ["#home", "First canvas"], ["#research", "Research"], ["#research/abstract-1", "An abstract"],
+              ["#paint", "Draw something"], ["#home/about", "About"]] },
+    { id: "powerpoint",
+      jumps: [["#slide-1", "Editor"], ["#show", "Slideshow"], ["#show-8", "Slideshow: Art"], ["#end", "End of show"], ["#about", "About"]] },
+    { id: "overleaf",
+      jumps: [["#main", "main.tex"], ["#research", "research.tex"], ["#paper-2", "An abstract"], ["#demo-edit", "Edit + History"], ["#demo-error", "LaTeX error"]] },
+    // Not a version: the game on the Paint, PowerPoint and Overleaf desktops (shared/minesweeper/).
+    { id: "minesweeper", label: "Minesweeper", tag: "Game", path: "fun/paint/index.html?minesweeper=1#home",
+      blurb: "Minesweeper for economists, on the desktop of the Paint, PowerPoint and Overleaf versions.",
+      jumps: [["fun/paint/index.html?minesweeper=spec#home", "Specification Search"], ["fun/powerpoint/index.html?minesweeper=scooped", "Scooped!"],
+              ["fun/overleaf/index.html?minesweeper=seminar", "Quick Question"], ["fun/paint/index.html?minesweeper=rain#home", "Exclusion Restriction"]] }
+  ];
+
+  // "Show animations anyway": remembered in this browser by site.js, and also added to the links
+  // as ?motion=on in case this browser keeps a separate memory for each local file.
+  var motionOn = document.documentElement.classList.contains("motion-on");
+
+  function link(href) {
+    if (!motionOn) return href;
+    var at = href.indexOf("#"), base = at < 0 ? href : href.slice(0, at), hash = at < 0 ? "" : href.slice(at);
+    return base + (base.indexOf("?") < 0 ? "?" : "&") + "motion=on" + hash;
+  }
+
+  function render() {
+    var grid = document.getElementById("grid");
+    grid.innerHTML = "";
+    VERSIONS.forEach(function (m) {
+      var v = U.funVersion(m.id) || {};
+      var name = m.label || v.label, path = m.path || v.path, blurb = m.blurb || v.blurb + ".";
+      var c = U.versionColours(m.id);
+      var jumps = m.jumps.map(function (j) {
+        var href = j[0].charAt(0) === "#" ? path + j[0] : j[0];
+        return '<a href="' + U.esc(link(href)) + '">' + U.esc(j[1]) + "</a>";
+      }).join(" ");   // the spaces let the links wrap
+      var card = document.createElement("div");
+      card.className = "card";
+      card.innerHTML =
+        '<div class="card-head"><span class="card-icon" style="background:linear-gradient(135deg,' + c[0] + "," + c[1] + ')">' + U.versionIcon(m.id) + "</span>" +
+        "<div><h2>" + U.esc(name) + '</h2><span class="tag" style="background:' + c[0] + '">' + (m.tag || (m.id === "classic" ? "Classic" : "Fun")) + "</span></div></div>" +
+        "<p>" + U.esc(blurb) + "</p>" +
+        '<a class="open" href="' + U.esc(link(path)) + '">Open ' + U.esc(name) + " &rarr;</a>" +
+        '<div class="jumps">Jump to: ' + jumps + "</div>";
+      grid.appendChild(card);
+    });
+  }
+
+  var reduces = !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+  if (reduces) {
+    var note = document.getElementById("motion-note"), btn = document.getElementById("motion-toggle");
+    var paint = function () {
+      btn.setAttribute("aria-pressed", String(motionOn));
+      // aria-pressed says whether it is on; the label stays the same (a toggle button's name must not change).
+    };
+    btn.addEventListener("click", function () {
+      motionOn = !motionOn;
+      U.setMotion(motionOn ? "on" : null);
+      paint();
+      render();
+    });
+    note.hidden = false;
+    paint();
+  }
+  render();
+})();
+</script>
+</body>
+</html>

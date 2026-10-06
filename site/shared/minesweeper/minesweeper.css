@@ -1,0 +1,290 @@
+/* ==========================================================================
+   shared/minesweeper/minesweeper.css — the game's look. The window itself is an
+   ordinary XP window (shared/xp/xp.css); this file draws what is inside it.
+
+   Each theme is a palette on .ms-theme-<id> (bottom of the file):
+     --ms-frame            the panel around the board      --ms-hi / --ms-lo   its bevel
+     --ms-hidden           an unopened square               --ms-hidden-hi / -lo  its bevel
+     --ms-open             an opened square                 --ms-line           the lines between them
+     --ms-led-bg / -fg     the two counters                 --ms-boom           the square that went off
+     --ms-accent           the result box                   --ms-num-font       the numbers' font
+   ========================================================================== */
+
+.ms-window {
+  --ms-frame: #c8ccd2; --ms-hi: #fff; --ms-lo: #7b8794;
+  --ms-hidden: #c8ccd2; --ms-hidden-hi: #fff; --ms-hidden-lo: #7b8794;
+  --ms-open: #eef0f3; --ms-line: #b9c0c8;
+  --ms-led-bg: #111; --ms-led-fg: #ff3b30;
+  --ms-boom: #ff6155; --ms-accent: #1f4e8c;
+  --ms-num-font: Tahoma, Verdana, sans-serif;
+}
+.ms-window .ms-body { background: var(--xp-face); }
+
+/* ---------- Menu bar and drop-down menus ---------- */
+.ms-menubar {
+  flex: none;
+  display: flex; flex-wrap: wrap;
+  padding: 1px 2px;
+  border-bottom: 1px solid #d4d0c8;
+  box-shadow: 0 1px 0 #fff;
+}
+.ms-menubtn {
+  padding: 3px 8px;
+  border: 0;
+  background: none;
+  color: #000;
+  font: 11px/1.3 var(--xp-font);
+  cursor: pointer;
+}
+.ms-menubtn:hover, .ms-menubtn[aria-expanded="true"], .ms-menubtn:focus-visible {
+  background: var(--xp-select); color: #fff; outline: none;
+}
+.ms-dropdown {
+  position: absolute;
+  z-index: 30;
+  min-width: 200px;
+  max-width: min(340px, calc(100vw - 12px));
+  padding: 2px;
+  background: #fff;
+  border: 1px solid #8d8b84;
+  box-shadow: 2px 3px 6px rgba(0,0,0,.35);
+  font: 11px/1.3 var(--xp-font);
+}
+.ms-mi {
+  width: 100%;
+  display: flex; align-items: flex-start; gap: 6px;
+  padding: 4px 12px 4px 4px;
+  border: 0;
+  background: none;
+  color: #000;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.ms-mi:hover, .ms-mi:focus { background: var(--xp-select); color: #fff; outline: none; }
+.ms-mi[aria-disabled="true"] { color: #8d8b84; cursor: default; }
+.ms-mi[aria-disabled="true"]:hover, .ms-mi[aria-disabled="true"]:focus { background: #e8e6df; color: #6d6b64; }
+.ms-mi-mark { flex: none; width: 14px; height: 15px; display: grid; place-items: center; }
+.ms-mi-mark svg { width: 10px; height: 10px; }
+.ms-mi-icon { flex: none; width: 22px; height: 22px; }
+.ms-mi-icon svg { width: 22px; height: 22px; display: block; }
+.ms-mi-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.ms-mi[role="menuitemradio"][aria-checked="true"] .ms-mi-label { font-weight: bold; }
+.ms-mi-sub { color: #5a5a5a; font-size: 10px; }
+.ms-mi:hover .ms-mi-sub, .ms-mi:focus .ms-mi-sub { color: #dce6fb; }
+.ms-mi[aria-disabled="true"] .ms-mi-sub { color: inherit; }
+.ms-mi-key { flex: none; padding-left: 18px; }
+.ms-sep { height: 1px; margin: 3px 2px; background: #c5c2b8; }
+.ms-menu-head { padding: 4px 6px 3px 24px; color: #5a5a5a; font-size: 10px; text-transform: uppercase; letter-spacing: .05em; }
+
+/* ---------- The game panel: counters, face, board ---------- */
+.ms-frame {
+  flex: none;
+  align-self: center;
+  margin: 6px 6px 4px;
+  padding: 6px;
+  background: var(--ms-frame);
+  border: 3px solid;
+  border-color: var(--ms-hi) var(--ms-lo) var(--ms-lo) var(--ms-hi);
+}
+.ms-panel {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  margin-bottom: 6px;
+  padding: 4px 5px;
+  border: 2px solid;
+  border-color: var(--ms-lo) var(--ms-hi) var(--ms-hi) var(--ms-lo);
+}
+.ms-led {
+  padding: 2px 4px 1px;
+  background: var(--ms-led-bg);
+  color: var(--ms-led-fg);
+  font: bold 22px/1 Consolas, "Lucida Console", "Courier New", monospace;
+  letter-spacing: .04em;
+  text-shadow: 0 0 5px currentColor;
+  border: 1px solid;
+  border-color: var(--ms-lo) var(--ms-hi) var(--ms-hi) var(--ms-lo);
+  user-select: none;
+}
+.ms-face {
+  flex: none;
+  width: 42px; height: 42px;
+  padding: 2px;
+  display: grid; place-items: center;
+  background: var(--ms-frame);
+  border: 2px solid;
+  border-color: var(--ms-hi) var(--ms-lo) var(--ms-lo) var(--ms-hi);
+  cursor: pointer;
+}
+.ms-face:active { border-color: var(--ms-lo) var(--ms-hi) var(--ms-hi) var(--ms-lo); padding: 3px 1px 1px 3px; }
+.ms-face:focus-visible { outline: 2px dotted #000; outline-offset: 1px; }
+.ms-face svg { width: 34px; height: 34px; display: block; }
+
+.ms-board-wrap {
+  max-width: 100%;
+  overflow: auto;
+  border: 3px solid;
+  border-color: var(--ms-lo) var(--ms-hi) var(--ms-hi) var(--ms-lo);
+}
+.ms-board {
+  --ms-cell: 24px;
+  width: max-content;
+  display: flex; flex-direction: column;
+  background: var(--ms-open);
+  touch-action: manipulation;          /* no double-tap zoom; scrolling still works */
+  user-select: none; -webkit-user-select: none;
+  -webkit-touch-callout: none;          /* no callout on press-and-hold (iOS) */
+}
+.ms-row { display: flex; }
+.ms-cell {
+  position: relative;
+  flex: none;
+  width: var(--ms-cell); height: var(--ms-cell);
+  display: grid; place-items: center;
+  font: bold calc(var(--ms-cell) * .6)/1 var(--ms-num-font);
+  cursor: default;
+}
+.ms-cell svg { width: 78%; height: 78%; display: block; pointer-events: none; }
+.ms-cell.is-hidden {
+  background: var(--ms-hidden);
+  border: calc(var(--ms-cell) / 8) solid;
+  border-color: var(--ms-hidden-hi) var(--ms-hidden-lo) var(--ms-hidden-lo) var(--ms-hidden-hi);
+  cursor: pointer;
+}
+.ms-cell.is-hidden.is-pressed:not(.is-flag) {
+  background: var(--ms-open);
+  border-width: 1px 0 0 1px;
+  border-color: var(--ms-line);
+}
+.ms-cell.is-open { background: var(--ms-open); box-shadow: inset -1px -1px 0 var(--ms-line); }
+.ms-cell.is-exploded { background: var(--ms-boom); }
+.ms-cell.is-wrong::after {      /* a flag on a square with no mine: crossed out */
+  content: "";
+  position: absolute; inset: 10%;
+  background:
+    linear-gradient(45deg, transparent 43%, #d32f2f 43%, #d32f2f 57%, transparent 57%),
+    linear-gradient(-45deg, transparent 43%, #d32f2f 43%, #d32f2f 57%, transparent 57%);
+}
+.ms-cell:focus { outline: none; }
+.ms-cell:focus-visible { z-index: 1; outline: 2px solid #000; outline-offset: -2px; box-shadow: inset 0 0 0 2px #fff; }
+.ms-cell.is-hidden:focus-visible { box-shadow: inset 0 0 0 1px #fff; }
+
+/* Numbers: the classic order of colours, darkened for contrast on light squares. */
+.ms-cell.n1 { color: #1d4ed8; }
+.ms-cell.n2 { color: #15803d; }
+.ms-cell.n3 { color: #c62828; }
+.ms-cell.n4 { color: #312e81; }
+.ms-cell.n5 { color: #7f1d1d; }
+.ms-cell.n6 { color: #0f766e; }
+.ms-cell.n7 { color: #111; }
+.ms-cell.n8 { color: #555; }
+
+/* ---------- Under the board: Flag mode, the hint line, the result ---------- */
+.ms-foot {
+  width: 0; min-width: 100%;            /* takes the window's width, never widens it */
+  padding: 2px 8px 8px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.ms-flagmode { align-self: flex-start; display: inline-flex; align-items: center; gap: 4px; }
+.ms-flagmode svg { width: 16px; height: 16px; flex: none; }
+.ms-flagmode[aria-pressed="true"] {
+  background: linear-gradient(to bottom, #fff7d6, #ffd95a);
+  border-color: #8a6a00;
+  font-weight: bold;
+}
+.ms-hint { margin: 0; color: #333; font: 11px/1.35 var(--xp-font); }
+.ms-result {
+  padding: 7px 9px;
+  background: #fff;
+  border: 1px solid #b9b4a6;
+  border-left: 4px solid var(--ms-accent);
+  font: 11px/1.4 var(--xp-font);
+}
+.ms-result b { display: block; margin-bottom: 2px; color: var(--ms-accent); font-size: 12px; }
+.ms-result p { margin: 0 0 6px; }
+.ms-result .ms-best { font-weight: bold; }
+.ms-result--lose { border-left-color: #c62828; }
+.ms-result--lose b { color: #b71c1c; }
+.ms-live { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* Best times (inside an XP dialog box) */
+.ms-best-table { border-collapse: collapse; margin: 0 0 4px; }
+.ms-best-table th { padding: 2px 14px 2px 0; text-align: left; font-weight: normal; }
+.ms-best-table th span { color: #666; }
+.ms-best-table td { padding: 2px 0; text-align: right; font-weight: bold; white-space: nowrap; }
+
+/* ---------- Losing: the board shakes and the mine pops (not with reduced motion) ---------- */
+@keyframes ms-shake {
+  0%, 100% { transform: none; }
+  20% { transform: translate(-3px, 1px); }
+  40% { transform: translate(3px, -1px); }
+  60% { transform: translate(-2px, 0); }
+  80% { transform: translate(2px, 1px); }
+}
+@keyframes ms-pop { from { transform: scale(.2); opacity: 0; } 70% { transform: scale(1.25); } to { transform: none; opacity: 1; } }
+.ms-board-wrap.is-boom { animation: ms-shake .45s ease-out 1; }
+.ms-cell.is-exploded svg { animation: ms-pop .4s ease-out 1; }
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-on) .ms-board-wrap.is-boom,
+  html:not(.motion-on) .ms-cell.is-exploded svg { animation: none; }
+}
+
+/* ---------- Phones: the window fills the screen (xp.css); bigger targets ---------- */
+@media (max-width: 700px) {
+  .ms-window .ms-body { overflow: auto; }
+  .ms-frame { margin: 10px auto 6px; max-width: calc(100% - 12px); }
+  .ms-menubtn { padding: 8px 12px; font-size: 13px; }
+  .ms-mi { padding: 9px 12px 9px 6px; font-size: 13px; }
+  .ms-mi-sub { font-size: 11px; }
+  .ms-foot { width: auto; max-width: 520px; align-self: center; padding: 4px 14px 14px; }
+  .ms-flagmode { min-height: 40px; padding: 0 14px; font-size: 13px; }
+  .ms-flagmode svg { width: 22px; height: 22px; }
+  .ms-hint, .ms-result { font-size: 13px; }
+  .ms-result b { font-size: 14px; }
+}
+
+/* ==========================================================================
+   Themes
+   ========================================================================== */
+
+/* Specification Search: cool greys and a regression-table white; a green terminal readout. */
+.ms-theme-spec {
+  --ms-frame: #dfe5ec; --ms-hi: #fff; --ms-lo: #8593a6;
+  --ms-hidden: #cdd6e1; --ms-hidden-hi: #f5f8fb; --ms-hidden-lo: #7d8da3;
+  --ms-open: #fff; --ms-line: #d5dce5;
+  --ms-led-bg: #0f1418; --ms-led-fg: #5ef08a;
+  --ms-boom: #ff6b5e; --ms-accent: #1565c0;
+  --ms-num-font: Consolas, "Lucida Console", "Courier New", monospace;
+}
+
+/* Scooped!: an ice-cream parlour. Unopened squares come in three flavours. */
+.ms-theme-scooped {
+  --ms-frame: #fbe3ee; --ms-hi: #fff; --ms-lo: #c98aa6;
+  --ms-hidden: #f8c3d8; --ms-hidden-hi: #fde7f0; --ms-hidden-lo: #cf7ba0;
+  --ms-open: #fffaf2; --ms-line: #eadcc6;
+  --ms-led-bg: #3b2216; --ms-led-fg: #ffb3cf;
+  --ms-boom: #ff8a80; --ms-accent: #ad1457;
+  --ms-num-font: "Trebuchet MS", Tahoma, sans-serif;
+}
+.ms-theme-scooped .ms-cell.is-hidden.ms-f1 { --ms-hidden: #c4e9d4; --ms-hidden-hi: #ebf8f0; --ms-hidden-lo: #6dae8d; }   /* mint */
+.ms-theme-scooped .ms-cell.is-hidden.ms-f2 { --ms-hidden: #fbecc0; --ms-hidden-hi: #fff8e2; --ms-hidden-lo: #c8a65a; }   /* vanilla */
+
+/* Quick Question: a seminar room. Unopened squares are red seats; opened ones the floor. */
+.ms-theme-seminar {
+  --ms-frame: #e8dfd2; --ms-hi: #fff; --ms-lo: #9a8670;
+  --ms-hidden: #9b3044; --ms-hidden-hi: #c95a6e; --ms-hidden-lo: #5a1522;
+  --ms-open: #f4ecdf; --ms-line: #ddd0bc;
+  --ms-led-bg: #121212; --ms-led-fg: #ffb000;
+  --ms-boom: #ff8a65; --ms-accent: #7b1e2e;
+  --ms-num-font: Tahoma, Verdana, sans-serif;
+}
+.ms-theme-seminar .ms-cell.is-hidden { border-radius: 40% 40% 3px 3px / 34% 34% 3px 3px; }
+
+/* Exclusion Restriction: sky and rain clouds; a blue weather-station readout. */
+.ms-theme-rain {
+  --ms-frame: #dce7f2; --ms-hi: #fff; --ms-lo: #7c94ae;
+  --ms-hidden: #a9bdd3; --ms-hidden-hi: #e3ecf6; --ms-hidden-lo: #5b7593;
+  --ms-open: #f3f8fc; --ms-line: #d1deea;
+  --ms-led-bg: #0c2136; --ms-led-fg: #7fd4ff;
+  --ms-boom: #ffd54f; --ms-accent: #1f5f99;
+  --ms-num-font: Verdana, Tahoma, sans-serif;
+}

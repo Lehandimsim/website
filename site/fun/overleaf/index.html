@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en" data-root="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>lehanzhang.com - Overleaf | Lehan Zhang</title>
+<meta name="description" content="Lehan Zhang's website written in LaTeX: edit the beamer slides and recompile them in an Overleaf-style editor.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M27.5 4C14 4 5 11 5 21c0 3 1 5.5 2.5 7C9 20 13.5 14 21 10c-6 4.5-9 10-9.5 17C22.5 27 27.5 18 27.5 4z' fill='%234cae4c' stroke='%232d7a2d'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../shared/xp/xp.css">
+<link rel="stylesheet" href="../../shared/slides/slides.css">
+<link rel="stylesheet" href="overleaf.css">
+</head>
+<!--
+  fun/overleaf/index.html — V4: the website as a LaTeX project, open in an
+  Overleaf-style editor on a Windows XP desktop (homage; no Overleaf or
+  Microsoft artwork). The page is only the skeleton: app.js fills it in.
+
+    tex-generate.js   slides -> .tex files        tex-parse.js  .tex files -> slides
+    tex-editor.js     the code editor              edit-log.js   diffs for History
+    madrid.js         draws a slide like beamer's Madrid theme (the preview)
+    app.js            everything else (file tree, preview, logs, history, routes)
+    overleaf.css      the look; fonts/ holds Latin Modern Sans for the slides
+
+  Links: #main #home #research #talks #experience #cv #art open that file;
+  #paper-1 #paper-2 (a paper's abstract), #teaching, #awards, #end open the
+  frame with that label; #demo-edit and #demo-error show an edit in History and a
+  compile error; #history opens History.
+-->
+<body class="xp">
+
+<div class="xp-desktop">
+  <!-- Desktop icons (filled in by app.js) -->
+  <nav class="xp-icons" id="ol-desktop-icons" aria-label="Desktop"></nav>
+
+  <!-- The Overleaf "app" (the page's main landmark) -->
+  <div class="xp-window ol-window" id="ol-window" role="main" data-title="lehanzhang.com - Overleaf" data-icon="overleaf">
+    <div class="xp-window-body">
+      <div class="ol-app" id="ol-app" data-pane="preview">
+        <h1 class="ol-sr">Lehan Zhang's website, written in LaTeX</h1>
+
+        <!-- Top toolbar (a div, not <header>: inside the main landmark a
+             header would be a misplaced banner). On narrow screens the button
+             labels are hidden visually (like .ol-sr, in overleaf.css), not
+             removed, so screen readers still hear them. -->
+        <div class="ol-top">
+          <div class="ol-top-group">
+            <button type="button" class="ol-tb" id="ol-menu-btn" aria-haspopup="true" aria-expanded="false" aria-controls="ol-menu" title="Menu: download, settings and help">
+              <span data-ico="menu"></span><span class="ol-tb-label">Menu</span>
+            </button>
+            <a class="ol-tb ol-tb--icon" id="ol-home-link" href="../../index.html" title="Start page: choose the classic or the fun website" aria-label="Start page">
+              <span data-ico="home"></span>
+            </a>
+            <span class="ol-top-sep" aria-hidden="true"></span>
+            <a class="ol-tb" id="ol-classic-link" href="../../classic/index.html" title="The classic, text-only website">
+              <span data-ico="globe"></span><span class="ol-tb-label">Classic site</span>
+            </a>
+            <a class="ol-tb" id="ol-cv-link" href="../../assets/cv/CV_lehanzhang_oct26.pdf" target="_blank" rel="noopener" title="Lehan's CV (PDF)">
+              <span data-ico="pdf"></span><span class="ol-tb-label">CV</span>
+            </a>
+          </div>
+          <div class="ol-top-title">
+            <span class="ol-leaf" data-ico="leaf"></span><span class="ol-project">lehanzhang.com</span>
+          </div>
+          <div class="ol-top-group ol-top-group--right">
+            <button type="button" class="ol-tb ol-tb--extra" id="ol-review-btn" title="Review: how your changes are tracked"><span data-ico="review"></span><span class="ol-tb-label">Review</span></button>
+            <button type="button" class="ol-tb ol-tb--extra" id="ol-share-btn" title="Share the project"><span data-ico="share"></span><span class="ol-tb-label">Share</span></button>
+            <button type="button" class="ol-tb" id="ol-history-btn" aria-pressed="false" aria-controls="ol-history" title="History: your recompiles and what changed"><span data-ico="history"></span><span class="ol-tb-label">History</span></button>
+            <button type="button" class="ol-tb ol-tb--extra" id="ol-layout-btn" aria-haspopup="true" aria-expanded="false" aria-controls="ol-layout-menu" title="Layout: editor, PDF and file list"><span data-ico="layout"></span><span class="ol-tb-label">Layout</span></button>
+            <button type="button" class="ol-tb ol-tb--extra" id="ol-chat-btn" title="Chat with Lehan"><span data-ico="chat"></span><span class="ol-tb-label">Chat</span></button>
+          </div>
+        </div>
+
+        <!-- Phones: one pane at a time (the tabs), and Recompile beside them -->
+        <div class="ol-tabs">
+          <div class="ol-tablist" role="tablist" aria-label="Panes">
+            <button type="button" role="tab" id="ol-tab-files" aria-controls="ol-files" aria-selected="false" data-pane="files">Files</button>
+            <button type="button" role="tab" id="ol-tab-source" aria-controls="ol-editor" aria-selected="false" data-pane="source">Source</button>
+            <button type="button" role="tab" id="ol-tab-preview" aria-controls="ol-preview" aria-selected="true" data-pane="preview">Preview</button>
+          </div>
+          <button type="button" class="ol-recompile ol-recompile--tab" data-recompile><span data-ico="recompile"></span><span>Recompile</span></button>
+        </div>
+
+        <div class="ol-main" id="ol-main">
+
+          <!-- Left: the project's files -->
+          <nav class="ol-pane ol-files" id="ol-files" aria-label="Project files">
+            <div class="ol-pane-head">
+              <span class="ol-pane-title">Files</span>
+              <button type="button" class="ol-icon-btn" id="ol-restore-btn" title="Restore the original files" aria-label="Restore the original files"><span data-ico="restore"></span></button>
+            </div>
+            <ul class="ol-tree" id="ol-tree"></ul>
+            <div class="ol-outline">
+              <div class="ol-pane-head ol-pane-head--sub"><span class="ol-pane-title">File outline</span></div>
+              <ul class="ol-outline-list" id="ol-outline"></ul>
+            </div>
+          </nav>
+
+          <!-- Splitters: drag, or focus and press the arrow keys (app.js keeps aria-valuenow up to date) -->
+          <div class="ol-split" id="ol-split-files" role="separator" aria-orientation="vertical" aria-label="Resize the file list" aria-controls="ol-files" aria-valuemin="9" aria-valuemax="32" aria-valuenow="14" tabindex="0"></div>
+
+          <!-- Middle: the .tex editor -->
+          <section class="ol-pane ol-editor" id="ol-editor" aria-label="Editor">
+            <div class="ol-pane-head">
+              <div class="ol-crumb" id="ol-crumb"></div>
+              <div class="ol-fmt" role="toolbar" aria-label="Formatting" id="ol-fmt">
+                <button type="button" data-cmd="bold" title="Bold: \textbf{...} (Ctrl+B)" aria-label="Bold"><b>B</b></button>
+                <button type="button" data-cmd="italic" title="Italic: \emph{...} (Ctrl+I)" aria-label="Italic"><i>I</i></button>
+                <button type="button" data-cmd="link" title="Link: \href{address}{text}" aria-label="Insert a link"><span data-ico="link"></span></button>
+                <button type="button" data-cmd="item" title="New bullet point: \item" aria-label="Add a bullet point"><span data-ico="list"></span></button>
+                <button type="button" data-cmd="comment" title="Comment out the line (Ctrl+/)" aria-label="Comment out the line">%</button>
+              </div>
+            </div>
+            <div id="ol-code"></div>
+            <div class="ol-imageview" id="ol-imageview" hidden>
+              <figure>
+                <div class="ol-imageview-pic"><img id="ol-imageview-img" alt=""></div>
+                <figcaption id="ol-imageview-cap"></figcaption>
+              </figure>
+            </div>
+          </section>
+
+          <!-- The second splitter, with the two "SyncTeX" buttons on top of it
+               (siblings, not children: a separator must not hold buttons) -->
+          <div class="ol-split-cell" id="ol-split-pdf-cell">
+            <div class="ol-split ol-split--sync" id="ol-split-pdf" role="separator" aria-orientation="vertical" aria-label="Resize the editor" aria-controls="ol-editor" aria-valuemin="18" aria-valuemax="64" aria-valuenow="37" tabindex="0"></div>
+            <div class="ol-sync">
+              <button type="button" id="ol-sync-pdf" title="Show the frame at the cursor in the preview" aria-label="Show the frame at the cursor in the preview"><span data-ico="right"></span></button>
+              <button type="button" id="ol-sync-code" title="Show the code of the page in view" aria-label="Show the code of the page in view"><span data-ico="left"></span></button>
+            </div>
+          </div>
+
+          <!-- Right: the compiled slides -->
+          <section class="ol-pane ol-preview" id="ol-preview" aria-label="Preview">
+            <div class="ol-pane-head ol-pdf-head">
+              <div class="ol-recompile-group">
+                <button type="button" class="ol-recompile" id="ol-recompile" data-recompile title="Recompile (Ctrl+Enter)">
+                  <span data-ico="recompile"></span><span class="ol-recompile-label">Recompile</span>
+                </button>
+                <button type="button" class="ol-recompile-more" id="ol-recompile-more" aria-haspopup="true" aria-expanded="false" aria-controls="ol-compile-menu" aria-label="Compile options"><span data-ico="caret"></span></button>
+              </div>
+              <button type="button" class="ol-head-btn ol-logs-btn" id="ol-logs-btn" aria-pressed="false" aria-controls="ol-logs" title="Logs and output files">
+                <span data-ico="logs"></span><span class="ol-head-label">Logs</span>
+                <span class="ol-badge ol-badge--error" id="ol-badge-errors" hidden></span>
+                <span class="ol-badge ol-badge--warning" id="ol-badge-warnings" hidden></span>
+              </button>
+              <button type="button" class="ol-head-btn" id="ol-print-btn" title="Print the slides, or save them as a PDF" aria-label="Print / Save as PDF"><span data-ico="download"></span></button>
+              <span class="ol-pdf-spacer"></span>
+              <span class="ol-pagecount" id="ol-pagecount"></span>
+              <div class="ol-zoom">
+                <button type="button" class="ol-head-btn" id="ol-zoom-out" aria-label="Zoom out"><span data-ico="minus"></span></button>
+                <select id="ol-zoom" aria-label="Zoom">
+                  <option value="fit">Fit width</option>
+                  <option value="height">Fit height</option>
+                  <option value="0.5">50%</option>
+                  <option value="0.75">75%</option>
+                  <option value="1">100%</option>
+                  <option value="1.25">125%</option>
+                  <option value="1.5">150%</option>
+                  <option value="2">200%</option>
+                </select>
+                <button type="button" class="ol-head-btn" id="ol-zoom-in" aria-label="Zoom in"><span data-ico="plus"></span></button>
+              </div>
+            </div>
+            <div class="ol-pdf-body">
+              <div class="ol-errorbar" id="ol-errorbar" role="alert" hidden></div>
+              <div class="ol-pdf" id="ol-pdf" tabindex="0" aria-label="Preview of the compiled slides">
+                <div class="ol-pages ol-madrid" id="ol-pages"></div>
+              </div>
+              <section class="ol-logs" id="ol-logs" aria-label="Logs" hidden></section>
+            </div>
+          </section>
+
+          <!-- History: over the file list and editor, so the preview stays in view -->
+          <aside class="ol-history" id="ol-history" aria-label="History of recompiles" hidden></aside>
+        </div>
+
+        <!-- Overleaf's left-hand menu -->
+        <div class="ol-menu" id="ol-menu" role="dialog" aria-label="Menu" hidden></div>
+        <!-- Small pop-up menus -->
+        <div class="ol-pop" id="ol-compile-menu" role="menu" hidden></div>
+        <div class="ol-pop" id="ol-layout-menu" role="menu" hidden></div>
+
+        <div class="ol-toast" id="ol-toast" role="status" aria-live="polite"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <p class="ol-noscript">This page needs JavaScript. <a href="../../classic/index.html">Go to the classic website</a>.</p>
+</noscript>
+
+<script src="../../content.js"></script>
+<script src="../../config.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../../shared/xp/xp.js"></script>
+<script src="../../shared/slides/deck.js"></script>
+<script src="tex-generate.js"></script>
+<script src="tex-parse.js"></script>
+<script src="madrid.js"></script>
+<script src="tex-editor.js"></script>
+<script src="edit-log.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -9,6 +9,10 @@ Thumbs.db
 .dropbox
 .dropbox.attr
 
+# Python caches (tools/)
+__pycache__/
+*.pyc
+
 # Local scratch
 _scratch/
 *.tmp

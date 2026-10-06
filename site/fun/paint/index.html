@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-root="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lehan Zhang · Paint</title>
+<meta name="description" content="Lehan Zhang: economist and data scientist, PhD candidate at ETH Zurich. This version of the website opens in an MS Paint homage.">
+<!-- Tab icon: a little paint palette, drawn inline. -->
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 3C8.8 3 3 8.4 3 15c0 5 3.8 8.4 7.7 8.4 2 0 2.6 1.3 2.6 2.6 0 1.8 1.3 3 3.1 3C23.7 29 29 23 29 16 29 8.8 23.2 3 16 3z' fill='%23f3d9a4' stroke='%239a6a2a' stroke-width='1.5'/%3E%3Ccircle cx='9.5' cy='14' r='2.4' fill='%23e53935'/%3E%3Ccircle cx='14' cy='8.8' r='2.4' fill='%231e88e5'/%3E%3Ccircle cx='20.5' cy='9.4' r='2.4' fill='%2343a047'/%3E%3Ccircle cx='23.6' cy='16' r='2.4' fill='%23fbc02d'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="../../shared/xp/xp.css">
+<link rel="stylesheet" href="paint.css">
+</head>
+<body class="xp">
+
+<!--
+  Page skeleton. Most of the Paint window is filled in by app.js from content.js:
+    #pt-menubar   File Edit View ... before Start; the website's pages after Start
+    #pt-toolbox   the 16 classic tools (+ the options box under them)
+    #pt-sheet     the white canvas: the start button, a page of the website, or the drawing canvas
+    #pt-colorbox  foreground/background colours and the 28-colour palette
+    #pt-status    help text, live cursor coordinates, size
+  xp.js adds the title bar, the taskbar, the start menu and the clock.
+-->
+<div class="xp-desktop">
+  <nav class="xp-icons" id="pt-desktop-icons" aria-label="Desktop"></nav>
+
+  <div class="xp-window pt-window" id="paint" data-title="untitled - Paint" data-icon="paint" data-route="start">
+    <div class="xp-window-body pt-body">
+      <div class="pt-menubar" id="pt-menubar"></div>
+      <div class="pt-actionbar" id="pt-actionbar" role="toolbar" aria-label="Drawing actions" hidden></div>
+      <div class="pt-main">
+        <div class="pt-toolbox" id="pt-toolbox"></div>
+        <div class="pt-workspace" id="pt-workspace">
+          <main class="pt-sheet" id="pt-sheet" tabindex="-1"></main>
+        </div>
+      </div>
+      <div class="pt-colorbox" id="pt-colorbox"></div>
+      <div class="pt-status" id="pt-status"></div>
+    </div>
+  </div>
+</div>
+
+<noscript>
+  <p class="pt-noscript">This playful version of the website needs JavaScript.
+    <a href="../../classic/index.html">Open the classic website</a> or
+    <a href="../../assets/cv/CV_lehanzhang_oct26.pdf">the CV (PDF)</a>.</p>
+</noscript>
+
+<script src="../../content.js"></script>
+<script src="../../config.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="../../shared/xp/xp.js"></script>
+<script src="doodle.js"></script>
+<script src="pages.js"></script>
+<script src="draw.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

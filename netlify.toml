@@ -1,0 +1,6 @@
+# Netlify settings, used when the site is deployed from a Git repository (GO_LIVE.md, step 3b).
+# Only the site/ folder is published; Memos/, References/, backend/, tools/ and CLAUDE.md stay private.
+# There is no build step: the files in site/ are the website.
+[build]
+  publish = "site"
+  command = ""

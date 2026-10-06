@@ -1,0 +1,158 @@
+/* ==========================================================================
+   fun/kitchen/game.css — the fried rice mini-game in the recipe book.
+   (Colours, fonts and buttons come from kitchen.css.)
+   ========================================================================== */
+
+.game {
+  /* as wide as fits, but short enough for the whole card to fit on the screen */
+  position: relative; width: min(780px, 100%, calc((100vh - 220px) * 16 / 9));
+  width: min(780px, 100%, calc((100dvh - 220px) * 16 / 9));
+  min-width: min(320px, 100%);
+  background: var(--paper);
+  border: 3px solid var(--ink); border-radius: 26px;
+  box-shadow: 0 8px 0 rgba(61, 35, 20, .35), 0 30px 70px rgba(30, 15, 5, .35);
+  overflow: hidden;
+}
+.game-head {
+  display: flex; align-items: center; gap: 14px;
+  padding: 12px 14px 12px 22px;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, .5) 0 3px, transparent 3.5px) 0 0 / 22px 22px,
+    var(--th-eggs);
+  border-bottom: 3px solid var(--ink);
+}
+.game-heading { flex: 1; min-width: 0; }
+.game-kicker { margin: 0; font: 800 12px/1.25 var(--round); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.game-title { margin: 2px 0 0; font: 800 clamp(21px, 3vw, 27px)/1.15 var(--round); outline: none; }
+
+/* Step pips double as medals: gold / silver / bronze once a step is done. */
+.game-pips li.is-gold   { background: #ffcf33; }
+.game-pips li.is-silver { background: #9fb0c3; }
+.game-pips li.is-bronze { background: #e3a467; }
+
+.game-stage {
+  position: relative; aspect-ratio: 640 / 360; overflow: hidden;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, .75) 0 5px, transparent 5.5px) 0 0 / 34px 34px,
+    #fff0d2;
+  border-bottom: 3px solid var(--ink);
+  user-select: none; -webkit-user-select: none;
+}
+.game-art, .game-art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.game-hit {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: 0; padding: 0; background: transparent; cursor: pointer;
+  touch-action: none;           /* drags stir the wok instead of scrolling */
+  -webkit-touch-callout: none;
+}
+.game-hit[hidden] { display: none; }
+.game-hit:focus-visible { outline: 4px dashed var(--focus); outline-offset: -10px; }
+.game[data-stage="chop"] .game-hit { cursor: crosshair; }
+.game[data-stage="stir"] .game-hit { cursor: grab; }
+
+/* "Perfect!" / "Great!" / "Nice!" */
+.game-pop {
+  position: absolute; left: 50%; top: 28%; z-index: 2;
+  transform: translate(-50%, -50%);
+  font: 900 clamp(26px, 5.4vw, 46px)/1 var(--round); color: #fff; white-space: nowrap;
+  text-shadow:
+    3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 3px 0 var(--ink), 0 -3px 0 var(--ink),
+    2px 2px 0 var(--ink), -2px -2px 0 var(--ink), 2px -2px 0 var(--ink), -2px 2px 0 var(--ink),
+    0 6px 0 var(--ink);
+  opacity: 0; pointer-events: none;
+}
+.game-pop.is-on { animation: g-pop 1.1s ease-out both; }
+
+.game-instruction { margin: 0; padding: 14px 22px 2px; text-align: center; font: 800 18px/1.35 var(--round); min-height: 1.35em; }
+.game-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 14px; padding: 6px 18px 14px; }
+.game-keys { font: 600 13.5px/1.3 var(--sans); color: var(--muted); }
+.game-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; width: 100%; padding-top: 6px; }
+.game-actions[hidden] { display: none; }
+
+/* ---- 1. Chop ---- */
+.g-line { animation: k-dash 1s linear infinite; }
+.g-line.is-cut { opacity: 0; transition: opacity .2s .1s; }
+.g-seg { transition: transform .28s cubic-bezier(.3, 1.5, .5, 1) .08s; }
+.g-knife-in.is-chopping { animation: g-chop .3s ease-in-out; }
+
+/* ---- 3. Stir ---- */
+.g-arrows { transform-origin: 320px 180px; animation: g-spin 5s linear infinite; }
+.g-ring { transition: stroke-dashoffset .15s linear; }
+
+/* ---- 4. Pour ---- */
+.g-stream { opacity: 0; transition: opacity .1s; }
+.is-pouring .g-stream { opacity: 1; animation: g-stream .25s linear infinite; }
+.g-bottle-in { transform-box: fill-box; transform-origin: 50% 51.5%; transition: transform .25s ease; }
+.is-pouring .g-bottle-in { transform: rotate(110deg); }
+.g-target { animation: k-dash 1s linear infinite; }
+
+/* ---- 5. Toss ---- */
+.g-flames path { transform-box: fill-box; transform-origin: 50% 100%; animation: k-flicker .35s ease-in-out infinite alternate; }
+.g-wok { transform-box: fill-box; transform-origin: 50% 90%; }
+.g-fly { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.is-tossing .g-wok { animation: g-flick .7s ease-in-out; }
+.is-tossing .g-fly { animation: g-fly .7s ease-in-out; }
+.is-tossing .g-rice-pile { animation: g-dip .7s ease-in-out; }
+
+/* ---- Result ---- */
+.g-star { fill: #fffaf0; stroke: var(--ink); stroke-width: 5px; stroke-linejoin: round; transform-box: fill-box; transform-origin: center; }
+.stars-1 .g-star-1, .stars-2 .g-star-1, .stars-2 .g-star-2, .stars-3 .g-star { fill: var(--egg); animation: g-star .55s cubic-bezier(.2, 1.6, .4, 1) both; }
+.g-star-2 { animation-delay: .18s !important; }
+.g-star-3 { animation-delay: .36s !important; }
+
+/* ---- Phones ---- */
+@media (max-width: 760px) {
+  .game {
+    width: 100%; min-height: 100%; min-height: 100dvh; border: 0; border-radius: 0; box-shadow: none;
+    display: flex; flex-direction: column;
+    background: radial-gradient(circle, rgba(255, 255, 255, .6) 0 4px, transparent 4.5px) 0 0 / 28px 28px, #fff6e0;
+  }
+  .game-head { position: sticky; top: 0; z-index: 3; padding: 10px 10px 10px 14px; gap: 10px; }
+  .game-pips li { width: 11px; height: 11px; border-width: 2px; }
+  /* A squarer stage (the drawing is zoomed to fill it, sides trimmed),
+     centred between the header and the footer. */
+  .game-stage { aspect-ratio: 4 / 3; margin-top: auto; border-top: 3px solid var(--ink); }
+  .game-instruction { font-size: 17.5px; padding: 14px 14px 4px; }
+  .game-foot { margin-top: auto; padding: 8px 14px max(14px, env(safe-area-inset-bottom)); }
+  .game-actions .btn { flex: 1 1 40%; }
+}
+
+/* ---- Phones held sideways (short screens): the stage as big as the height allows,
+        in the drawing's own shape (nothing trimmed) ---- */
+@media (max-height: 560px) and (orientation: landscape) {
+  .game {
+    width: 100%; min-height: 100%; min-height: 100dvh; border: 0; border-radius: 0; box-shadow: none;
+    display: flex; flex-direction: column;
+    background: radial-gradient(circle, rgba(255, 255, 255, .6) 0 4px, transparent 4.5px) 0 0 / 28px 28px, #fff6e0;
+  }
+  .game-head { position: sticky; top: 0; z-index: 3; padding: 6px 10px 6px max(14px, env(safe-area-inset-left)); gap: 10px; }
+  .game-kicker { font-size: 11px; }
+  .game-title { font-size: 20px; }
+  .game-stage {
+    aspect-ratio: 640 / 360; width: min(100%, calc((100vh - 140px) * 16 / 9)); width: min(100%, calc((100dvh - 140px) * 16 / 9));
+    margin: 0 auto; border: 3px solid var(--ink); border-top: 0; border-radius: 0 0 16px 16px;
+  }
+  /* the result: a smaller plate, so the buttons below it fit too */
+  .game[data-stage="done"] .game-stage { width: min(100%, calc((100vh - 210px) * 16 / 9)); width: min(100%, calc((100dvh - 210px) * 16 / 9)); }
+  .game-instruction { font-size: 16px; padding: 6px 14px 0; }
+  .game-foot { margin-top: auto; padding: 0 14px max(4px, env(safe-area-inset-bottom)); }
+  .game-actions { padding-top: 2px; gap: 8px; }
+  .game-actions .btn { min-height: 44px; padding: 6px 12px; font-size: 14px; }
+}
+
+/* ---- Keyframes ---- */
+@keyframes g-pop {
+  0%   { opacity: 0; transform: translate(-50%, -20%) scale(.5) rotate(-6deg); }
+  18%  { opacity: 1; transform: translate(-50%, -50%) scale(1.1) rotate(-4deg); }
+  30%  { transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+  75%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -85%) scale(1) rotate(-4deg); }
+}
+@keyframes g-chop  { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(108px); } }
+@keyframes g-spin  { to { transform: rotate(360deg); } }
+@keyframes g-stream { to { stroke-dashoffset: -20; } }
+@keyframes g-flick { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-7deg) translateY(4px); } 55% { transform: rotate(5deg) translateY(-6px); } }
+@keyframes g-fly   { 0% { opacity: 1; transform: translateY(0) rotate(0); } 50% { opacity: 1; transform: translateY(-150px) rotate(-14deg); } 100% { opacity: 0; transform: translateY(0) rotate(0); } }
+@keyframes g-dip   { 0%, 100% { opacity: 1; } 20%, 80% { opacity: .25; } }
+@keyframes g-star  { from { transform: scale(0) rotate(-50deg); } }
+/* Motion off (kitchen.css, section 15) also stills the game's decorative animations. */

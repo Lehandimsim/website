@@ -1,0 +1,988 @@
+/* ==========================================================================
+   fun/overleaf/overleaf.css — the Overleaf-style editor (homage: the look is
+   recreated in CSS; no Overleaf logo or artwork). The XP desktop around it
+   is shared/xp/xp.css; the slides are shared/slides/slides.css (not
+   restyled here).
+
+   Sections: window size · colours · top bar · panes · file tree · editor ·
+   splitters · preview · logs · history · menus · toast · phone · print
+   ========================================================================== */
+
+/* ---------- The window on the desktop: about 85% of it, wallpaper around ---------- */
+.ol-window {
+  left: max(104px, 7.5%);
+  top: 4.5%;
+  width: min(85%, calc(100% - max(104px, 7.5%) - 24px));
+  height: 89%;
+  min-width: 600px;
+  min-height: 420px;
+}
+
+/* ---------- Colours and fonts ---------- */
+.ol-app {
+  --ol-green: #138a07;           /* Overleaf green: Recompile, selected file */
+  --ol-green-hover: #0f6f05;
+  --ol-green-soft: #d7f0d0;
+  --ol-bar: #1b222c;             /* top bar */
+  --ol-panel: #2a3441;           /* file tree, pane bars */
+  --ol-panel-2: #222a35;
+  --ol-line: #11161d;            /* borders between panes */
+  --ol-text: #e7ebf0;
+  --ol-muted: #a3adbb;
+  --ol-focus: #73b7ff;           /* focus ring on the dark panels */
+  --ol-focus-light: #0a58ca;     /* focus ring on white and grey (at least 3:1 there) */
+  --ol-pdf-bg: #c7ccd3;          /* behind the pages */
+  --ol-red: #c9302c;
+  --ol-yellow: #e9a100;
+  --ol-blue: #3a76c4;
+  --ol-ui: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ol-mono: Consolas, "Courier New", monospace;
+  --ol-tree-w: 14%;              /* pane widths: file tree | editor | preview (the rest) */
+  --ol-edit-w: 37%;
+
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--ol-bar);
+  color: var(--ol-text);
+  font: 13px/1.4 var(--ol-ui);
+}
+.ol-app * { box-sizing: border-box; }
+.ol-app button, .ol-app select { font: inherit; color: inherit; }
+.ol-app [hidden] { display: none !important; }
+.ol-ico { width: 16px; height: 16px; flex: none; display: block; }
+.ol-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ol-app :focus-visible { outline: 2px solid var(--ol-focus); outline-offset: 1px; }
+/* Light surfaces (slides, logs, History, pop-up menus, the picture viewer): a darker ring */
+.ol-pages :focus-visible, .ol-logs :focus-visible, .ol-errorbar :focus-visible, .ol-history :focus-visible,
+.ol-pop :focus-visible, .ol-imageview :focus-visible { outline-color: var(--ol-focus-light); }
+
+/* ---------- Top bar ---------- */
+.ol-top {
+  flex: none;
+  height: 42px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px;
+  background: var(--ol-bar);
+  border-bottom: 1px solid var(--ol-line);
+}
+.ol-top-group { display: flex; align-items: center; gap: 2px; min-width: 0; }
+.ol-top-group--right { justify-content: flex-end; }
+.ol-top-title { display: flex; align-items: center; gap: 7px; font-weight: 700; font-size: 14px; white-space: nowrap; }
+.ol-leaf .ol-ico { width: 18px; height: 18px; }
+.ol-top-sep { width: 1px; height: 22px; margin: 0 6px; background: #3a4554; }
+.ol-tb {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: var(--ol-text);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.ol-tb:hover { background: rgba(255, 255, 255, .09); }
+.ol-tb[aria-pressed="true"], .ol-tb[aria-expanded="true"] { background: rgba(255, 255, 255, .16); }
+.ol-tb--icon { padding: 0 7px; }
+
+/* ---------- Pane layout: files | editor | preview ---------- */
+.ol-main {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: var(--ol-tree-w) 5px var(--ol-edit-w) 8px minmax(0, 1fr);
+  background: var(--ol-line);
+}
+.ol-main.is-no-files { grid-template-columns: 0 0 var(--ol-edit-w) 8px minmax(0, 1fr); }
+.ol-main.is-editor-only { grid-template-columns: var(--ol-tree-w) 5px minmax(0, 1fr) 0 0; }
+.ol-main.is-pdf-only { grid-template-columns: 0 0 0 0 minmax(0, 1fr); }
+/* Each part keeps its own column, also when its neighbours are hidden */
+.ol-main > .ol-files { grid-area: 1 / 1; }
+.ol-main > #ol-split-files { grid-area: 1 / 2; }
+.ol-main > .ol-editor { grid-area: 1 / 3; }
+.ol-main > .ol-split-cell { grid-area: 1 / 4; }
+.ol-main > .ol-preview { grid-area: 1 / 5; }
+.ol-main.is-no-files .ol-files, .ol-main.is-no-files #ol-split-files,
+.ol-main.is-editor-only .ol-preview, .ol-main.is-editor-only .ol-split-cell,
+.ol-main.is-pdf-only .ol-files, .ol-main.is-pdf-only .ol-editor,
+.ol-main.is-pdf-only .ol-split, .ol-main.is-pdf-only .ol-split-cell { display: none; }
+
+.ol-pane { min-width: 0; min-height: 0; display: flex; flex-direction: column; overflow: hidden; }
+.ol-pane-head {
+  flex: none;
+  height: 38px;
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 8px 0 12px;
+  background: var(--ol-panel);
+  border-bottom: 1px solid var(--ol-line);
+  color: var(--ol-text);
+}
+.ol-pane-head--sub { height: 30px; background: var(--ol-panel-2); border-top: 1px solid var(--ol-line); }
+.ol-pane-title { flex: 1; font-weight: 600; font-size: 12px; letter-spacing: .02em; color: var(--ol-muted); text-transform: uppercase; }
+.ol-icon-btn {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  border: 0; border-radius: 4px;
+  background: none;
+  color: var(--ol-muted);
+  cursor: pointer;
+}
+.ol-icon-btn:hover { background: rgba(255, 255, 255, .09); color: var(--ol-text); }
+
+/* ---------- File tree ---------- */
+.ol-files { background: var(--ol-panel); }
+.ol-tree { flex: 1; min-height: 0; overflow: auto; margin: 0; padding: 6px 0; list-style: none; }
+.ol-tree ul { margin: 0; padding: 0; list-style: none; }
+.ol-file {
+  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  padding: 5px 10px 5px 14px;
+  border: 0;
+  background: none;
+  color: var(--ol-text);
+  text-align: left;
+  cursor: pointer;
+}
+.ol-file .ol-file-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ol-file .ol-ico { color: #9fb0c6; }
+.ol-file:hover { background: rgba(255, 255, 255, .07); }
+.ol-file[aria-current="true"] { background: var(--ol-green); color: #fff; }
+.ol-file[aria-current="true"] .ol-ico { color: #fff; }
+.ol-file:focus-visible { outline-offset: -2px; }
+.ol-file[aria-current="true"]:focus-visible { outline-color: #fff; }      /* the blue ring is too faint on green */
+.ol-file--child { padding-left: 34px; }
+/* The "main" tag: at least 4.5:1 on the panel and on the green selected row */
+.ol-file-main { font-size: 10px; padding: 0 5px; border-radius: 8px; background: rgba(255, 255, 255, .1); color: #cfd6df; }
+.ol-file[aria-current="true"] .ol-file-main { background: rgba(0, 0, 0, .22); color: #fff; }
+.ol-file-dot { width: 7px; height: 7px; border-radius: 50%; background: #f0b429; flex: none; }
+.ol-folder-caret { transition: transform .15s; }
+.ol-file[aria-expanded="false"] .ol-folder-caret { transform: rotate(-90deg); }
+
+.ol-outline { flex: none; max-height: 40%; display: flex; flex-direction: column; }
+.ol-outline-list { margin: 0; padding: 4px 0 8px; list-style: none; overflow: auto; }
+.ol-outline-list button {
+  width: 100%;
+  padding: 4px 12px 4px 16px;
+  border: 0; background: none;
+  color: #c6d0dc;
+  text-align: left;
+  font-size: 12px;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  cursor: pointer;
+}
+.ol-outline-list button:hover { background: rgba(255, 255, 255, .07); color: #fff; }
+.ol-outline-empty { padding: 4px 16px; font-size: 12px; color: var(--ol-muted); }
+
+/* ---------- Editor pane ---------- */
+.ol-editor { background: #fff; }
+.ol-crumb { flex: 1; min-width: 0; font-size: 12px; color: var(--ol-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ol-crumb b { color: var(--ol-text); font-weight: 600; }
+.ol-fmt { display: flex; gap: 1px; }
+.ol-fmt button {
+  min-width: 28px; height: 28px;
+  display: grid; place-items: center;
+  padding: 0 6px;
+  border: 0; border-radius: 4px;
+  background: none;
+  color: var(--ol-text);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 15px;
+  cursor: pointer;
+}
+.ol-fmt button:hover { background: rgba(255, 255, 255, .1); }
+.ol-fmt button[data-cmd="comment"] { font-family: var(--ol-mono); font-size: 14px; }
+.ol-fmt[aria-disabled="true"] { visibility: hidden; }
+
+/* The code box: a transparent textarea over a highlighted <pre>. Both must
+   use the same font, size, padding and wrapping, so the letters line up. */
+.ol-code { --ol-gutter: 50px; flex: 1; min-height: 0; position: relative; display: flex; }
+.ol-code-scroll { flex: 1; min-width: 0; overflow: auto; background: #fff; }
+.ol-code-inner { position: relative; min-height: 100%; padding-left: var(--ol-gutter); }
+.ol-code-inner::before {                     /* the line-number gutter */
+  content: "";
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: var(--ol-gutter);
+  background: #f3f5f7;
+  border-right: 1px solid #e3e7eb;
+}
+.ol-code-hl, .ol-code-input {
+  margin: 0;
+  padding: 8px 14px 45vh 8px;
+  font-family: var(--ol-mono);
+  font-size: var(--ol-code-font, 15px);       /* Menu > Editor font size changes these two */
+  line-height: var(--ol-code-lh, 23px);
+  letter-spacing: 0;
+  tab-size: 4;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  word-break: normal;
+  border: 0;
+}
+.ol-code-hl { position: relative; color: #1f2328; background: none; min-height: 100%; }
+.ol-code-input {
+  position: absolute;
+  top: 0; left: var(--ol-gutter); right: 0;
+  width: calc(100% - var(--ol-gutter));
+  height: 100%;
+  overflow: hidden;
+  resize: none;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: #111;
+  outline: none;
+}
+.ol-code-input::selection { background: rgba(56, 132, 255, .28); color: transparent; }
+.ol-code:focus-within .ol-code-scroll { box-shadow: inset 0 0 0 2px var(--ol-focus-light); }
+/* Tab indents in the editor, so say how to get out: shown while the editor
+   has focus, to keyboard users (tex-editor.js sets .is-keyboard). Screen
+   readers get the same from #ol-code-help. */
+.ol-code-hint {
+  position: absolute;
+  right: 22px; bottom: 10px;
+  z-index: 3;
+  display: none;
+  margin: 0;
+  padding: 2px 8px;
+  border: 1px solid #d0d7de; border-radius: 4px;
+  background: rgba(255, 255, 255, .94);
+  color: #4b5563;
+  font: 11.5px/1.5 var(--ol-ui);
+  pointer-events: none;
+}
+.ol-code-hint kbd { font: 600 11px var(--ol-mono); color: #1f2328; }
+.ol-code.is-keyboard:focus-within .ol-code-hint { display: block; }
+.ol-ln { position: relative; }               /* an empty line holds a zero-width space, so it keeps its height */
+.ol-ln.is-active { background: #eef4fc; }
+.ol-ln.is-flash { background: #fff3b8; transition: background 1.2s ease-out; }
+.ol-ln-n {
+  position: absolute;
+  z-index: 0;                                  /* keeps the red/yellow marker (::before) above the gutter */
+  left: calc(-1 * var(--ol-gutter) - 8px);
+  width: calc(var(--ol-gutter) - 6px);
+  padding-right: 4px;
+  text-align: right;
+  color: #98a2ae;
+  user-select: none;
+  cursor: pointer;
+}
+.ol-ln.is-active .ol-ln-n { color: #3d4652; }
+.ol-ln.has-error .ol-ln-n, .ol-ln.has-warning .ol-ln-n { color: #fff; font-weight: 700; }
+.ol-ln.has-error .ol-ln-n::before, .ol-ln.has-warning .ol-ln-n::before {
+  content: "";
+  position: absolute; z-index: -1;
+  right: 1px; top: 1px;
+  width: calc(100% - 2px); bottom: 1px;
+  border-radius: 3px;
+  background: var(--ol-red);
+}
+.ol-ln.has-warning .ol-ln-n::before { background: var(--ol-yellow); }
+.ol-ln.has-error { background: #fdecea; }
+.ol-ln.has-warning { background: #fff8e1; }
+
+/* LaTeX colours */
+.tx-cmd { color: #2350c7; }
+.tx-keyword { color: #a11d6e; font-weight: 600; }
+.tx-env { color: #0b7a62; }
+.tx-brace { color: #8a7650; }
+.tx-comment { color: #6f8a5c; font-style: italic; }
+.tx-math { color: #b35309; }
+.tx-escape { color: #7a4fc2; }
+.tx-special { color: #d0352f; font-weight: 700; }
+
+/* Image viewer (images/ folder) */
+.ol-imageview { flex: 1; min-height: 0; overflow: auto; display: grid; place-items: center; padding: 24px; background: #eef0f3; }
+.ol-imageview figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 12px; max-width: 100%; }
+.ol-imageview-pic {
+  max-width: min(420px, 100%);
+  padding: 10px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .2), 0 8px 24px rgba(0, 0, 0, .12);
+}
+.ol-imageview img { display: block; max-width: 100%; height: auto; }
+.ol-imageview figcaption { color: #4b5563; font-size: 12px; text-align: center; line-height: 1.5; }
+.ol-imageview code { font: 12px var(--ol-mono); background: #fff; padding: 1px 4px; border-radius: 3px; }
+
+/* ---------- Splitters ---------- */
+.ol-split { position: relative; background: var(--ol-line); cursor: col-resize; touch-action: none; z-index: 2; }
+.ol-split:hover, .ol-split.is-dragging { background: #3f5a7a; }
+.ol-split--sync { background: #1d242e; }
+/* The editor | preview splitter and the sync buttons share one grid cell */
+.ol-split-cell { position: relative; z-index: 2; min-width: 0; display: flex; }
+.ol-split-cell > .ol-split { flex: 1; }
+.ol-sync {
+  position: absolute; left: 50%; top: 50%;
+  z-index: 3;
+  transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; gap: 4px;
+}
+.ol-sync button {
+  width: 20px; height: 26px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid #0b0f14; border-radius: 4px;
+  background: #3a4656;
+  color: #fff;
+  cursor: pointer;
+}
+.ol-sync button:hover { background: var(--ol-green); }
+.ol-sync .ol-ico { width: 12px; height: 12px; }
+.ol-main.is-dragging { user-select: none; }
+.ol-main.is-dragging .ol-pdf, .ol-main.is-dragging .ol-code { pointer-events: none; }
+
+/* ---------- Preview pane ---------- */
+.ol-preview { background: var(--ol-pdf-bg); }
+.ol-pdf-head { gap: 4px; padding-left: 8px; }
+.ol-recompile-group { display: flex; }
+.ol-recompile, .ol-recompile-more {
+  height: 28px;
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 0;
+  background: var(--ol-green);
+  color: #fff !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+.ol-recompile { padding: 0 12px 0 10px; border-radius: 4px 0 0 4px; }
+.ol-recompile-more { padding: 0 6px; border-radius: 0 4px 4px 0; border-left: 1px solid rgba(0, 0, 0, .25); }
+.ol-recompile:hover, .ol-recompile-more:hover { background: var(--ol-green-hover); }
+.ol-recompile.is-busy .ol-ico { animation: ol-spin .8s linear infinite; }
+.ol-recompile.is-dirty { box-shadow: 0 0 0 0 rgba(85, 214, 64, .7); animation: ol-ping 1.8s ease-out infinite; }
+@keyframes ol-spin { to { transform: rotate(360deg); } }
+@keyframes ol-ping { 0% { box-shadow: 0 0 0 0 rgba(85, 214, 64, .75); } 75%, 100% { box-shadow: 0 0 0 8px rgba(85, 214, 64, 0); } }
+.ol-head-btn {
+  height: 28px;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 0 8px;
+  border: 0; border-radius: 4px;
+  background: none;
+  color: var(--ol-text);
+  cursor: pointer;
+}
+.ol-head-btn:hover { background: rgba(255, 255, 255, .1); }
+.ol-head-btn[aria-pressed="true"] { background: rgba(255, 255, 255, .18); }
+.ol-badge {
+  min-width: 18px; height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  font-size: 11px; font-weight: 700; line-height: 18px;
+  text-align: center;
+  color: #fff;
+}
+.ol-badge--error { background: var(--ol-red); }
+.ol-badge--warning { background: var(--ol-yellow); color: #2b2100; }
+.ol-pdf-spacer { flex: 1; }
+.ol-pagecount { font-size: 12px; color: var(--ol-muted); white-space: nowrap; padding: 0 4px; font-variant-numeric: tabular-nums; }
+.ol-zoom { display: flex; align-items: center; gap: 2px; }
+.ol-zoom .ol-head-btn { padding: 0 6px; }
+.ol-zoom select {
+  height: 26px;
+  padding: 0 4px;
+  border: 1px solid #45505f; border-radius: 4px;
+  background: #222a35;
+  color: var(--ol-text);
+  font-size: 12px;
+}
+
+.ol-pdf-body { position: relative; flex: 1; min-height: 0; display: flex; flex-direction: column; }
+.ol-pdf { flex: 1; min-height: 0; overflow: auto; outline: none; }
+.ol-pdf:focus-visible { box-shadow: inset 0 0 0 2px var(--ol-focus-light); }
+.ol-pages { --ol-page-w: 560px; padding: 14px 16px 28px; }
+.ol-page {
+  position: relative;
+  width: var(--ol-page-w);
+  max-width: none;
+  margin: 0 auto 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, .25), 0 6px 18px rgba(0, 0, 0, .18);
+}
+.ol-page.is-new { animation: ol-fade .35s ease-out; }
+@keyframes ol-fade { from { opacity: .35; } to { opacity: 1; } }
+.ol-page.is-target { outline: 3px solid rgba(19, 138, 7, .55); outline-offset: 2px; }
+.ol-img-missing {
+  display: grid; place-items: center;
+  aspect-ratio: 1;
+  padding: 1em;
+  background: repeating-linear-gradient(45deg, #eee, #eee 10px, #e2e2e2 10px, #e2e2e2 20px);
+  color: #555; font: 1.6cqw/1.3 var(--ol-mono); text-align: center;
+}
+
+/* ==========================================================================
+   Madrid: the slides in the preview, drawn like beamer's Madrid theme
+   (madrid.js builds the parts). Every size and position below was measured
+   on the real project compiled with pdfLaTeX; the numbers are in bp, the
+   PDF's unit (a 16:9 page is 453.543 x 255.118 bp), so --bp is one bp at
+   the page's current width. The shared slides.css (PowerPoint) is not used
+   for these slides: everything it sets is overridden here.
+
+   Typeface: Latin Modern Sans, the font of the PDF (GUST Font License,
+   (c) GUST e-foundry; renamed Latin subsets in fonts/). Like TeX, the
+   preview uses the cut drawn for each size: 8 (tiny to scriptsize), 9
+   (footnotesize), 10 (small, normal), 12 (large: titles); bold is always
+   the 10 cut. The metric overrides put the baseline at 0.806 em, as TeX
+   does, so baselines land where they do in the PDF.
+   ========================================================================== */
+@font-face { font-family: "LMS8";  src: url("fonts/lmsans8-regular-subset.woff2") format("woff2");  font-weight: 400; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS8";  src: url("fonts/lmsans8-oblique-subset.woff2") format("woff2");  font-weight: 400; font-style: italic; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS8";  src: url("fonts/lmsans10-bold-subset.woff2") format("woff2");    font-weight: 700; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS9";  src: url("fonts/lmsans9-regular-subset.woff2") format("woff2");  font-weight: 400; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS9";  src: url("fonts/lmsans9-oblique-subset.woff2") format("woff2");  font-weight: 400; font-style: italic; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS9";  src: url("fonts/lmsans10-bold-subset.woff2") format("woff2");    font-weight: 700; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS10"; src: url("fonts/lmsans10-regular-subset.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS10"; src: url("fonts/lmsans10-oblique-subset.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS10"; src: url("fonts/lmsans10-bold-subset.woff2") format("woff2");    font-weight: 700; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS12"; src: url("fonts/lmsans12-regular-subset.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS12"; src: url("fonts/lmsans10-oblique-subset.woff2") format("woff2"); font-weight: 400; font-style: italic; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+@font-face { font-family: "LMS12"; src: url("fonts/lmsans10-bold-subset.woff2") format("woff2");    font-weight: 700; font-style: normal; font-display: swap; ascent-override: 80.6%; descent-override: 19.4%; line-gap-override: 0%; }
+
+.ol-madrid .slide.mad {
+  /* one bp (resolved inside the slide, which is the size container) */
+  --bp: calc(100cqw / 453.543);
+  --fallback: "Latin Modern Sans", "CMU Sans Serif", "DejaVu Sans", Arial, sans-serif;
+  /* the frame's text size (\normalsize) and its lists: font cut, size,
+     baselineskip, extra space between points; the same for sub-points;
+     space before / after sub-points; the space TeX keeps above the first
+     line (\topskip) */
+  --ff: "LMS10"; --fs: 10.91; --lh: 13.55; --gap: 2.99; --sff: "LMS9"; --sfs: 8.97; --slh: 10.96; --subtop: 1.29; --subafter: 1.10; --top: 2.44;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  color: #000;
+  font-family: "LMS10", "Latin Modern Sans", "CMU Sans Serif", "DejaVu Sans", Arial, sans-serif;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+/* Size commands at the top of a frame (\footnotesize ...), as LaTeX sets them in an 11pt beamer */
+.ol-madrid .slide.mad-size-tiny         { --ff: "LMS8";  --fs: 5.98;  --lh: 6.97;  --gap: 2;    --sff: "LMS8";  --sfs: 4.98;  --slh: 5.98;  --subtop: 1.31; --subafter: 2.19; --top: 7.24; }
+.ol-madrid .slide.mad-size-scriptsize   { --ff: "LMS8";  --fs: 7.97;  --lh: 9.46;  --gap: 2.99; --sff: "LMS8";  --sfs: 6.64;  --slh: 7.97;  --subtop: 1.65; --subafter: 3.34; --top: 5.38; }
+.ol-madrid .slide.mad-size-footnotesize { --ff: "LMS9";  --fs: 8.97;  --lh: 10.96; --gap: 3.98; --sff: "LMS8";  --sfs: 7.47;  --slh: 8.97;  --subtop: 3.44; --subafter: 4.52; --top: 4.33; }
+.ol-madrid .slide.mad-size-small        { --ff: "LMS10"; --fs: 9.96;  --lh: 11.96; --gap: 3;    --sff: "LMS8";  --sfs: 8.3;   --slh: 9.96;  --subtop: 1.51; --subafter: 1.49; --top: 3.52; }
+.ol-madrid .slide.mad-size-large        { --ff: "LMS12"; --fs: 11.96; --lh: 14.94; --gap: 3;    --sff: "LMS10"; --sfs: 9.96;  --slh: 11.96; --subtop: 1.12; --subafter: 1.28; --top: 1.42; }
+.ol-madrid .slide.mad-size-Large, .ol-madrid .slide.mad-size-LARGE, .ol-madrid .slide.mad-size-huge, .ol-madrid .slide.mad-size-Huge
+                                        { --ff: "LMS12"; --fs: 14.35; --lh: 17.93; --gap: 3;    --sff: "LMS12"; --sfs: 11.96; --slh: 14.94; --subtop: 1;    --subafter: 1;    --top: 0; }
+.ol-madrid .slide.mad * { box-sizing: border-box; }
+.ol-madrid .mad a { color: inherit; text-decoration: underline; text-decoration-thickness: from-font; text-underline-offset: .12em; }
+.ol-madrid .mad strong { font-weight: 700; }
+.ol-madrid .mad em { font-style: italic; }
+
+/* The blue title bar: \frametitle (\Large) and \framesubtitle lines (\footnotesize) */
+.ol-madrid .mad-frametitle {
+  flex: none;
+  padding: calc(6.76 * var(--bp)) calc(8.5 * var(--bp)) calc(2.91 * var(--bp));
+  background: #3333b3;
+  color: #fff;
+}
+.ol-madrid .mad .mad-frametitle .slide-title {
+  margin: 0; padding: 0;
+  font-family: "LMS12", var(--fallback);
+  font-size: calc(14.35 * var(--bp));
+  line-height: calc(17.93 * var(--bp));
+  font-weight: 400;
+  letter-spacing: 0;
+  color: inherit;
+}
+.ol-madrid .mad .slide-subtitle {
+  margin: calc(1.22 * var(--bp)) 0 calc(-0.27 * var(--bp));
+  font-family: "LMS9", var(--fallback);
+  font-size: calc(8.97 * var(--bp));
+  line-height: calc(10.96 * var(--bp));
+  color: inherit;
+}
+
+/* The body: where beamer puts a frame's contents. [c] (the default) leaves
+   2/5 of the free space above them and 3/5 below; [t] puts them at the top
+   (after a small skip), [b] at the bottom. Contents that do not fit run on
+   past the bottom, as in the PDF ("Overfull \vbox"). */
+.ol-madrid .mad-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  margin: calc(3.72 * var(--bp)) 0 calc(12.62 * var(--bp));
+}
+.ol-madrid .mad-untitled .mad-body { margin-top: var(--bp); }
+.ol-madrid .mad-body::before { content: ""; flex: 2 1 0; }
+.ol-madrid .mad-body::after  { content: ""; flex: 3 1 0; }
+.ol-madrid .mad-vt .mad-body::before { flex: 0 0 calc(5.67 * var(--bp)); }
+.ol-madrid .mad-vt .mad-body::after  { flex: 1 1 0; }
+.ol-madrid .mad-vb .mad-body::before { flex: 1 1 0; }
+.ol-madrid .mad-vb .mad-body::after  { flex: 0 0 0; }
+.ol-madrid .mad-inner {
+  flex: none;
+  padding: calc(var(--top) * var(--bp)) calc(10.91 * var(--bp)) 0;
+  font-family: var(--ff), var(--fallback);
+  font-size: calc(var(--fs) * var(--bp));
+  line-height: calc(var(--lh) * var(--bp));
+}
+.ol-madrid .mad .slide-body { padding: 0; }
+.ol-madrid .mad p { margin: 0; }
+
+/* Lists: shaded "ball" bullets (5 bp; 4 bp for sub-points), 21.8 bp indent */
+.ol-madrid .mad ul { margin: 0; padding: 0 0 0 calc(21.8 * var(--bp)); list-style: none; }
+.ol-madrid .mad li {
+  position: relative;
+  margin: 0;
+  color: #000;
+  font-family: var(--ff), var(--fallback);
+  font-size: calc(var(--fs) * var(--bp));
+  line-height: calc(var(--lh) * var(--bp));
+}
+.ol-madrid .mad li + li { margin-top: calc(var(--gap) * var(--bp)); }
+.ol-madrid .mad li > ul { margin-top: calc(var(--subtop) * var(--bp)); }
+.ol-madrid .mad li:has(> ul) + li { margin-top: calc(var(--subafter) * var(--bp)); }
+.ol-madrid .mad li li { font-family: var(--sff), var(--fallback); font-size: calc(var(--sfs) * var(--bp)); line-height: calc(var(--slh) * var(--bp)); color: #000; }
+.ol-madrid .mad li li + li { margin-top: 0; }
+.ol-madrid .mad li::before {
+  content: "";
+  position: absolute;
+  left: calc(-10.55 * var(--bp));
+  top: calc((var(--lh) / 2 + 0.306 * var(--fs) - 5.3) * var(--bp));
+  width: calc(5 * var(--bp)); height: calc(5 * var(--bp));
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 36%, #7d7dcc 0, #4d4db3 26%, #2b2b8e 58%, #1c1c63 100%);
+}
+.ol-madrid .mad li li::before {
+  left: calc(-9.5 * var(--bp));
+  top: calc((var(--slh) / 2 + 0.306 * var(--sfs) - 4.3) * var(--bp));
+  width: calc(4 * var(--bp)); height: calc(4 * var(--bp));
+}
+
+/* Columns (beamer's columns environment: the group is centred, 13.07 bp apart) */
+.ol-madrid .mad .slide-columns, .ol-madrid .mad-cols {
+  display: flex;
+  justify-content: center;
+  gap: calc(13.07 * var(--bp));
+}
+.ol-madrid .mad .slide-columns { align-items: flex-start; }
+.ol-madrid .mad .slide-columns > * { flex: 0 0 48%; min-width: 0; }
+.ol-madrid .mad .slide-col-heading {          /* \colheading: bold, structure blue, then \smallskip */
+  margin: 0 0 calc(2.99 * var(--bp));
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 700;
+  color: #3333b3;
+}
+
+/* The home frame: the picture and the text in two columns, centred vertically */
+.ol-madrid .mad--title .mad-inner { padding-top: 0; }
+.ol-madrid .mad-cols--title { align-items: center; }
+.ol-madrid .mad .slide-photo { flex: 0 0 38%; position: static; overflow: visible; background: none; }
+.ol-madrid .mad .slide-photo img { position: static; display: block; width: 100%; height: auto; object-fit: fill; }
+.ol-madrid .mad .slide-text { flex: 0 0 58%; display: block; padding: 0; }
+.ol-madrid .mad .slide-text p { font-size: inherit; line-height: inherit; }
+.ol-madrid .mad .slide-text p + p { margin-top: calc(5.98 * var(--bp)); }   /* \medskip */
+
+/* Blocks (rounded, with a shadow): the Art boxes and a paper's abstract. Beamer
+   leaves 6.97 bp above a block and 3.98 bp below it; the title bar is 17.28 bp
+   (its last 2.5 bp fade into the body). */
+.ol-madrid .mad .slide-boxes {
+  display: flex;
+  justify-content: center;
+  gap: calc(5.07 * var(--bp));                 /* 13.07 bp between the columns, less the blocks' 4 bp overhang */
+  margin: calc(20.29 * var(--bp)) 0 0;         /* the list's end, \bigskip and the columns */
+}
+.ol-madrid .mad .slide-boxes:first-child { margin-top: 0; }
+.ol-madrid .mad .slide-box, .ol-madrid .mad .slide-block {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 48%;
+  min-height: 0;
+  margin: calc(6.97 * var(--bp)) 0 calc(3.98 * var(--bp));
+  padding: 0;
+  border: 0;
+  border-radius: calc(3 * var(--bp));
+  background: #e9e9f2;
+  box-shadow: calc(3 * var(--bp)) calc(3 * var(--bp)) calc(2.4 * var(--bp)) rgba(0, 0, 0, .3);
+  color: #000 !important;
+  text-decoration: none !important;
+}
+.ol-madrid .mad .slide-block { margin: calc(6.97 * var(--bp)) calc(-4 * var(--bp)) calc(3.98 * var(--bp)); }
+.ol-madrid .mad .slide-boxes .slide-box { margin-bottom: calc(-3.43 * var(--bp)); }   /* in columns, TeX counts a block 3.43 bp short */
+.ol-madrid .mad .slide-box-label, .ol-madrid .mad .slide-block-title {
+  order: -1;
+  margin: 0;
+  padding: calc(0.18 * var(--bp)) calc(4 * var(--bp)) calc(2.16 * var(--bp));
+  border-radius: calc(3 * var(--bp)) calc(3 * var(--bp)) 0 0;
+  background: linear-gradient(to bottom, #262686 calc(100% - 2.5 * var(--bp)), #e9e9f2);
+  color: #fff;
+  font-family: "LMS12", var(--fallback);
+  font-size: calc(11.96 * var(--bp));
+  line-height: calc(14.94 * var(--bp));
+  font-weight: 400;
+}
+.ol-madrid .mad .slide-box-text, .ol-madrid .mad .slide-block-text {
+  flex: none;
+  margin: 0;
+  padding: calc(0.1 * var(--bp)) calc(4 * var(--bp)) calc(2.3 * var(--bp));
+  color: #000;
+  font-family: var(--bff, var(--ff)), var(--fallback);
+  font-size: calc(var(--bfs, var(--fs)) * var(--bp));
+  line-height: calc(var(--blh, var(--lh)) * var(--bp));
+}
+a.slide-box:hover .slide-box-label { background: #1e1e6e; }
+.ol-madrid .mad-block-footnotesize { --bff: "LMS9"; --bfs: 8.97; --blh: 10.96; }
+.ol-madrid .mad-block-scriptsize   { --bff: "LMS8"; --bfs: 7.97; --blh: 9.46; }
+.ol-madrid .mad-block-small        { --bff: "LMS10"; --bfs: 9.96; --blh: 11.96; }
+.ol-madrid .mad-block-tiny         { --bff: "LMS8"; --bfs: 5.98; --blh: 6.97; }
+.ol-madrid .mad--abstract .mad-inner { padding-top: 0; }
+.ol-madrid .mad .slide-meta p { margin: calc(7.91 * var(--bp)) 0 0; color: #000; font-size: inherit; }
+
+/* The closing frame: \centering, a \bigtitle (\Huge, bold, blue), paragraphs 0.8em apart */
+.ol-madrid .mad--end .mad-inner { padding-top: calc(9.75 * var(--bp)); text-align: center; }
+.ol-madrid .mad--end .slide-title {
+  margin: 0; padding: 0;
+  font-size: calc(24.79 * var(--bp));
+  line-height: calc(29.89 * var(--bp));
+  font-weight: 700;
+  color: #3333b3;
+}
+.ol-madrid .mad--end p { margin-top: calc(8.7 * var(--bp)); font-size: inherit; }
+.ol-madrid .mad--end .slide-title + p { margin-top: calc(16.73 * var(--bp)); }
+
+/* The footer (infolines): three bands, \tiny white text; and the navigation symbols */
+.ol-madrid .mad-foot {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: calc(8.62 * var(--bp));
+  display: flex;
+  color: #fff;
+  font-family: "LMS8", var(--fallback);
+  font-size: calc(5.98 * var(--bp));
+  line-height: calc(8.4 * var(--bp));
+  white-space: nowrap;
+}
+.ol-madrid .mad-foot > span { flex: 0 0 33.3333%; min-width: 0; overflow: hidden; text-align: center; }
+.ol-madrid .mad-foot-a { background: #191959; }
+.ol-madrid .mad-foot-t { background: #262686; }
+.ol-madrid .mad-foot .mad-foot-d { display: flex; padding: 0 calc(5.3 * var(--bp)); background: #3333b3; }
+.ol-madrid .mad-foot-date { flex: 1; text-align: center; }
+.ol-madrid .mad-foot-n { flex: none; }
+.ol-madrid .mad-nav {
+  position: absolute;
+  left: calc(325 * var(--bp)); top: calc(238.6 * var(--bp));
+  width: calc(125 * var(--bp)); height: calc(5 * var(--bp));
+  color: #d6d6f0;
+}
+
+.ol-errorbar {
+  flex: none;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 8px 12px;
+  background: #fbe3e1;
+  border-bottom: 1px solid #f0b8b3;
+  color: #7a1712;
+  font-size: 12.5px;
+}
+.ol-errorbar > span { flex: 1 1 180px; min-width: 0; }
+.ol-errorbar b { font-weight: 700; }
+.ol-errorbar button {
+  margin-left: auto;
+  padding: 3px 10px;
+  border: 1px solid #c9302c; border-radius: 4px;
+  background: #fff;
+  color: #a1221e !important;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ---------- Logs panel (over the top of the preview) ---------- */
+.ol-logs {
+  position: absolute; left: 0; right: 0; top: 0;
+  max-height: 62%;
+  overflow: auto;
+  z-index: 5;
+  background: #f6f7f9;
+  color: #1f2328;
+  border-bottom: 1px solid #b9c0c9;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, .25);
+}
+.ol-logs-head {
+  position: sticky; top: 0; z-index: 1;
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px 8px 14px;
+  background: #fff;
+  border-bottom: 1px solid #dde1e6;
+  font-weight: 700;
+}
+.ol-logs-head .ol-badge { font-weight: 700; }
+.ol-logs-head .ol-x { margin-left: auto; }
+.ol-x {
+  width: 28px; height: 28px;
+  display: grid; place-items: center;
+  border: 0; border-radius: 4px;
+  background: none;
+  color: #4b5563 !important;
+  cursor: pointer;
+}
+.ol-x:hover { background: #e8ebef; }
+.ol-log-list { padding: 10px 12px 4px; display: flex; flex-direction: column; gap: 8px; }
+.ol-log {
+  background: #fff;
+  border: 1px solid #dfe3e8;
+  border-left: 5px solid var(--ol-blue);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.ol-log--error { border-left-color: var(--ol-red); }
+.ol-log--warning { border-left-color: var(--ol-yellow); }
+.ol-log-top { display: flex; align-items: flex-start; gap: 10px; padding: 8px 10px 4px; }
+.ol-log-msg { flex: 1; font-weight: 600; font-size: 12.5px; }
+.ol-log-loc {
+  flex: none;
+  padding: 1px 7px;
+  border: 1px solid #cfd5dc; border-radius: 10px;
+  background: #f3f5f7;
+  color: #2350c7 !important;
+  font-size: 11.5px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.ol-log-loc:hover { background: #e3ebfa; }
+.ol-log pre {
+  margin: 0 10px 8px;
+  padding: 6px 8px;
+  background: #f3f5f7;
+  border-radius: 3px;
+  font: 11.5px/1.45 var(--ol-mono);
+  white-space: pre-wrap; overflow-wrap: anywhere;
+  color: #3d4652;
+}
+.ol-log-hint { margin: 0 10px 8px; font-size: 12px; color: #4b5563; }
+.ol-log-hint::before { content: "Hint: "; font-weight: 700; color: #1f2328; }
+.ol-logs-empty { padding: 14px; color: #3d4652; }
+.ol-logs-empty b { color: var(--ol-green); }
+.ol-rawlog { margin: 4px 12px 12px; }
+.ol-rawlog summary { cursor: pointer; font-weight: 600; color: #3d4652; padding: 4px 0; }
+.ol-rawlog pre { margin: 6px 0 0; max-height: 220px; overflow: auto; padding: 8px; background: #1f2530; color: #d6dde6; border-radius: 4px; font: 11px/1.5 var(--ol-mono); white-space: pre-wrap; }
+
+/* ---------- History: covers the file list and editor (like Overleaf's
+   history view), so the preview stays visible next to it ---------- */
+.ol-history {
+  position: absolute; top: 0; left: 0; bottom: 0;
+  width: calc(var(--ol-tree-w) + 5px + var(--ol-edit-w));
+  min-width: min(330px, 100%);
+  z-index: 6;
+  display: flex; flex-direction: column;
+  background: #fff;
+  color: #1f2328;
+  box-shadow: 10px 0 26px rgba(0, 0, 0, .3);
+}
+.ol-main.is-no-files .ol-history { width: var(--ol-edit-w); }
+.ol-main.is-pdf-only .ol-history, .ol-main.is-editor-only .ol-history { left: auto; right: 0; width: min(420px, 70%); }
+.ol-history-head { flex: none; display: flex; align-items: center; gap: 8px; padding: 10px 10px 10px 14px; border-bottom: 1px solid #e3e7eb; }
+.ol-history-head h2 { margin: 0; font-size: 14px; flex: 1; }
+.ol-history-intro { flex: none; margin: 0; padding: 10px 14px; font-size: 12px; line-height: 1.5; color: #4b5563; background: #f6f8fa; border-bottom: 1px solid #e3e7eb; }
+.ol-history-intro code { font: 11.5px var(--ol-mono); background: #e9edf1; padding: 0 3px; border-radius: 3px; }
+.ol-history-list { flex: 1; min-height: 0; overflow: auto; padding: 10px 12px; display: flex; flex-direction: column; gap: 10px; }
+.ol-history-empty { color: #6b7280; font-size: 12.5px; line-height: 1.5; padding: 4px 2px; }
+.ol-hist { border: 1px solid #dfe3e8; border-radius: 6px; overflow: hidden; }
+.ol-hist > summary {
+  list-style: none;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  padding: 8px 10px;
+  background: #f6f8fa;
+  cursor: pointer;
+  font-size: 12.5px;
+}
+.ol-hist > summary::-webkit-details-marker { display: none; }
+.ol-hist > summary::before { content: "\25B8"; color: #6b7280; transition: transform .15s; }
+.ol-hist[open] > summary::before { transform: rotate(90deg); }
+.ol-hist-time { font-weight: 700; font-variant-numeric: tabular-nums; }
+.ol-hist-tag { margin-left: auto; padding: 1px 7px; border-radius: 9px; font-size: 11px; font-weight: 600; background: var(--ol-green-soft); color: #145c0b; }
+.ol-hist-tag--fail { background: #fbe3e1; color: #8c1d18; }
+.ol-hist-file { border-top: 1px solid #eceff2; }
+.ol-hist-file h3 { margin: 0; padding: 6px 10px; font: 600 12px var(--ol-mono); display: flex; gap: 8px; align-items: center; }
+.ol-add { color: #1a7f37; }
+.ol-del { color: #cf222e; }
+.ol-diff { margin: 0; padding: 4px 0 8px; font: 11.5px/1.5 var(--ol-mono); overflow-x: auto; }
+.ol-diff div { padding: 0 10px; white-space: pre-wrap; overflow-wrap: anywhere; }
+.ol-diff .d-add { background: #dafbe1; color: #116329; }
+.ol-diff .d-del { background: #ffebe9; color: #82071e; }
+.ol-diff .d-hunk { color: #57606a; background: #f1f4f8; }
+.ol-diff .d-ctx { color: #57606a; }
+.ol-history-foot { flex: none; padding: 10px 14px; border-top: 1px solid #e3e7eb; display: flex; gap: 8px; flex-wrap: wrap; }
+.ol-btn {
+  padding: 5px 12px;
+  border: 1px solid #c4cbd3; border-radius: 4px;
+  background: #fff;
+  color: #1f2328 !important;
+  font-weight: 600; font-size: 12px;
+  cursor: pointer;
+}
+.ol-btn:hover { background: #f1f3f5; }
+.ol-btn--green { background: var(--ol-green); border-color: var(--ol-green); color: #fff !important; }
+.ol-btn--green:hover { background: var(--ol-green-hover); }
+
+/* ---------- Left menu (Overleaf's "Menu") and pop-up menus ---------- */
+.ol-menu {
+  position: absolute; top: 42px; left: 0; bottom: 0;
+  width: min(280px, 92%);
+  z-index: 20;
+  overflow: auto;
+  padding: 12px 0 18px;
+  background: #2a3441;
+  box-shadow: 10px 0 28px rgba(0, 0, 0, .4);
+}
+.ol-menu h2 { margin: 12px 18px 6px; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ol-muted); }
+.ol-menu h2:first-child { margin-top: 2px; }
+.ol-menu-item {
+  width: 100%;
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 18px;
+  border: 0;
+  background: none;
+  color: var(--ol-text) !important;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+}
+.ol-menu-item:hover, .ol-menu-item:focus-visible { background: rgba(255, 255, 255, .09); }
+.ol-menu-item:focus-visible { outline: 2px solid var(--ol-focus); outline-offset: -2px; }
+.ol-menu-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 18px; }
+.ol-menu-row select { padding: 3px 4px; border: 1px solid #45505f; border-radius: 4px; background: #1f2630; color: var(--ol-text); }
+.ol-menu-note { padding: 2px 18px 6px; color: var(--ol-muted); font-size: 12px; line-height: 1.45; }
+
+.ol-pop {
+  position: absolute;
+  z-index: 25;
+  min-width: 220px;
+  padding: 5px 0;
+  background: #fff;
+  color: #1f2328;
+  border: 1px solid #c7ced6;
+  border-radius: 6px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, .3);
+}
+.ol-pop button {
+  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px;
+  border: 0;
+  background: none;
+  color: #1f2328 !important;
+  text-align: left;
+  cursor: pointer;
+}
+.ol-pop button:hover, .ol-pop button:focus-visible { background: #eef3f9; }
+.ol-pop button:focus-visible { outline: 2px solid var(--ol-focus-light); outline-offset: -2px; }
+.ol-pop .ol-check { width: 14px; color: var(--ol-green); font-weight: 700; }
+.ol-pop hr { border: 0; border-top: 1px solid #e3e7eb; margin: 5px 0; }
+.ol-pop p { margin: 4px 14px 6px; font-size: 11.5px; color: #6b7280; line-height: 1.4; }
+
+/* ---------- Toast ---------- */
+.ol-toast {
+  position: absolute;
+  left: 50%; bottom: 18px;
+  z-index: 30;
+  max-width: calc(100% - 32px);
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 16px 9px 12px;
+  border-radius: 6px;
+  background: #1f2630;
+  color: #fff;
+  box-shadow: 0 8px 26px rgba(0, 0, 0, .38);
+  font-size: 13px;
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  transition: opacity .2s, transform .2s;
+  pointer-events: none;
+}
+.ol-toast.is-on { opacity: 1; transform: translate(-50%, 0); }
+.ol-toast .ol-ico { color: #6fdc5b; }
+
+/* ---------- Phone tabs (hidden on wide screens) ---------- */
+.ol-tabs { display: none; }
+
+/* ---------- Narrower windows: icons only in the top bar, and the editor
+   text one size smaller (14px). Measured on the app itself (container
+   queries), so a small window on a big screen also gets them. The labels
+   are hidden like .ol-sr (not display: none), so the buttons keep their
+   names for screen readers; the title attribute gives the mouse a tooltip. */
+.ol-window .xp-window-body { container-type: inline-size; container-name: olwin; }
+@container olwin (max-width: 1000px) {
+  .ol-code { --ol-gutter: 44px; }
+  .ol-code-hl, .ol-code-input { font-size: var(--ol-code-font, 14px); line-height: var(--ol-code-lh, 21px); }
+}
+@container olwin (max-width: 1080px) {
+  .ol-tb--extra .ol-tb-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}
+@container olwin (max-width: 860px) {
+  .ol-tb-label, .ol-head-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .ol-top-sep { display: none; }
+}
+
+/* ---------- Phones: the window fills the screen (xp.css); one pane at a time ---------- */
+@media (max-width: 700px) {
+  .ol-window { min-width: 0; min-height: 0; }
+  .ol-top { height: 40px; padding: 0 4px; grid-template-columns: auto 1fr auto; gap: 4px; }
+  .ol-top-title { justify-content: center; min-width: 0; font-size: 13px; }
+  .ol-project { overflow: hidden; text-overflow: ellipsis; }
+  .ol-tb { padding: 0 6px; }
+  .ol-tb--extra, #ol-home-link { display: none; }
+  .ol-tabs {
+    flex: none;
+    display: flex; align-items: center; gap: 2px;
+    padding: 4px 6px;
+    background: var(--ol-panel);
+    border-bottom: 1px solid var(--ol-line);
+  }
+  .ol-tablist { display: flex; align-items: center; gap: 2px; }
+  .ol-tabs [role="tab"] {
+    padding: 6px 12px;
+    border: 0; border-radius: 4px;
+    background: none;
+    color: var(--ol-muted);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .ol-tabs [role="tab"][aria-selected="true"] { background: rgba(255, 255, 255, .14); color: #fff; }
+  .ol-recompile--tab { margin-left: auto; border-radius: 4px; padding: 0 10px; }
+  .ol-main { display: block; }
+  .ol-main > .ol-pane, .ol-main > .ol-split, .ol-main > .ol-split-cell { display: none !important; }
+  .ol-app[data-pane="files"] .ol-files,
+  .ol-app[data-pane="source"] .ol-editor,
+  .ol-app[data-pane="preview"] .ol-preview { display: flex !important; height: 100%; }
+  .ol-pdf-head .ol-recompile-group, .ol-zoom select, #ol-print-btn { display: none; }
+  .ol-pages { padding: 10px 8px 20px; }
+  .ol-history, .ol-main.is-pdf-only .ol-history, .ol-main.is-editor-only .ol-history { left: 0; right: 0; width: 100%; min-width: 0; }
+  .ol-logs { max-height: 75%; }
+  .ol-fmt button { min-width: 26px; padding: 0 4px; }
+  .ol-menu { top: 40px; }
+}
+
+/* ---------- Reduced motion ----------
+   Follows the visitor's "reduce motion" setting. Class "motion-on" on <html>
+   (set by shared/site.js from ?motion=on or the review switch) shows the
+   animations anyway. The JS side asks SiteUtil.prefersReducedMotion(). */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-on) .ol-recompile.is-busy .ol-ico,
+  html:not(.motion-on) .ol-recompile.is-dirty { animation: none; }
+  html:not(.motion-on) .ol-recompile.is-dirty { box-shadow: 0 0 0 3px rgba(85, 214, 64, .55); }
+  html:not(.motion-on) .ol-page.is-new { animation: none; }
+  html:not(.motion-on) .ol-toast,
+  html:not(.motion-on) .ol-ln.is-flash,
+  html:not(.motion-on) .ol-folder-caret,
+  html:not(.motion-on) .ol-hist > summary::before { transition: none; }
+}
+
+/* ---------- No JavaScript ---------- */
+.ol-noscript { position: fixed; left: 50%; top: 40%; transform: translateX(-50%); z-index: 3000; padding: 14px 18px; background: #fff; border: 1px solid #888; font: 14px var(--xp-font); }
+
+/* ---------- Print (the "Print / Save as PDF" button): just the slides, one per page ---------- */
+.ol-print { display: none; }
+@media print {
+  @page { size: 297mm 167.06mm; margin: 0; }
+  html, body.xp { height: auto !important; overflow: visible !important; background: #fff !important; }
+  body.xp > :not(.ol-print) { display: none !important; }
+  .ol-print { display: block; }
+  .ol-print .slide { width: 297mm; aspect-ratio: 16 / 9; break-after: page; page-break-after: always; }
+}

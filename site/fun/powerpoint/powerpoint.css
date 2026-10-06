@@ -1,0 +1,1315 @@
+/* ==========================================================================
+   fun/powerpoint/powerpoint.css — PowerPoint 2007 (the blue Office colour
+   scheme) on the shared Windows XP desktop. An homage drawn in CSS: no
+   Microsoft images or logos.
+
+   The slides themselves are styled by shared/slides/slides.css (shared with
+   the Overleaf version); this file only styles the app around them.
+
+   1 Palette            6 Slides pane and outline   11 Slide show
+   2 Window             7 Editing area and notes    12 Welcome balloon
+   3 Office button      8 Slide Sorter              13 Small screens
+   4 Ribbon tabs        9 Status bar                14 Reduced motion
+   5 Ribbon            10 Menus and ScreenTips
+   ========================================================================== */
+
+/* ---------- 1. Palette ---------- */
+:root {
+  --pp-font: "Segoe UI", Tahoma, Verdana, sans-serif;
+  --pp-ink: #1e395b;              /* button labels */
+  --pp-tab-ink: #15428b;          /* tab labels */
+  --pp-group-ink: #2e5590;        /* group labels under the ribbon groups (about 5:1 on the ribbon's blue) */
+  --pp-frame: #c4daf5;            /* window frame, tab row, pane gaps */
+  --pp-line: #8db2e3;             /* ribbon and pane borders */
+  --pp-hover: linear-gradient(#fffde9 0%, #ffefb6 42%, #ffd966 43%, #ffeba8 100%);
+  --pp-hover-line: #e3c169;
+  --pp-press: linear-gradient(#fbd8a8 0%, #f9b86e 42%, #f6992f 43%, #fbc675 100%);
+  --pp-press-line: #c3893d;
+  --pp-on: linear-gradient(#fee8be 0%, #fdd08c 42%, #fbbb56 43%, #fdda98 100%);
+  --pp-on-line: #d29b47;
+  --pp-select: #f4a330;           /* the selected slide's border */
+  --pp-work: linear-gradient(#d9e5f4, #c5d6ec);   /* behind the slide */
+  --pp-side-w: 292px;             /* slides pane width (drag the splitter to change it) */
+}
+
+/* Things hidden with the hidden attribute stay hidden whatever their display. */
+.pp-app [hidden], .pp-show [hidden] { display: none !important; }
+
+/* Scroll bars inside the app, in the XP style (Edge, Chrome, Safari; Firefox gets the colours). */
+.pp-app ::-webkit-scrollbar { width: 17px; height: 17px; }
+.pp-app ::-webkit-scrollbar-track { background: linear-gradient(90deg, #f3f3ef, #fdfdfb); }
+.pp-app ::-webkit-scrollbar-track:horizontal { background: linear-gradient(#f3f3ef, #fdfdfb); }
+.pp-app ::-webkit-scrollbar-thumb {
+  border: 1px solid #a5b9e6;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #d2e0fd, #bccff9 50%, #c9d9fc);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .7);
+}
+.pp-app ::-webkit-scrollbar-thumb:horizontal { background: linear-gradient(#d2e0fd, #bccff9 50%, #c9d9fc); }
+.pp-app ::-webkit-scrollbar-thumb:hover { background: linear-gradient(90deg, #e1ebfe, #cbdbfb); }
+.pp-app ::-webkit-scrollbar-button:single-button {
+  display: block;
+  width: 17px; height: 17px;
+  border: 1px solid #a5b9e6;
+  border-radius: 3px;
+  background: center / 7px no-repeat, linear-gradient(135deg, #e3ecfe, #bfd1f8);
+}
+.pp-app ::-webkit-scrollbar-button:single-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 4'%3E%3Cpath d='M0 4 3.5 0 7 4z' fill='%234d6185'/%3E%3C/svg%3E"), linear-gradient(135deg, #e3ecfe, #bfd1f8); }
+.pp-app ::-webkit-scrollbar-button:single-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 4'%3E%3Cpath d='M0 0h7L3.5 4z' fill='%234d6185'/%3E%3C/svg%3E"), linear-gradient(135deg, #e3ecfe, #bfd1f8); }
+.pp-app ::-webkit-scrollbar-button:single-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 7'%3E%3Cpath d='M4 0v7L0 3.5z' fill='%234d6185'/%3E%3C/svg%3E"), linear-gradient(135deg, #e3ecfe, #bfd1f8); }
+.pp-app ::-webkit-scrollbar-button:single-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 7'%3E%3Cpath d='M0 0v7l4-3.5z' fill='%234d6185'/%3E%3C/svg%3E"), linear-gradient(135deg, #e3ecfe, #bfd1f8); }
+.pp-app ::-webkit-scrollbar-corner { background: #f3f3ef; }
+@supports not selector(::-webkit-scrollbar) {
+  .pp-app * { scrollbar-color: #bccff9 #f6f6f2; }
+}
+
+/* Visually hidden, still read by screen readers. */
+.pp-sr {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.pp-defs { position: absolute; width: 0; height: 0; overflow: hidden; }
+
+/* ---------- 2. Window ----------
+   About three quarters of the desktop, centred, so the wallpaper shows around it. */
+#pp {
+  left: max(12%, calc(50% - 780px));
+  top: 6%;
+  width: min(76%, 1560px);
+  height: 86%;
+  min-width: 640px;
+  min-height: 440px;
+}
+.pp-app {
+  position: static;               /* the orb, toolbar and menu are placed relative to the window */
+  background: var(--pp-frame);
+  color: var(--pp-ink);
+  font: 11px/1.3 var(--pp-font);
+}
+
+/* Office 2007 drew its own window frame on XP: pale blue, with the title in the middle. */
+#pp.pp-office {
+  border: 1px solid #5f88c0;
+  border-radius: 7px 7px 4px 4px;
+  background: var(--pp-frame);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .42), inset 0 0 0 1px rgba(255, 255, 255, .55);
+}
+#pp.pp-office.is-maximized { border-radius: 0; }
+#pp.pp-office.is-inactive { border-color: #8eaad0; }
+#pp.pp-office .xp-titlebar {
+  margin: 0;
+  height: 30px;
+  padding: 0 3px 0 182px;         /* room for the Office button and the Quick Access Toolbar */
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(#e6effb 0%, #d9e7f9 45%, #c9ddf6 46%, var(--pp-frame) 100%);
+  color: #3e6aaa;
+}
+#pp.pp-office.is-maximized .xp-titlebar { border-radius: 0; }
+#pp.pp-office .xp-title-icon { display: none; }
+#pp.pp-office .xp-title {
+  padding-right: 90px;
+  text-align: center;
+  font: 12px/1 var(--pp-font);
+  color: #3e6aaa;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, .7);
+}
+#pp.pp-office.is-inactive .xp-titlebar { background: linear-gradient(#eef4fc, #e2ecf9 45%, #d8e5f6 46%, #d4e3f6); }
+#pp.pp-office.is-inactive .xp-title { color: #8aa3c6; }
+
+/* Minimise / maximise / close, Office style: plain glyphs that light up on hover. */
+#pp.pp-office .xp-tbtn {
+  width: 26px; height: 20px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: transparent;
+  box-shadow: none;
+}
+#pp.pp-office .xp-tbtn svg { display: none; }
+#pp.pp-office .xp-tbtn::before {
+  content: "";
+  width: 11px; height: 11px;
+  background: center / contain no-repeat;
+}
+#pp.pp-office .xp-tbtn[data-act="min"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Crect x='1.5' y='7' width='8' height='2.2' fill='%234d6185'/%3E%3C/svg%3E");
+}
+#pp.pp-office .xp-tbtn[data-act="max"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Crect x='1.5' y='1.5' width='8' height='8' fill='none' stroke='%234d6185'/%3E%3Crect x='1' y='1' width='9' height='2.4' fill='%234d6185'/%3E%3C/svg%3E");
+}
+#pp.pp-office .xp-tbtn[aria-label="Restore Down"]::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Crect x='3.5' y='.5' width='7' height='6' fill='none' stroke='%234d6185'/%3E%3Crect x='3' y='0' width='8' height='2' fill='%234d6185'/%3E%3Crect x='.5' y='4.5' width='7' height='6' fill='%23dbe8f8' stroke='%234d6185'/%3E%3Crect x='0' y='4' width='8' height='2' fill='%234d6185'/%3E%3C/svg%3E");
+}
+#pp.pp-office .xp-tbtn--close::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath d='M1.5 1.5l8 8M9.5 1.5l-8 8' stroke='%234d6185' stroke-width='1.9'/%3E%3C/svg%3E");
+}
+#pp.pp-office .xp-tbtn:hover { filter: none; background: var(--pp-hover); border-color: var(--pp-hover-line); }
+#pp.pp-office .xp-tbtn:active { filter: none; background: var(--pp-press); border-color: var(--pp-press-line); }
+#pp.pp-office .xp-tbtn--close:hover { background: linear-gradient(#f7b8a6 0%, #e66a4d 45%, #cf3d1f 46%, #e8836a 100%); border-color: #a83c22; }
+#pp.pp-office .xp-tbtn--close:hover::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath d='M1.5 1.5l8 8M9.5 1.5l-8 8' stroke='%23fff' stroke-width='1.9'/%3E%3C/svg%3E");
+}
+#pp.pp-office .xp-tbtn:focus-visible { outline: 1px dotted #1e395b; outline-offset: -3px; }
+
+/* Without "pp-office" the window keeps the shell's blue XP title bar; make room there
+   for the Office button and the Quick Access Toolbar. */
+#pp:not(.pp-office) .xp-titlebar { padding-left: 182px; }
+#pp:not(.pp-office) .xp-title-icon { display: none; }
+#pp:not(.pp-office) .pp-qat-btn .pp-ico { filter: drop-shadow(0 0 1px rgba(255, 255, 255, .9)); }
+
+/* ---------- 3. Office button, Quick Access Toolbar, Office menu ---------- */
+.pp-orb {
+  position: absolute;
+  z-index: 40;
+  top: 1px; left: 4px;
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  /* A glassy blue-silver ring around Lehan's monogram (our own design, not the Office logo). */
+  background: radial-gradient(circle at 50% 30%, #ffffff 0%, #e6effa 30%, #a9c5ea 62%, #5b86c6 84%, #33609f 100%);
+  box-shadow: 0 0 0 1px #3c64a0, 0 2px 4px rgba(0, 0, 0, .45), inset 0 -2px 3px rgba(20, 50, 100, .35);
+}
+.pp-orb-mark {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  font: bold 14px/1 "Trebuchet MS", var(--pp-font);
+  letter-spacing: -.5px;
+  text-shadow: 0 1px 1px rgba(110, 35, 0, .8);
+  background: radial-gradient(circle at 42% 28%, #ffe4b0 0%, #fba650 38%, #e8661c 72%, #b9420c 100%);
+  box-shadow: inset 0 0 0 1px rgba(120, 40, 0, .45), 0 0 0 1px rgba(255, 255, 255, .7);
+  position: relative;
+  overflow: hidden;
+}
+.pp-orb-mark::after {          /* the glass highlight */
+  content: "";
+  position: absolute;
+  left: 4px; right: 4px; top: 1px;
+  height: 46%;
+  border-radius: 50% 50% 45% 45%;
+  background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .08));
+}
+.pp-orb:hover { box-shadow: 0 0 0 1px #3c64a0, 0 0 8px 3px rgba(255, 196, 70, .85), inset 0 -2px 3px rgba(20, 50, 100, .35); }
+.pp-orb:hover .pp-orb-mark { filter: brightness(1.08) saturate(1.1); }
+.pp-orb[aria-expanded="true"] .pp-orb-mark { filter: brightness(.9); }
+.pp-orb:focus-visible { outline: 2px solid #1e395b; outline-offset: 2px; }
+
+.pp-qat {
+  position: absolute;
+  z-index: 35;
+  top: 3px; left: 54px;
+  height: 24px;
+  display: flex; align-items: center; gap: 1px;
+}
+.pp-qat-btn {
+  height: 24px; min-width: 24px;  /* WCAG 2.5.8 */
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 2px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+}
+.pp-qat-btn .pp-ico { width: 16px; height: 16px; }
+.pp-qat-btn:hover:not(:disabled) { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-qat-btn:active:not(:disabled) { background: var(--pp-press); border-color: var(--pp-press-line); }
+.pp-qat-btn:disabled { cursor: default; }
+.pp-qat-btn:disabled .pp-ico { opacity: .4; filter: grayscale(1); }
+.pp-qat-btn:focus-visible { outline: 1px dotted #1e395b; outline-offset: -3px; }
+.pp-qat-drop { width: 0; height: 0; margin-left: 2px; border: 3px solid transparent; border-top: 3px solid #4d6185; border-bottom: 0; }
+
+/* The Office menu (click the orb). */
+.pp-omenu {
+  position: absolute;
+  z-index: 38;
+  top: 23px; left: 3px;
+  width: 456px; max-width: calc(100% - 6px);
+  padding: 22px 4px 4px;
+  border: 1px solid #6d93c8;
+  border-radius: 4px;
+  background: linear-gradient(#dbe8f8, var(--pp-frame) 40px);
+  box-shadow: 3px 5px 12px rgba(0, 0, 0, .4);
+}
+.pp-om-body {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  border: 1px solid #9ebbe1;
+  background: #fff;
+}
+.pp-om-left { padding: 2px; border-right: 1px solid #c8d7ea; }
+.pp-om-item {
+  width: 100%; height: 42px;
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 10px 0 6px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #000;
+  font: 12px var(--pp-font);
+  text-align: left;
+  cursor: pointer;
+}
+.pp-om-item .pp-ico { width: 32px; height: 32px; flex: none; }
+.pp-om-item.has-sub::after {
+  content: "";
+  margin-left: auto;
+  border: 4px solid transparent;
+  border-left: 4px solid #333;
+  border-right: 0;
+}
+.pp-om-item:hover, .pp-om-item:focus-visible, .pp-om-item.is-open {
+  background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none;
+}
+.pp-om-right { padding: 4px 6px 8px; background: #fbfcfe; min-height: 100%; }
+.pp-om-heading {
+  margin: 0 0 4px;
+  padding: 5px 4px 5px;
+  border-bottom: 1px solid #c8d7ea;
+  color: #000;
+  font: bold 12px var(--pp-font);
+}
+.pp-om-recent, .pp-om-sub {
+  width: 100%;
+  display: flex; align-items: center; gap: 8px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #000;
+  font: 12px var(--pp-font);
+  text-align: left;
+  cursor: pointer;
+}
+.pp-om-recent { height: 25px; padding: 0 4px; }
+.pp-om-n { width: 10px; text-decoration: underline; }
+.pp-om-name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-om-pin { width: 14px; height: 14px; opacity: .55; }
+.pp-om-sub { align-items: flex-start; padding: 6px 6px 7px; }
+.pp-om-sub .pp-ico { width: 32px; height: 32px; flex: none; }
+.pp-om-sub b { display: block; margin: 1px 0 2px; }
+.pp-om-sub span span { color: #444; font-size: 11px; line-height: 1.35; }
+.pp-om-recent:hover, .pp-om-recent:focus-visible, .pp-om-sub:hover, .pp-om-sub:focus-visible {
+  background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none;
+}
+.pp-om-foot { display: flex; justify-content: flex-end; gap: 6px; padding: 6px 2px 1px; }
+.pp-om-foot-btn {
+  height: 24px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 9px 0 6px;
+  border: 1px solid #8fb0dc;
+  border-radius: 3px;
+  background: linear-gradient(#fbfdff 0%, #e8f0fb 50%, #d8e5f7 51%, #e4eefa 100%);
+  color: #000;
+  font: 12px var(--pp-font);
+  cursor: pointer;
+}
+.pp-om-foot-btn .pp-ico { width: 16px; height: 16px; }
+.pp-om-foot-btn:hover, .pp-om-foot-btn:focus-visible { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; }
+
+/* ---------- 4. Ribbon tabs ---------- */
+.pp-tabrow {
+  flex: none;
+  display: flex; align-items: flex-end;
+  height: 25px;
+  padding: 0 5px 0 52px;          /* the tabs start just right of the Office button */
+}
+.pp-tabs { flex: 1; min-width: 0; display: flex; align-items: flex-end; gap: 1px; }
+.pp-tab {
+  position: relative;
+  height: 23px;
+  margin-bottom: -1px;            /* the open tab covers the ribbon's top border */
+  padding: 0 11px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: none;
+  color: var(--pp-tab-ink);
+  font: 12px/21px var(--pp-font);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.pp-tab:hover { border-color: #b3cbea; background: linear-gradient(rgba(255, 255, 255, .8), rgba(255, 255, 255, .25)); }
+.pp-tab[aria-selected="true"] {
+  z-index: 2;
+  border-color: var(--pp-line);
+  background: linear-gradient(#ffffff, #f3f7fd);
+}
+.pp-tab:focus-visible { outline: 1px dotted var(--pp-tab-ink); outline-offset: -4px; }
+.pp-tabrow-extra { flex: none; display: flex; align-items: center; gap: 6px; height: 24px; padding: 0 0 2px 10px; }
+.pp-quicklink {
+  display: flex; align-items: center; gap: 4px;
+  height: 20px;
+  padding: 0 6px 0 4px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--pp-tab-ink);
+  font: 11px var(--pp-font);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pp-quicklink .pp-ico { width: 14px; height: 14px; }
+.pp-quicklink:hover, .pp-quicklink:focus-visible { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; text-decoration: underline; }
+.pp-help {
+  width: 22px; height: 20px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+}
+.pp-help .xp-ico { width: 16px; height: 16px; }
+.pp-help:hover, .pp-help:focus-visible { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; }
+
+/* ---------- 5. Ribbon ---------- */
+/* Targets are at least 24px, or spaced so a 24px circle round each touches no other (WCAG 2.5.8):
+   small buttons and checkboxes are 24px tall with 1px between them, which needs a ribbon 8px
+   taller than PowerPoint 2007's. */
+.pp-ribbon {
+  flex: none;
+  position: relative;
+  z-index: 1;
+  height: 108px;
+  margin: 0 3px;
+  overflow: clip visible;         /* clip sideways only, so the pulsing button can glow */
+  border: 1px solid var(--pp-line);
+  border-radius: 0 3px 4px 4px;
+  background: linear-gradient(#f3f7fd 0%, #e4eefa 16%, #d8e6f8 52%, #cddff6 86%, #d8e7f9 100%);
+  box-shadow: inset 0 1px 0 #fff, 0 1px 0 rgba(255, 255, 255, .45);
+}
+.pp-panel { height: 100%; display: flex; gap: 2px; padding: 3px 3px 3px 2px; }
+
+.pp-group {
+  position: relative;
+  flex: none;
+  display: flex; flex-direction: column;
+  border: 1px solid #aac5e7;
+  border-radius: 3px;
+  background: linear-gradient(#f0f6fd 0%, #e3edfa 52%, #d7e6f8 100%);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .6);
+}
+.pp-group:hover { background: linear-gradient(#f8fbfe 0%, #edf3fc 52%, #e2ecfa 100%); }
+.pp-group-body { flex: 1; min-height: 0; display: flex; align-items: stretch; gap: 1px; padding: 2px 3px 3px; }   /* 3px: room round the corner launcher */
+.pp-group-label {
+  flex: none;
+  height: 17px;
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 18px;
+  border-top: 1px solid #b7cdea;
+  border-radius: 0 0 2px 2px;
+  background: linear-gradient(#cee0f5, #bfd5f0);
+  color: var(--pp-group-ink);
+  font: 11px/1 var(--pp-font);
+  white-space: nowrap;
+}
+.pp-launcher {                    /* 15px, with no other button within a 24px circle round it (WCAG 2.5.8) */
+  position: absolute;
+  right: 1px; bottom: 1px;
+  width: 15px; height: 15px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+}
+.pp-launcher svg { width: 9px; height: 9px; }
+.pp-launcher:hover, .pp-launcher:focus-visible { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; }
+
+/* Buttons */
+.pp-btn {
+  position: relative;
+  display: flex; align-items: center;
+  margin: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: var(--pp-ink);
+  font: 11px/1.18 var(--pp-font);
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.pp-btn:hover:not(:disabled) { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-btn:active:not(:disabled) { background: var(--pp-press); border-color: var(--pp-press-line); }
+.pp-btn[aria-pressed="true"] { background: var(--pp-on); border-color: var(--pp-on-line); }
+.pp-btn:focus-visible { outline: 1px dotted #1e395b; outline-offset: -3px; background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-btn:disabled { color: #8d9bb0; cursor: default; }
+.pp-btn:disabled .pp-ico { opacity: .45; filter: grayscale(1); }
+
+.pp-btn--big { flex-direction: column; justify-content: flex-start; min-width: 44px; padding: 2px 3px 1px; }
+.pp-btn--big .pp-ico { width: 32px; height: 32px; flex: none; margin: 1px 0 4px; }
+.pp-btn-label { display: block; }
+.pp-btn--small { height: 24px; gap: 4px; padding: 0 5px 0 3px; text-align: left; }
+.pp-btn--small .pp-ico { width: 16px; height: 16px; flex: none; }
+.pp-btn--icon { height: 21px; min-width: 23px; justify-content: center; padding: 0 3px; }
+.pp-btn--icon .pp-ico { width: 16px; height: 16px; }
+.pp-btn--icon.has-menu { padding-right: 2px; }
+.pp-arrow {
+  display: inline-block;
+  width: 0; height: 0;
+  margin-left: 3px;
+  vertical-align: middle;
+  border: 3px solid transparent;
+  border-top: 3px solid #43577a;
+  border-bottom: 0;
+}
+.pp-btn--big .pp-arrow { margin-left: 2px; }
+
+/* The From Beginning button: a bit bigger than its neighbours, glowing gently,
+   and it hops when the mouse comes near.
+   It pulses twice (under five seconds, WCAG 2.2.2), then rests lit but still. powerpoint.js adds
+   "is-settled" when the pulse ends, and also once the visitor has pointed at it, focused it or
+   started a show, so it does not start pulsing again. Hover and focus still make it hop and bob,
+   for about five seconds. */
+.pp-btn--hero {
+  min-width: 64px;
+  padding: 1px 6px 1px;
+  isolation: isolate;
+  animation: pp-pulse 2.4s ease-in-out 2;
+}
+.pp-btn--hero .pp-ico { width: 38px; height: 38px; margin: 0 0 2px; }
+.pp-btn--hero .pp-btn-label { font-weight: 600; line-height: 1.1; }
+.pp-btn--hero::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  z-index: -1;
+  border: 1px solid var(--pp-hover-line);
+  border-radius: 4px;
+  background: var(--pp-hover);
+  animation: pp-glow 2.4s ease-in-out 1.5 forwards;   /* ends at its brightest, and stays */
+}
+.pp-btn--hero.is-settled { animation: none; }
+.pp-btn--hero.is-settled::before { animation: none; opacity: 1; box-shadow: 0 0 9px 2px rgba(255, 178, 46, .55); }
+.pp-btn--hero:hover:not(:disabled), .pp-btn--hero:focus-visible {
+  border-color: transparent;
+  background: none;
+  animation: pp-hop .6s ease-out both, pp-bob 1.4s ease-in-out .6s 3 forwards;
+}
+.pp-btn--hero:hover::before, .pp-btn--hero:focus-visible::before {
+  animation: none;
+  opacity: 1;
+  box-shadow: 0 0 10px 3px rgba(255, 178, 46, .6);
+}
+.pp-btn--hero:active::before { background: var(--pp-press); border-color: var(--pp-press-line); }
+@keyframes pp-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+@keyframes pp-glow {
+  0%, 100% { opacity: .35; box-shadow: 0 0 0 0 rgba(255, 178, 46, 0); }
+  50% { opacity: 1; box-shadow: 0 0 9px 2px rgba(255, 178, 46, .55); }
+}
+@keyframes pp-hop {
+  0% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-3px) rotate(-2.5deg); }
+  70% { transform: translateY(-1px) rotate(1.5deg); }
+  100% { transform: translateY(-2px) rotate(0); }
+}
+@keyframes pp-bob {
+  0%, 100% { transform: translateY(-2px); }
+  50% { transform: translateY(-3.5px); }
+}
+
+/* Columns and rows of small buttons */
+.pp-stack { display: flex; flex-direction: column; justify-content: flex-start; gap: 1px; padding-top: 1px; }
+.pp-checks { justify-content: flex-start; padding: 1px 2px 0; }
+.pp-rows { display: flex; flex-direction: column; justify-content: center; gap: 6px; padding: 0 2px; }
+.pp-row { display: flex; align-items: center; gap: 4px; }
+.pp-seg {
+  display: flex;
+  border: 1px solid #b6cbe7;
+  border-radius: 3px;
+  background: linear-gradient(#fafcff, #e1ebf8);
+  box-shadow: inset 0 1px 0 #fff;
+}
+.pp-seg .pp-btn--icon { border-radius: 2px; }
+.pp-seg .pp-btn--icon + .pp-btn--icon { box-shadow: -1px 0 0 #cbd9ed; }
+
+/* Drop-down boxes */
+.pp-combo {
+  height: 21px;
+  display: flex; align-items: center;
+  padding: 0 0 0 4px;
+  border: 1px solid #b6cbe7;
+  border-radius: 2px;
+  background: #fff;
+  color: #000;
+  font: 11px var(--pp-font);
+  text-align: left;
+  cursor: pointer;
+}
+.pp-combo-val { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-combo::after {
+  content: "";
+  flex: none;
+  width: 14px; height: 100%;
+  border-left: 1px solid #cbd9ed;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 4'%3E%3Cpath d='M0 0h7L3.5 4z' fill='%2343577a'/%3E%3C/svg%3E") center / 7px 4px no-repeat,
+              linear-gradient(#f7faff, #dde8f6);
+}
+.pp-combo:hover:not(:disabled) { border-color: var(--pp-hover-line); }
+.pp-combo:hover:not(:disabled)::after { background-color: transparent; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 4'%3E%3Cpath d='M0 0h7L3.5 4z' fill='%2343577a'/%3E%3C/svg%3E"), var(--pp-hover); }
+.pp-combo:focus-visible { outline: 1px dotted #1e395b; outline-offset: 1px; }
+.pp-combo:disabled { background: #f2f5f9; cursor: default; }
+.pp-field { height: 24px; display: flex; align-items: center; gap: 4px; padding: 0 2px; color: var(--pp-ink); }
+.pp-field .pp-ico { width: 16px; height: 16px; flex: none; }
+.pp-field.is-disabled { color: #8d9bb0; }
+.pp-field.is-disabled .pp-ico { opacity: .45; filter: grayscale(1); }
+.pp-field-label { white-space: nowrap; }
+
+/* Checkboxes */
+.pp-check {
+  height: 24px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 5px 0 6px;           /* 6px: the 13px box keeps 24px of room from its neighbours */
+  border: 1px solid transparent;
+  border-radius: 3px;
+  color: var(--pp-ink);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.pp-check:hover:not(.is-disabled) { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-check input {
+  -webkit-appearance: none; appearance: none;
+  flex: none;
+  width: 13px; height: 13px;
+  margin: 0;
+  border: 1px solid #8199b9;
+  border-radius: 1px;
+  background: linear-gradient(135deg, #dce3ec, #ffffff);
+  cursor: pointer;
+}
+.pp-check input:checked {
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 11 11'%3E%3Cpath d='M2 5.5l2.4 2.4L9 3' fill='none' stroke='%23214f9d' stroke-width='1.8'/%3E%3C/svg%3E") center / 11px no-repeat,
+              linear-gradient(135deg, #dce3ec, #ffffff);
+}
+.pp-check input:focus-visible { outline: 1px dotted #000; outline-offset: 1px; }
+.pp-check.is-disabled { color: #8d9bb0; cursor: default; }
+.pp-check.is-disabled input { opacity: .5; cursor: default; }
+.pp-spin {
+  margin-left: 2px;
+  padding: 1px 16px 1px 4px;
+  border: 1px solid #b6cbe7;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 7 10'%3E%3Cpath d='M0 4h7L3.5 0zM0 6h7l-3.5 4z' fill='%2343577a'/%3E%3C/svg%3E") right 4px center / 6px no-repeat;
+  color: #888;
+}
+
+/* In-ribbon galleries (transitions, themes, shapes) */
+.pp-gallery {
+  display: flex;
+  height: 60px;
+  margin: 3px 2px 0;
+  border: 1px solid #a9c4e6;
+  border-radius: 2px;
+  background: #fbfdff;
+}
+.pp-gallery-items { display: flex; align-items: center; gap: 3px; padding: 0 3px; }
+.pp-gallery-scroll { display: flex; flex-direction: column; width: 15px; border-left: 1px solid #c2d4ec; }
+.pp-gallery-scroll span {
+  flex: 1;
+  background: linear-gradient(#fbfdff, #e1ebf8) center / 100% no-repeat;
+  border-bottom: 1px solid #c2d4ec;
+  position: relative;
+}
+.pp-gallery-scroll span:last-child { border-bottom: 0; }
+.pp-gallery-scroll span::after {
+  content: "";
+  position: absolute;
+  left: 50%; top: 50%;
+  border: 3px solid transparent;
+  transform: translate(-50%, -50%);
+}
+.pp-gallery-scroll span:nth-child(1)::after { border-bottom: 3px solid #43577a; border-top: 0; }
+.pp-gallery-scroll span:nth-child(2)::after { border-top: 3px solid #43577a; border-bottom: 0; }
+.pp-gallery-scroll span:nth-child(3)::after { border-top: 3px solid #43577a; border-bottom: 0; box-shadow: 0 -3px 0 -1px #43577a; }
+.pp-gal-item {
+  flex: none;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+}
+.pp-gal-item:hover { border-color: var(--pp-hover-line); box-shadow: 0 0 0 1px #ffe28a; }
+.pp-gal-item[aria-pressed="true"] { border-color: var(--pp-on-line); box-shadow: 0 0 0 2px #fbbb56; }
+.pp-gal-item:focus-visible { outline: 1px dotted #000; outline-offset: 2px; }
+.pp-trans { width: 48px; height: 38px; display: grid; place-items: center; background: #fff; }
+.pp-trans svg { width: 44px; height: 33px; display: block; }
+.pp-theme {
+  position: relative;
+  width: 50px; height: 48px;
+  overflow: hidden;
+  border-color: #b8c6d8;
+  font: 18px/1 Georgia, "Times New Roman", serif;
+}
+.pp-theme-aa { position: absolute; left: 6px; top: 9px; }
+.pp-theme-bars { position: absolute; left: 6px; right: 6px; bottom: 6px; height: 7px; display: flex; gap: 1px; }
+.pp-theme-bars i { flex: 1; }
+.pp-shapes {
+  width: 150px; height: 54px;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  align-content: center;
+  gap: 2px 1px;
+  padding: 2px;
+  background: #fff;
+}
+.pp-shapes svg { width: 14px; height: 14px; margin: auto; }
+
+/* ---------- 6. Slides pane and outline ---------- */
+.pp-main { flex: 1; min-height: 0; display: flex; padding: 4px 3px 0; }
+.pp-side {
+  flex: none;
+  width: var(--pp-side-w);
+  min-height: 0;
+  display: flex; flex-direction: column;
+  border: 1px solid var(--pp-line);
+  background: #f3f7fc;
+}
+.pp-side-tabs {
+  flex: none;
+  height: 25px;
+  display: flex; align-items: flex-end; gap: 2px;
+  padding: 0 5px;
+  border-bottom: 1px solid var(--pp-line);
+  background: linear-gradient(#edf3fc, #d0e0f4);
+}
+.pp-side-tab {
+  height: 21px;
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: -1px;
+  padding: 0 9px 0 6px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 3px 3px 0 0;
+  background: none;
+  color: var(--pp-tab-ink);
+  font: 11px var(--pp-font);
+  cursor: pointer;
+}
+.pp-side-tab .pp-ico { width: 14px; height: 14px; }
+.pp-side-tab:hover { background: rgba(255, 255, 255, .6); border-color: #b3cbea; }
+.pp-side-tab[aria-selected="true"] { background: #f3f7fc; border-color: var(--pp-line); }
+.pp-side-tab:focus-visible { outline: 1px dotted var(--pp-tab-ink); outline-offset: -3px; }
+
+.pp-thumbs-panel { flex: 1; min-height: 0; display: flex; flex-direction: column; }   /* the Slides tab's panel */
+.pp-thumbs {
+  flex: 1; min-height: 0;
+  margin: 0;
+  padding: 10px 14px 16px 0;
+  overflow-y: auto;
+  list-style: none;
+  background: #f3f7fc;
+}
+.pp-thumb-item { position: relative; margin: 0 0 12px; }
+
+/* The little star under a slide's number: this slide has a transition or animations (click: play them).
+   The button is 24px square (WCAG 2.5.8) round a 14px star. */
+.pp-anim-ind {
+  position: absolute;
+  left: 6px; top: 20px;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  cursor: pointer;
+}
+.pp-anim-ico { width: 14px; height: 12px; display: block; }
+.pp-anim-ind:hover, .pp-anim-ind:focus-visible { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; }
+.pp-thumb {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 30px minmax(0, 1fr);
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-thumb-num {
+  padding: 1px 9px 0 0;
+  color: #3d4f6b;
+  font: 12px var(--pp-font);
+  text-align: right;
+}
+.pp-thumb-box {
+  display: block;
+  border: 1px solid #9fa9b8;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, .18);
+  outline: 3px solid transparent;
+  outline-offset: 2px;
+  transition: outline-color .12s;
+}
+.pp-thumb .slide, .pp-sort .slide { pointer-events: none; }
+.pp-thumb-cap {
+  grid-column: 2;
+  display: block;
+  padding: 7px 2px 0;
+  color: #1e395b;
+  font: 600 12px/1.25 var(--pp-font);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.pp-thumb:hover .pp-thumb-box { outline-color: #fbd98a; }
+.pp-thumb[aria-current="true"] .pp-thumb-box { outline-color: var(--pp-select); }
+.pp-thumb[aria-current="true"] .pp-thumb-num { color: #000; font-weight: bold; }
+.pp-thumb:focus { outline: none; }
+.pp-thumb:focus-visible .pp-thumb-box { box-shadow: 0 0 0 1px #fff, 0 0 0 2px #1e395b; }
+.pp-thumb:focus-visible .pp-thumb-cap { text-decoration: underline dotted; }
+
+/* Links inside thumbnails are plain text (see staticSlide in powerpoint.js); keep their look:
+   blue for stand-alone links, the text's own colour for links in running text (as on the slide). */
+.slide .pp-link { color: #1f5fbf; text-decoration: underline; text-underline-offset: .12em; }
+.slide .pp-link.text-link { color: inherit; }
+
+.pp-outline {
+  flex: 1; min-height: 0;
+  overflow-y: auto;
+  padding: 6px 8px 16px 0;
+  background: #fff;
+  color: #1f1f1f;
+  font: 12px/1.35 Calibri, Carlito, "Segoe UI", sans-serif;
+}
+.pp-ol, .pp-ol-lines { margin: 0; padding: 0; list-style: none; }
+.pp-ol-item { display: grid; grid-template-columns: 26px minmax(0, 1fr); padding: 4px 0 8px; cursor: pointer; border-radius: 2px; }
+.pp-ol-item:hover { background: #f4f8fd; }
+.pp-ol-item.is-current { background: #fff6dc; box-shadow: inset 3px 0 0 var(--pp-select); }
+.pp-ol-num { padding: 3px 4px 0 0; color: #3d4f6b; font: 12px var(--pp-font); text-align: right; }
+.pp-ol-title {
+  display: flex; align-items: center; gap: 5px;
+  padding: 1px 2px;
+  border: 0;
+  background: none;
+  color: #000;
+  font: bold 14px/1.25 Calibri, Carlito, "Segoe UI", sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-ol-ico { width: 15px; height: 15px; flex: none; }
+.pp-ol-title:focus-visible { outline: 1px dotted #1e395b; }
+.pp-ol-lines li { position: relative; margin: 2px 0; }
+.pp-ol-lines .pp-ol-l1 { padding-left: 34px; }
+.pp-ol-lines .pp-ol-l2 { padding-left: 50px; color: #444; font-size: 11.5px; }
+.pp-ol-lines li::before {
+  content: "";
+  position: absolute;
+  top: .55em;
+  width: 4px; height: 4px;
+  background: #c4501f;
+}
+.pp-ol-lines .pp-ol-l1::before { left: 25px; }
+.pp-ol-lines .pp-ol-l2::before { left: 41px; background: #9a9a9a; border-radius: 50%; }
+.pp-outline .pp-link { color: #1f5fbf; text-decoration: underline; }
+.pp-outline .pp-link.text-link { color: inherit; }
+
+/* ---------- 7. Editing area and notes ---------- */
+.pp-split { flex: none; width: 5px; cursor: col-resize; }
+.pp-split:hover, .pp-split:focus-visible { background: #a6c2e8; outline: none; }
+.pp-edit { flex: 1; min-width: 0; display: flex; flex-direction: column; }
+.pp-stage-row {
+  position: relative;
+  flex: 1; min-height: 0;
+  display: flex;
+  border: 1px solid var(--pp-line);
+}
+.pp-stage {
+  position: relative;
+  flex: 1; min-width: 0;
+  display: flex;
+  overflow: hidden;
+  background: var(--pp-work);
+  touch-action: pan-y pinch-zoom; /* sideways swipes change the slide (powerpoint.js) */
+  --pp-slide-w: 600px;            /* set by powerpoint.js to fit the window */
+}
+.pp-stage.is-zoomed { overflow: auto; }
+.pp-frame {
+  position: relative;
+  flex: none;
+  width: var(--pp-slide-w);
+  margin: auto;                   /* centred, and scrollable when zoomed in */
+  background: #fff;
+  box-shadow: 0 0 0 1px #98a5b7, 2px 3px 9px rgba(0, 0, 0, .28);
+}
+.pp-frame.is-gray .slide { filter: grayscale(1); }
+.pp-frame.is-bw .slide { filter: grayscale(1) contrast(8) brightness(1.15); }
+.pp-frame.has-grid::after {     /* View > Gridlines */
+  content: "";
+  position: absolute; inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(60, 60, 60, .28) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(60, 60, 60, .28) 1px, transparent 1px);
+  background-size: 6.25% 11.111%;
+}
+.pp-ruler { display: none; position: absolute; z-index: 2; pointer-events: none; }
+.pp-edit.has-ruler .pp-ruler { display: block; }
+.pp-ruler--h {                  /* View > Ruler */
+  left: 0; right: 17px; top: 0; height: 15px;
+  border-bottom: 1px solid #9eb5d6;
+  background:
+    repeating-linear-gradient(to right, #7c8ca5 0 1px, transparent 1px 10px) bottom / 100% 4px no-repeat,
+    repeating-linear-gradient(to right, #7c8ca5 0 1px, transparent 1px 50px) bottom / 100% 8px no-repeat,
+    #f6f9fd;
+}
+.pp-ruler--v {
+  left: 0; top: 15px; bottom: 0; width: 15px;
+  border-right: 1px solid #9eb5d6;
+  background:
+    repeating-linear-gradient(to bottom, #7c8ca5 0 1px, transparent 1px 10px) right / 4px 100% no-repeat,
+    repeating-linear-gradient(to bottom, #7c8ca5 0 1px, transparent 1px 50px) right / 8px 100% no-repeat,
+    #f6f9fd;
+}
+
+/* The scroll bar beside the slide (XP style), with Previous / Next Slide buttons.
+   The buttons keep the XP width but are 24px tall, so each is a 24px target (WCAG 2.5.8). */
+.pp-vscroll {
+  flex: none;
+  width: 17px;
+  display: flex; flex-direction: column;
+  background: #f2f5f9;
+  border-left: 1px solid #c9d6e6;
+}
+.pp-sb-btn {
+  flex: none;
+  width: 16px; height: 24px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid #b7c8de;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #f7faff, #dbe6f4);
+  cursor: pointer;
+}
+.pp-sb-btn svg { width: 9px; height: 9px; }
+.pp-sb-btn:hover { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-sb-btn:focus-visible { outline: 1px dotted #000; outline-offset: -3px; }
+.pp-sb-page { margin-top: 1px; }
+.pp-sb-track { position: relative; flex: 1; min-height: 24px; cursor: pointer; }
+.pp-sb-thumb {
+  position: absolute;
+  left: 1px; right: 1px;
+  height: 30px;
+  border: 1px solid #94acd0;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(#9cb2d4 0 1px, transparent 1px 3px) center / 7px 8px no-repeat,
+    linear-gradient(90deg, #f1f6fd, #cfdcf0);
+  box-shadow: inset 0 1px 0 #fff;
+  transition: top .15s;
+}
+
+.pp-notes {
+  flex: none;
+  height: 72px;
+  margin-top: 4px;
+  padding: 7px 12px;
+  overflow: auto;
+  border: 1px solid var(--pp-line);
+  background: #fff;
+  color: #1f1f1f;
+  font: 13px/1.4 Calibri, Carlito, "Segoe UI", sans-serif;
+}
+.pp-notes.is-empty { color: #6b6b6b; }   /* "Click to add notes": 5.3:1 on white */
+
+/* ---------- 8. Slide Sorter ---------- */
+.pp-sorter {
+  flex: 1; min-width: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  align-content: start;
+  gap: 24px 22px;
+  padding: 20px 22px 28px;
+  overflow: auto;
+  border: 1px solid var(--pp-line);
+  background: var(--pp-work);
+}
+.pp-sort-item { position: relative; min-width: 0; }
+.pp-sort {
+  width: 100%;
+  display: flex; flex-direction: column; gap: 5px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.pp-sort-box {
+  display: block;
+  overflow: hidden;               /* a preview's movement stays inside the thumbnail */
+  border: 1px solid #9fa9b8;
+  box-shadow: 1px 2px 4px rgba(0, 0, 0, .22);
+  outline: 3px solid transparent;
+  outline-offset: 2px;
+}
+.pp-sort:hover .pp-sort-box { outline-color: #fbd98a; }
+.pp-sort[aria-current="true"] .pp-sort-box { outline-color: var(--pp-select); }
+.pp-sort:focus { outline: none; }
+.pp-sort:focus-visible .pp-sort-box { box-shadow: 0 0 0 1px #fff, 0 0 0 2px #1e395b; }
+.pp-sort-meta { display: flex; justify-content: space-between; gap: 8px; padding: 2px 1px 0 22px; color: #1e395b; font: 12px var(--pp-font); }
+.pp-sort-cap { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* In the Slide Sorter the star sits bottom left, the number bottom right (as in PowerPoint 2007). */
+.pp-sort-item .pp-anim-ind { left: -4px; top: auto; bottom: -4px; }
+
+/* ---------- 9. Status bar ---------- */
+.pp-status {
+  flex: none;
+  height: 25px;
+  display: flex; align-items: center;
+  margin-top: 3px;
+  padding: 0 4px 0 4px;
+  border-top: 1px solid #a7c1e6;
+  border-radius: 0 0 3px 3px;
+  background: linear-gradient(#e6f0fc 0%, #d6e5f9 45%, #c4d8f3 46%, #cfe0f6 100%);
+  color: #15428b;
+  font: 11px var(--pp-font);
+}
+.pp-st {
+  height: 17px;
+  display: flex; align-items: center; gap: 5px;
+  padding: 0 10px 0 8px;
+  border-right: 1px solid #9ab6dc;
+  box-shadow: 1px 0 0 rgba(255, 255, 255, .7);
+  white-space: nowrap;
+}
+.pp-st .pp-ico { width: 14px; height: 14px; }
+.pp-st-fill { flex: 1; min-width: 4px; }
+.pp-views { display: flex; gap: 1px; padding: 0 6px; }
+.pp-view-btn, .pp-zoom-fit {
+  width: 26px; height: 20px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  cursor: pointer;
+}
+.pp-view-btn .pp-ico, .pp-zoom-fit .pp-ico { width: 16px; height: 16px; }
+.pp-view-btn[aria-pressed="true"], .pp-zoom-fit[aria-pressed="true"] { background: var(--pp-on); border-color: var(--pp-on-line); }
+.pp-view-btn:hover, .pp-zoom-fit:hover, .pp-zoom-pct:hover { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+.pp-view-btn:focus-visible, .pp-zoom-fit:focus-visible, .pp-zoom-pct:focus-visible, .pp-zoom-btn:focus-visible { outline: 1px dotted #1e395b; outline-offset: -2px; }
+.pp-zoom { display: flex; align-items: center; gap: 3px; padding-left: 4px; }
+.pp-zoom-pct {
+  min-width: 40px; height: 19px;
+  padding: 0 3px;
+  border: 1px solid transparent;
+  border-radius: 3px;
+  background: none;
+  color: #15428b;
+  font: 11px var(--pp-font);
+  text-align: right;
+  cursor: pointer;
+}
+/* Zoom Out / Zoom In: a 16px round button drawn inside a 24px target (WCAG 2.5.8). */
+.pp-zoom-btn {
+  position: relative;
+  width: 24px; height: 24px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.pp-zoom-btn::before {
+  content: "";
+  position: absolute;
+  left: 4px; top: 4px;
+  width: 16px; height: 16px;
+  border: 1px solid #7f9cc7;
+  border-radius: 50%;
+  background: linear-gradient(#ffffff, #d1e0f5);
+}
+.pp-zoom-btn svg { position: relative; width: 9px; height: 9px; }
+.pp-zoom-btn:hover::before { background: var(--pp-hover); border-color: var(--pp-hover-line); }
+#pp-zoom {
+  -webkit-appearance: none; appearance: none;
+  width: 104px; height: 16px;
+  margin: 0 2px;
+  background: transparent;
+  cursor: pointer;
+}
+#pp-zoom::-webkit-slider-runnable-track { height: 3px; border-radius: 2px; background: #7f9cc7; box-shadow: 0 1px 0 #fff; }
+#pp-zoom::-moz-range-track { height: 3px; border-radius: 2px; background: #7f9cc7; }
+#pp-zoom::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 9px; height: 14px;
+  margin-top: -6px;
+  border: 1px solid #4f6e9e;
+  border-radius: 2px;
+  background: linear-gradient(#ffffff, #c6d8f1);
+}
+#pp-zoom::-moz-range-thumb { width: 8px; height: 13px; border: 1px solid #4f6e9e; border-radius: 2px; background: linear-gradient(#ffffff, #c6d8f1); }
+#pp-zoom:focus-visible { outline: 1px dotted #1e395b; }
+
+/* ---------- 10. Menus, ScreenTips, help text in XP dialogs ---------- */
+.pp-menu {
+  position: fixed;
+  z-index: 1500;
+  min-width: 180px;
+  max-height: calc(100vh - 44px);
+  overflow-y: auto;
+  padding: 2px;
+  border: 1px solid #868686;
+  background: linear-gradient(90deg, #e9eef6 0 28px, #fafafa 28px);
+  box-shadow: 2px 3px 7px rgba(0, 0, 0, .35);
+  color: #000;
+  font: 11px var(--pp-font);
+}
+.pp-menu-item {
+  width: 100%;
+  min-height: 24px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 2px 18px 2px 2px;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.pp-menu-item:hover, .pp-menu-item:focus { background: var(--pp-hover); border-color: var(--pp-hover-line); outline: none; }
+.pp-menu-mark { width: 22px; height: 18px; flex: none; display: grid; place-items: center; }
+.pp-menu-mark svg { width: 13px; height: 13px; }
+.pp-menu-mark .pp-ico { width: 16px; height: 16px; }
+.pp-menu-item[aria-checked="true"] .pp-menu-mark { background: var(--pp-on); border: 1px solid var(--pp-on-line); border-radius: 2px; }
+.pp-menu-head { margin: 1px 0; padding: 4px 6px 4px 34px; background: #dde7f4; color: #15428b; font-weight: bold; }
+.pp-menu-sep { height: 1px; margin: 3px 2px 3px 32px; background: #c5c5c5; }
+
+.pp-tip {
+  position: fixed;
+  z-index: 1600;
+  max-width: 240px;
+  padding: 6px 9px 7px;
+  border: 1px solid #767676;
+  border-radius: 2px;
+  background: linear-gradient(#ffffff, #e3ebf6);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, .3);
+  color: #4c4c4c;
+  font: 11px/1.4 var(--pp-font);
+  pointer-events: none;
+}
+.pp-tip b { display: block; color: #000; }
+.pp-tip p { margin: 4px 0 0 8px; }
+
+.pp-anim-list { margin: 4px 0 8px; padding-left: 22px; }
+.pp-anim-list li { margin: 2px 0; }
+.pp-keys { margin: 4px 0 10px; border-collapse: collapse; }
+.pp-keys th { padding: 2px 12px 2px 0; text-align: left; vertical-align: top; white-space: nowrap; }
+.pp-keys td { padding: 2px 0; }
+
+/* ---------- 11. Slide show: the whole page above the XP taskbar, black ---------- */
+.pp-show {
+  position: fixed;
+  inset: 0 0 var(--xp-taskbar-h, 30px) 0;
+  z-index: 900;                   /* over the desktop and windows, under the taskbar (1000) */
+  overflow: hidden;
+  background: #000;
+  color: #fff;
+  outline: none;
+  touch-action: none;
+  -webkit-user-select: none; user-select: none;
+}
+.pp-show.is-idle { cursor: none; }
+.pp-show-stage { position: absolute; inset: 0; --pp-show-w: 100vw; }
+.pp-show-slide { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; }
+.pp-show-frame { flex: none; width: var(--pp-show-w); }
+.pp-show-end { position: absolute; inset: 0; z-index: 3; background: #000; cursor: pointer; }
+.pp-show-end p { margin: 0; padding-top: 14px; color: #fff; font: 15px/1.3 Arial, Helvetica, sans-serif; text-align: center; }
+.pp-show-blank { position: absolute; inset: 0; z-index: 4; background: #000; }
+.pp-show-blank.is-white { background: #fff; }
+
+/* "Turn your phone sideways": only on upright phones, for a few seconds after the show starts. */
+.pp-show-hint {
+  display: none;
+  position: absolute;
+  z-index: 5;
+  left: 50%; top: 16px;
+  margin: 0;
+  padding: 6px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .16);
+  color: #fff;
+  font: 12px/1.3 var(--pp-font);
+  white-space: nowrap;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+@media (max-width: 700px) and (orientation: portrait) {
+  .pp-show.is-fresh .pp-show-hint { display: block; animation: pp-hint 4s ease both; }
+}
+@keyframes pp-hint { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
+
+/* The control strip, bottom left. */
+.pp-show-strip {
+  position: absolute;
+  z-index: 5;
+  left: 14px; bottom: 14px;
+  display: flex; align-items: center; gap: 4px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .35s;
+}
+.pp-show.is-awake .pp-show-strip, .pp-show-strip:focus-within { opacity: 1; pointer-events: auto; }
+.pp-strip-btn {
+  width: 30px; height: 24px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .5);
+  border-radius: 3px;
+  background: rgba(70, 70, 70, .55);
+  color: #fff;
+  cursor: pointer;
+}
+.pp-strip-btn svg { width: 12px; height: 12px; }
+.pp-strip-btn:hover { background: rgba(120, 120, 120, .85); border-color: #fff; }
+.pp-strip-btn:focus-visible { outline: 2px solid #fff; outline-offset: 1px; }
+.pp-strip-end { margin-left: 4px; }
+.pp-show-count { margin: 0 2px 0 6px; color: rgba(255, 255, 255, .85); font: 12px var(--pp-font); text-shadow: 0 1px 2px #000; }
+
+/* Rehearse Timings: the timer box, top left. */
+.pp-rehearse {
+  position: absolute;
+  z-index: 5;
+  top: 10px; left: 10px;
+  display: flex; align-items: center; gap: 8px;
+  padding: 4px 10px 4px 8px;
+  border: 1px solid #6d8fc0;
+  border-radius: 3px;
+  background: linear-gradient(#e9f1fc, #c9dbf3);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, .5);
+  color: #15428b;
+  font: 11px var(--pp-font);
+}
+.pp-rehearse button {
+  width: 22px; height: 20px;
+  display: grid; place-items: center;
+  padding: 0;
+  border: 1px solid #8fb0dc;
+  border-radius: 2px;
+  background: linear-gradient(#fff, #dbe7f7);
+  cursor: pointer;
+}
+.pp-rehearse button svg { width: 10px; height: 10px; }
+.pp-reh-time { padding: 1px 5px; border: 1px solid #9ab6dc; background: #fff; color: #000; font-variant-numeric: tabular-nums; }
+.pp-reh-total { font-variant-numeric: tabular-nums; }
+
+/* The show's taskbar button stays readable. */
+.pp-show-task { max-width: 240px; }
+
+/* Transitions and entrance animations are played from powerpoint.js (Web Animations API), not CSS;
+   the computer's "reduce motion" setting switches them off there. */
+
+/* ---------- 12. The welcome balloon, pointing up at From Beginning ---------- */
+.xp-balloon.pp-balloon { right: auto; bottom: auto; }
+.xp-balloon.pp-balloon::after {
+  right: auto; bottom: auto;
+  left: var(--pp-arrow-x, 24px);
+  top: -11px;
+  border: 11px solid transparent;
+  border-top: 0;
+  border-bottom-color: #ffffe1;
+  filter: drop-shadow(0 -1px 0 #000);
+}
+
+/* ---------- 13. Small screens ---------- */
+/* Phones (the XP shell maximises windows below 700px): the ribbon shrinks to the tabs
+   plus From Beginning, the slide sits on top and the thumbnails become a strip. */
+@media (max-width: 700px) {
+  #pp { min-width: 0; min-height: 0; }
+  #pp.pp-office { border: 0; border-radius: 0; box-shadow: none; }
+  #pp.pp-office .xp-titlebar { padding-left: 42px; border-radius: 0; }
+  #pp.pp-office .xp-title { padding-right: 0; text-align: left; }
+  .pp-orb { top: 2px; left: 4px; width: 34px; height: 34px; }
+  .pp-orb-mark { width: 25px; height: 25px; font-size: 11px; }
+  .pp-qat, .pp-omenu .pp-om-right .pp-om-pin { display: none; }
+  .pp-omenu { width: auto; right: 3px; }
+  .pp-om-body { grid-template-columns: 1fr; }
+  .pp-om-left { border-right: 0; border-bottom: 1px solid #c8d7ea; display: grid; grid-template-columns: 1fr 1fr; }
+  .pp-om-item { height: 36px; }
+
+  /* Touch targets here are 24px at least (WCAG 2.5.8). */
+  .pp-tabrow { height: 27px; padding-left: 42px; padding-right: 2px; }
+  .pp-tabs { overflow-x: auto; scrollbar-width: none; }
+  .pp-tabs::-webkit-scrollbar { display: none; }
+  .pp-tab { height: 24px; padding: 0 8px; line-height: 22px; }
+  .pp-tabrow-extra { height: 27px; padding: 0 0 1px 4px; gap: 2px; }
+  .pp-quicklink { height: 24px; min-width: 24px; justify-content: center; font-size: 0; gap: 0; padding: 0 3px; }   /* icons only */
+  .pp-quicklink .pp-ico { width: 16px; height: 16px; }
+  .pp-help { width: 24px; height: 24px; }
+  .pp-ribbon { height: auto; overflow-x: auto; overflow-y: hidden; border-radius: 0 0 4px 4px; scrollbar-width: none; }
+  .pp-ribbon::-webkit-scrollbar { display: none; }
+  .pp-app ::-webkit-scrollbar { width: 8px; height: 8px; }      /* slimmer scroll bars on a phone */
+  .pp-app ::-webkit-scrollbar-button { display: none; }
+  .pp-panel { height: 106px; }      /* as on a computer: three 24px rows and the group label fit */
+  /* Slide Show tab on a phone: just the start buttons, side by side. */
+  #pp-panel-slideshow { height: auto; }
+  #pp-panel-slideshow .pp-group:not(:first-child) { display: none; }
+  #pp-panel-slideshow .pp-group { flex: 1; border: 0; background: none; box-shadow: none; }
+  #pp-panel-slideshow .pp-group-label { display: none; }
+  #pp-panel-slideshow .pp-group-body { justify-content: center; gap: 8px; padding: 6px 4px; }
+  #pp-panel-slideshow .pp-btn--big { flex-direction: row; gap: 6px; height: 44px; padding: 2px 10px 2px 6px; text-align: left; }
+  #pp-panel-slideshow .pp-btn--big .pp-ico { width: 30px; height: 30px; margin: 0; }
+  #pp-panel-slideshow .pp-btn--big .pp-btn-label br { display: none; }
+  #pp-panel-slideshow .pp-btn--hero { min-width: 0; font-size: 12px; }
+  #pp-panel-slideshow .pp-btn--hero .pp-ico { width: 34px; height: 34px; }
+  #pp-panel-slideshow [data-act="show-custom"] { display: none; }
+
+  .pp-main { flex-direction: column; padding: 4px 0 0; }
+  .pp-edit { display: contents; }     /* its children (slide, notes) join the column */
+  .pp-stage-row { order: 1; flex: 1 1 0; min-height: calc((100vw - 4px) * 9 / 16 + 20px); border-width: 1px 0; }
+  .pp-vscroll, .pp-split, .pp-ruler, .pp-side-tabs { display: none; }
+  .pp-side { order: 2; width: auto; flex: none; margin-top: 4px; border-width: 1px 0; }
+  .pp-thumbs-panel { flex: none; }
+  .pp-thumbs {
+    display: flex; gap: 12px;
+    padding: 9px 12px 7px;
+    overflow-x: auto; overflow-y: hidden;
+    scroll-snap-type: x proximity;
+    scroll-padding: 0 12px;
+  }
+  .pp-thumb-item { flex: none; width: 168px; margin: 0; scroll-snap-align: start; }
+  .pp-thumb { grid-template-columns: 1fr; }
+  .pp-thumb-num { display: none; }
+  .pp-thumb-cap { grid-column: 1; padding-top: 6px; padding-right: 22px; }
+  .pp-thumb-cap::before { content: attr(data-n); }
+  .pp-thumb-item .pp-anim-ind { left: auto; right: -5px; top: auto; bottom: -5px; }   /* no number column: end of the caption */
+  .pp-outline { display: none !important; }
+  .pp-notes { order: 3; flex: none; height: auto; max-height: 22%; min-height: 0; margin: 4px 0 0; padding: 6px 12px; border-width: 1px 0; }
+  .pp-sorter { padding: 12px; gap: 16px 12px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+
+  .pp-st-theme, .pp-st-lang, .pp-zoom { display: none; }
+  .pp-status { border-radius: 0; }
+  .pp-show-strip { left: 8px; bottom: 8px; }
+}
+/* Touch screens have no mouse to wake the control strip: keep it showing. */
+@media (hover: none) {
+  .pp-show-strip { opacity: .9; pointer-events: auto; }
+}
+/* Short screens (a laptop with a big zoom, a phone on its side): use the whole desktop. */
+@media (max-height: 560px) and (min-width: 701px) {
+  #pp { left: 0 !important; top: 0 !important; width: 100% !important; height: 100% !important; min-height: 0; }
+  #pp.pp-office { border-radius: 0; }
+  #pp.pp-office .xp-titlebar { border-radius: 0; }
+  .pp-notes { display: none; }
+}
+
+/* ---------- 14. Reduced motion: nothing pulses, hops or slides ---------- */
+/* (Reviewing on a computer with animations switched off? Add #motion or ?motion=on to the address,
+   or use the switch on pages.html: <html> then gets class "motion-on", which these rules skip.) */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-on) .pp-btn--hero, html:not(.motion-on) .pp-btn--hero:hover,
+  html:not(.motion-on) .pp-btn--hero:focus-visible { animation: none !important; transform: none !important; }
+  html:not(.motion-on) .pp-btn--hero::before { animation: none !important; opacity: 1; }
+  html:not(.motion-on) .pp-show-hint { animation: none !important; }
+  html:not(.motion-on) .pp-show-strip, html:not(.motion-on) .pp-thumb-box, html:not(.motion-on) .pp-sb-thumb { transition: none; }
+}

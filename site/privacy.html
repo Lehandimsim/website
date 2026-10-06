@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en" data-root="">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy · Lehan Zhang</title>
+<meta name="description" content="What Lehan Zhang's website collects: cookieless visit statistics, and the drawings visitors choose to send.">
+<link rel="canonical" href="https://www.lehanzhang.com/privacy.html">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<!-- Wording written by Claude on 2026-10-02 for Lehan to check (memo 2026-10-02_go_live). Keep it true:
+     if analytics or the sending backend change (config.js, backend/), change this page too. -->
+<style>
+  /* One font for the whole page, headings included, as on the start page (Lehan, 2026-10-06). */
+  :root { --paper: #f7f4ee; --ink: #1d1d1f; --muted: #5f5b55; --accent: #1f4e8c;
+          --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 17px/1.6 var(--sans); }
+  main { max-width: 40em; margin: 0 auto; padding: 40px 24px 56px; }
+  .back { font-size: 15px; font-weight: 600; }
+  a { color: var(--accent); }
+  a:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+  h1 { font: 600 clamp(30px, 4.4vw, 40px)/1.15 var(--sans); margin: 18px 0 12px; }
+  h2 { font: 600 21px/1.3 var(--sans); margin: 28px 0 6px; }
+  p, li { max-width: 38em; }
+  .muted { color: var(--muted); font-size: 15px; }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="index.html">&larr; Start page</a>
+  <h1>Privacy</h1>
+  <p>This website has no accounts, no advertising and no cookies. It collects two things.</p>
+
+  <h2>Visit statistics</h2>
+  <p>To see which pages and versions of the site people use, visits are counted with
+    <a href="https://posthog.com/" target="_blank" rel="noopener">PostHog</a>, on its EU servers.
+    Nothing is stored on your device (no cookies, no local storage), and you are never identified by
+    name. What is counted: the pages you view and for how long, clicks within the site, how quickly the
+    pages load, the site that sent you here, and your browser and device type. Your IP address may be used to estimate your
+    country and city; the address itself is not kept. If your browser sends "Do Not Track", you are
+    not counted.</p>
+
+  <h2>Drawings you send (Paint version)</h2>
+  <p>If you press <b>Save and send</b>, your drawing and the name and message you type (both
+    optional) are sent to Lehan. They go through Google Apps Script and are kept in Lehan's Google Drive
+    and email. <b>Just save</b> keeps the drawing on your device only.</p>
+
+  <h2>Edits you make (Overleaf version)</h2>
+  <p>Not collected. Your edits to the <code>.tex</code> files stay in your browser tab and are not sent
+    anywhere; refreshing the page restores the original.</p>
+
+  <h2>Questions</h2>
+  <p>To ask about, or to have deleted, anything you sent:
+    <a href="mailto:lehan.zhang@gess.ethz.ch">lehan.zhang@gess.ethz.ch</a>.</p>
+  <p class="muted">Links to other sites (papers, coauthors, the photography site, the blog) follow those sites' own policies.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,1617 @@
+<!doctype html>
+<html lang="en" data-root="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lehan’s Kitchen · Lehan Zhang</title>
+<meta name="description" content="Lehan Zhang, economist and data scientist: cook a tomato and egg stir-fry, one ingredient per page.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23ef4b3c'/%3E%3Cpath d='M14 34h36a18 13 0 0 1-36 0z' fill='%23fffaf0'/%3E%3Ccircle cx='26' cy='28' r='7' fill='%23ffd23f'/%3E%3Ccircle cx='38' cy='27' r='6' fill='%23ff8a7a'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="kitchen.css">
+<link rel="stylesheet" href="game.css">
+<script>
+  // Motion, decided before the page draws (so nothing flickers): follow the computer's
+  // "reduce motion" setting, unless the shared setting "site.motion" (the Motion switch in
+  // the top bar, or ?motion=on in the address) says "on" or "off". shared/site.js applies
+  // ?motion=on|off a moment later, and scene.js then settles the final classes.
+  // (This runs before shared/site.js is loaded, so it cannot use SiteUtil.prefersReducedMotion();
+  // kitchen.css also honours the setting by itself, in case this script does not run.)
+  (function () {
+    var pref = null;
+    try { pref = localStorage.getItem("site.motion"); } catch (e) { /* private mode */ }
+    var off = pref ? pref === "off" : !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches);
+    document.documentElement.className += off ? " motion-off" : " motion-on";
+  })();
+</script>
+</head>
+<body>
+<!--
+  fun/kitchen/index.html — V1 "Kitchen": a Cooking Mama homage.
+
+  Map of this file:
+    1. Top bar: the chef logo (Lehan's face -> Home) and the links out
+    2. The kitchen scene: one SVG inside a sideways-scrolling box (#pan). Every clickable
+       thing is an <a class="hot">. On phones held upright the kitchen is wider than the
+       screen and the visitor swipes across it (the arrows and the swipe hint help)
+    3. The recipe card along the bottom (progress tracker + shortcuts),
+       and the little rice bowl (bottom right) with its "About this kitchen" popup
+    4. Overlays: page panel, cooking moments, recipe book, mini-game, finale
+    5. <template>s: the close-up drawings used by the cooking moments,
+       the fried rice game and the finale
+  Text: the site content comes from ../../content.js; the kitchen's own
+  wording (steps, cheers, buttons) from text.js.
+-->
+
+<a class="skip-link" href="#recipe-card">Skip to the recipe</a>
+<h1 class="sr-only" id="page-heading">Lehan’s Kitchen · Lehan Zhang</h1>
+
+<!-- ======================================================================
+     1. TOP BAR
+     ====================================================================== -->
+<header class="topbar">
+  <!-- The logo: Lehan's face in a round frame, wearing a chef's hat. Opens Home.
+       It hangs below the bar and glows, bobs and has a hint dot, like the things in the kitchen.
+       To swap the face, replace the image file named in content.js (SITE.person.face). -->
+  <a class="logo" id="logo" href="#home">
+    <span class="logo-badge">
+      <span class="logo-ring"><img class="logo-face js-face" src="" alt=""></span>
+      <svg class="logo-hat" viewBox="0 0 120 84" aria-hidden="true">
+        <g stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+          <path d="M24 62 C6 60 2 34 22 28 C22 8 50 2 60 18 C72 2 100 8 98 28 C118 34 114 60 96 62 Z" fill="#fff"/>
+          <path d="M26 58 H94 L92 80 H28 Z" fill="#fff"/>
+        </g>
+        <path d="M44 62 V78 M60 62 V78 M76 62 V78" stroke="#e6dccd" stroke-width="4" stroke-linecap="round"/>
+        <path d="M34 30 C36 22 44 18 52 20" fill="none" stroke="#efe7da" stroke-width="5" stroke-linecap="round"/>
+      </svg>
+      <span class="logo-dot" aria-hidden="true"></span>
+      <!-- the page name, shown under the face on phones (filled from SITE.pages) -->
+      <span class="logo-tag" id="logo-tag" aria-hidden="true"></span>
+    </span>
+    <span class="logo-text">
+      <span class="logo-name" id="logo-name">Lehan Zhang</span>
+      <span class="logo-sub" id="logo-sub">Home: about me</span>
+    </span>
+  </a>
+
+  <!-- Professional escape hatches: always one click away. -->
+  <nav class="topnav" aria-label="Leave the kitchen">
+    <a class="pill" id="link-classic" href="../../classic/index.html">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z M14 3v4h4 M9 12h6 M9 15.5h6 M9 19h4" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>Classic site</span>
+    </a>
+    <a class="pill" id="link-cv" href="../../index.html" target="_blank" rel="noopener">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 4v11 M7 10.5l5 5 5-5 M5 20h14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span>CV <span class="pill-small">(PDF)</span></span>
+    </a>
+    <!-- Animations on/off (starts from the system setting) -->
+    <button class="pill pill--quiet pill--motion" id="motion-toggle" type="button" aria-pressed="true">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3l1.8 4.6L18.5 9l-4.7 1.6L12 15l-1.8-4.4L5.5 9l4.7-1.4z M18.5 14.5l.9 2.1 2.1.9-2.1.9-.9 2.1-.9-2.1-2.1-.9 2.1-.9z M6 15.5l.7 1.6 1.6.7-1.6.7L6 20.1l-.7-1.6-1.6-.7 1.6-.7z" fill="currentColor"/><path class="motion-slash" d="M4 4l16 16" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+      <span class="pill-label" id="motion-label">Motion</span>
+    </button>
+    <a class="pill pill--quiet" id="link-landing" href="../../index.html" aria-label="Back to the start page" title="Back to the start page (classic or fun)">
+      <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M10 6l-6 6 6 6 M4.5 12H20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/></svg>
+      <span class="pill-label">Start page</span>
+    </a>
+  </nav>
+</header>
+
+<!-- ======================================================================
+     2. THE KITCHEN
+     ====================================================================== -->
+<main class="stage" id="stage">
+
+<!-- The chef's speech bubble: welcome hint and little messages.
+     (First in the page order so keyboard users meet it first; it floats over the scene.) -->
+<section class="bubble" id="bubble" aria-labelledby="bubble-title" hidden>
+  <img class="bubble-face js-face" src="" alt="">
+  <div class="bubble-body">
+    <h2 class="bubble-title" id="bubble-title"></h2>
+    <div class="bubble-text" id="bubble-text"></div>
+    <div class="bubble-actions" id="bubble-actions"></div>
+  </div>
+  <button class="icon-btn bubble-close" id="bubble-close" type="button" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+  </button>
+</section>
+
+<!-- The whole kitchen is one SVG, drawn by hand (no images), on 1600 x 900.
+     scene.js sets the viewBox so the counter always sits above the recipe card:
+     the whole kitchen fits the screen (computers, tablets, phones held sideways), or,
+     on phones held upright, the kitchen keeps its shape at a size that is easy to tap,
+     and the box around it (#pan) scrolls sideways.
+     Each thing is placed by its transform="translate(x y)". Each clickable object is
+     drawn around its own base point (0,0) = the spot where it touches the counter, so
+     moving it only needs those two numbers.
+     The counter, left to right (Lehan, 2026-10-02): rice cooker, eggs, spring onions
+     and garlic, tomatoes, recipe book, wok; the seasoning shelf hangs above, between
+     the tomatoes and the book.
+     Outline colour everywhere: #3d2314 (dark chocolate). -->
+<div class="pan" id="pan">
+<svg id="scene" class="scene" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid meet" role="group" aria-labelledby="scene-title">
+  <title id="scene-title">Lehan’s kitchen. The glowing things can be clicked.</title>
+
+  <defs>
+    <!-- Soft spotlight behind every clickable thing -->
+    <radialGradient id="g-halo">
+      <stop offset="0" stop-color="#fffbe0" stop-opacity="1"/>
+      <stop offset=".5" stop-color="#ffe680" stop-opacity=".8"/>
+      <stop offset="1" stop-color="#ffd23f" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="g-halo-hot">
+      <stop offset="0" stop-color="#fff6c8" stop-opacity="1"/>
+      <stop offset=".55" stop-color="#ffb347" stop-opacity=".85"/>
+      <stop offset="1" stop-color="#ff7a3c" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="g-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7fcbff"/><stop offset="1" stop-color="#dff4ff"/>
+    </linearGradient>
+    <!-- The window: Sydney Harbour by night, and the harbour water by day and night -->
+    <linearGradient id="g-sky-night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0b1633"/><stop offset=".65" stop-color="#1f3264"/><stop offset="1" stop-color="#3a4f86"/>
+    </linearGradient>
+    <linearGradient id="g-harbour" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#62b2ec"/><stop offset="1" stop-color="#2f78bf"/>
+    </linearGradient>
+    <linearGradient id="g-harbour-night" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1d3360"/><stop offset="1" stop-color="#0a1630"/>
+    </linearGradient>
+    <!-- The wall pictures: studio backdrop (fashion), stage fire (concert), alpine sky and lake -->
+    <radialGradient id="g-studio" cx=".62" cy=".58" r=".8">
+      <stop offset="0" stop-color="#b9b9be"/><stop offset=".5" stop-color="#85858c"/><stop offset="1" stop-color="#46464d"/>
+    </radialGradient>
+    <radialGradient id="g-fire" cx=".38" cy=".5" r=".85">
+      <stop offset="0" stop-color="#fff8dc"/><stop offset=".28" stop-color="#ffdc8a"/><stop offset=".6" stop-color="#f6a43e"/><stop offset="1" stop-color="#9c4716"/>
+    </radialGradient>
+    <linearGradient id="g-alpine-sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#87b3d0"/><stop offset="1" stop-color="#dbe9ef"/>
+    </linearGradient>
+    <linearGradient id="g-lake" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3c4a46"/><stop offset="1" stop-color="#1b2422"/>
+    </linearGradient>
+    <linearGradient id="g-hood-light" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff3b0" stop-opacity=".75"/><stop offset="1" stop-color="#fff3b0" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Wall: butter yellow with polka dots -->
+    <pattern id="p-dots" width="64" height="64" patternUnits="userSpaceOnUse">
+      <circle cx="16" cy="16" r="6" fill="#ffe3a0"/>
+      <circle cx="48" cy="48" r="6" fill="#ffe3a0"/>
+    </pattern>
+    <!-- Backsplash: mint and white checks -->
+    <pattern id="p-tiles-wide" width="96" height="96" patternUnits="userSpaceOnUse" y="352">
+      <rect width="96" height="96" fill="#f2fff9"/>
+      <rect width="48" height="48" fill="#bde8d8"/>
+      <rect x="48" y="48" width="48" height="48" fill="#bde8d8"/>
+      <path d="M0 1.5H96 M0 49.5H96 M1.5 0V96 M49.5 0V96" stroke="#a3d8c6" stroke-width="3"/>
+    </pattern>
+    <!-- Cabinet doors (coral) -->
+    <pattern id="p-cab-wide" width="200" height="420" patternUnits="userSpaceOnUse" x="-20" y="630">
+      <rect width="200" height="420" fill="#ff8f7a"/>
+      <rect x="12" y="14" width="176" height="300" rx="16" fill="#ffa794" stroke="#3d2314" stroke-width="4"/>
+      <rect x="28" y="30" width="144" height="268" rx="10" fill="none" stroke="#ff8a74" stroke-width="5"/>
+      <circle cx="162" cy="66" r="9" fill="#ffd23f" stroke="#3d2314" stroke-width="3.5"/>
+    </pattern>
+    <!-- Floor: big warm checked tiles -->
+    <pattern id="p-floor" width="160" height="160" patternUnits="userSpaceOnUse" x="-40" y="974">
+      <rect width="160" height="160" fill="#f7e2bd"/>
+      <rect width="80" height="80" fill="#eccb98"/>
+      <rect x="80" y="80" width="80" height="80" fill="#eccb98"/>
+    </pattern>
+
+    <!-- Re-usable drawings (static parts only) -->
+    <g id="d-tomato">
+      <path d="M0 -36 C30 -40 46 -16 44 6 C42 30 22 40 0 40 C-22 40 -42 30 -44 6 C-46 -16 -30 -40 0 -36 Z" fill="#ff4f3f" stroke="#3d2314" stroke-width="5"/>
+      <path d="M-31 -6 C-30 -20 -20 -27 -9 -29" fill="none" stroke="#ffb3a8" stroke-width="7" stroke-linecap="round"/>
+      <path d="M0 -40 L9 -49 L9 -37 L21 -36 L10 -29 L14 -19 L0 -26 L-14 -19 L-10 -29 L-21 -36 L-9 -37 L-9 -49 Z" fill="#46a64a" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/>
+      <path d="M0 -44 Q1 -54 8 -58" fill="none" stroke="#3d2314" stroke-width="5" stroke-linecap="round"/>
+    </g>
+    <g id="d-egg">
+      <path d="M0 -32 C17 -32 25 -10 25 4 C25 20 14 30 0 30 C-14 30 -25 20 -25 4 C-25 -10 -17 -32 0 -32 Z" fill="#fff3df" stroke="#3d2314" stroke-width="5"/>
+      <ellipse cx="-9" cy="-10" rx="5" ry="9" fill="#fff" transform="rotate(20)"/>
+    </g>
+    <!-- photo areas of the wall pictures: landscape (concert, lake) and portrait (fashion) -->
+    <clipPath id="clip-photo-land"><rect x="-72" y="-48" width="144" height="96"/></clipPath>
+    <clipPath id="clip-photo-port"><rect x="-58" y="-86" width="116" height="172"/></clipPath>
+    <clipPath id="clip-window"><rect x="30" y="24" width="218" height="186" rx="4"/></clipPath>
+  </defs>
+
+  <!-- ---------- Background ---------- -->
+  <!-- Wall / backsplash / counter / cabinets, drawn far past the edges so
+       any screen shape just shows more kitchen. -->
+  <g class="bg" aria-hidden="true">
+    <rect x="-3000" y="-3000" width="7600" height="3352" fill="#fff3cf"/>
+    <rect x="-3000" y="-3000" width="7600" height="3352" fill="url(#p-dots)"/>
+    <rect x="-3000" y="352" width="7600" height="208" fill="url(#p-tiles-wide)"/>
+    <rect x="-3000" y="342" width="7600" height="14" fill="#ff8f7a" stroke="#3d2314" stroke-width="4"/>
+    <rect x="-3000" y="560" width="7600" height="46" fill="#f7c47c" stroke="#3d2314" stroke-width="5"/>
+    <path d="M-3000 571 H4600" stroke="#fde2b2" stroke-width="5"/>
+    <rect x="-3000" y="606" width="7600" height="24" fill="#e39a52" stroke="#3d2314" stroke-width="5"/>
+    <rect x="-3000" y="630" width="7600" height="322" fill="url(#p-cab-wide)" stroke="#3d2314" stroke-width="5"/>
+    <!-- below the cabinets (seen only on tall screens, e.g. tablets held upright): the plinth and the floor -->
+    <rect x="-3000" y="952" width="7600" height="22" fill="#d9705a" stroke="#3d2314" stroke-width="5"/>
+    <rect x="-3000" y="974" width="7600" height="3000" fill="url(#p-floor)"/>
+    <path d="M-3000 976 H4600" stroke="#3d2314" stroke-width="10" opacity=".12"/>
+  </g>
+
+  <!-- ---------- Decoration (not clickable, so no glow) ---------- -->
+  <!-- Window with curtains, looking out on Sydney Harbour. A close-up of the Harbour Bridge:
+       one granite pylon, the deck, and the steel arch (its two chords and the truss between
+       them) climbing out of the top of the window; the Opera House in front, the city behind.
+       Day (06:00-17:59) or night by the visitor's own clock: scene.js swaps the classes
+       is-day / is-night on this group (night: the arch, the deck and the pylon's window are
+       lit). For reviews and screenshots, add ?sky=day or ?sky=night to the address.
+       Coordinates: the glass is x 30-248, y 24-210. The arch's lower chord is the parabola
+       y = -30 + 0.00445 (x + 40)^2, the upper chord y = -50 + 0.003338 (x + 40)^2; both end
+       at x = 172 (the end post), just left of the pylon. -->
+  <g class="decor win is-day" id="decor-window" transform="translate(56 40)" aria-hidden="true">
+    <rect x="-22" y="0" width="322" height="12" rx="6" fill="#c98446" stroke="#3d2314" stroke-width="4"/>
+    <rect x="24" y="18" width="230" height="198" rx="10" fill="#fffaf0" stroke="#3d2314" stroke-width="5"/>
+    <g clip-path="url(#clip-window)">
+      <rect class="h-sky" x="30" y="24" width="218" height="186"/>
+      <!-- day: sun and clouds -->
+      <g class="day-only">
+        <circle cx="150" cy="42" r="17" fill="#fff6c4" opacity=".7"/>
+        <circle cx="150" cy="42" r="11" fill="#ffd23f"/>
+        <g fill="#fff"><circle cx="68" cy="76" r="7"/><circle cx="79" cy="70" r="10"/><circle cx="90" cy="76" r="6.5"/><rect x="63" y="75" width="32" height="8" rx="4"/></g>
+        <g fill="#fff" opacity=".9"><circle cx="184" cy="38" r="5.5"/><circle cx="193" cy="33" r="7.5"/><circle cx="202" cy="38" r="5"/><rect x="180" y="37" width="26" height="6" rx="3"/></g>
+      </g>
+      <!-- night: moon and stars -->
+      <g class="night-only">
+        <path d="M146 31 A12 12 0 1 0 161 49 A9.5 9.5 0 1 1 146 31 Z" fill="#fff4c9"/>
+        <g fill="#fff"><circle class="h-star" cx="126" cy="30" r="1.4"/><circle class="h-star" cx="168" cy="34" r="1.2"/><circle class="h-star" cx="196" cy="46" r="1.4"/><circle class="h-star" cx="206" cy="30" r="1.2"/><circle class="h-star" cx="174" cy="64" r="1.2"/><circle class="h-star" cx="60" cy="96" r="1.4"/><circle class="h-star" cx="88" cy="88" r="1.2"/><circle class="h-star" cx="112" cy="104" r="1.4"/><circle class="h-star" cx="74" cy="110" r="1.2"/><circle class="h-star" cx="100" cy="66" r="1.2"/></g>
+      </g>
+      <!-- the city on the far shore, seen under the deck -->
+      <g class="h-city" stroke="#3d2314" stroke-width="1.5">
+        <rect x="38" y="142" width="10" height="26"/><rect x="49" y="150" width="9" height="18"/>
+        <rect x="86" y="138" width="10" height="30"/><rect x="97" y="148" width="8" height="20"/>
+        <rect x="122" y="146" width="9" height="22"/><rect x="132" y="136" width="10" height="32"/><rect x="143" y="144" width="8" height="24"/><rect x="152" y="150" width="8" height="18"/>
+        <rect x="222" y="146" width="9" height="22"/><rect x="232" y="139" width="10" height="29"/>
+      </g>
+      <g class="night-only" fill="#ffd970">
+        <rect x="41" y="146" width="2" height="2"/><rect x="44" y="153" width="2" height="2"/><rect x="41" y="159" width="2" height="2"/><rect x="52" y="155" width="2" height="2"/>
+        <rect x="89" y="142" width="2" height="2"/><rect x="92" y="149" width="2" height="2"/><rect x="125" y="151" width="2" height="2"/>
+        <rect x="135" y="140" width="2" height="2"/><rect x="138" y="147" width="2" height="2"/><rect x="135" y="155" width="2" height="2"/><rect x="146" y="150" width="2" height="2"/>
+        <rect x="225" y="151" width="2" height="2"/><rect x="235" y="144" width="2" height="2"/><rect x="238" y="152" width="2" height="2"/>
+      </g>
+      <path class="h-shore" d="M30 174 V166 C70 162 120 164 160 166 C200 163 230 164 248 165 V174 Z"/>
+      <!-- the harbour -->
+      <rect class="h-water" x="30" y="172" width="218" height="40"/>
+      <path class="day-only" d="M40 182 h12 M66 196 h16 M128 186 h12 M150 200 h14 M100 204 h12 M196 194 h12 M56 206 h10 M138 178 h10" stroke="#c4e6ff" stroke-width="2.5" stroke-linecap="round"/>
+      <path class="night-only" d="M46 178 v5 M62 186 v3 M140 180 v6 M152 190 v4 M196 192 v6 M206 184 v4 M124 200 v3" stroke="#ffd970" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+
+      <!-- Sydney Harbour Bridge, close up -->
+      <!-- the hangers: the middle of the deck hangs from the arch -->
+      <path class="h-truss" stroke-width="1.6" d="M70 23.8 V121 M82 36.2 V121 M94 49.9 V121 M106 64.9 V121 M118 81.1 V121 M130 98.6 V121"/>
+      <!-- the deck (road and railway), running out of the window on both sides -->
+      <rect class="h-deck" x="22" y="121" width="234" height="11" stroke="#3d2314" stroke-width="2.5"/>
+      <path class="day-only" d="M22 124.5 H256" stroke="#fff" stroke-opacity=".5" stroke-width="2"/>
+      <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+        <!-- the truss between the two chords: verticals, and a diagonal in every panel -->
+        <path class="h-truss" stroke-width="2" d="M70 -9.6 V23.8 M82 -0.3 V36.2 M94 9.9 V49.9 M106 21.2 V64.9 M118 33.3 V81.1 M130 46.5 V98.6 M142 60.6 V117.4 M154 75.6 V137.5 M166 91.7 V158.8 M70 -9.6 L82 36.2 M82 -0.3 L94 49.9 M94 9.9 L106 64.9 M106 21.2 L118 81.1 M118 33.3 L130 98.6 M130 46.5 L142 117.4 M142 60.6 L154 137.5 M154 75.6 L166 158.8 M166 91.7 L172 170"/>
+        <!-- the lower chord, the upper chord and the end post (outline, then steel) -->
+        <path d="M40 -1.5 Q106 45.5 172 170 M80 -1.9 Q126 34.9 172 100 M172 100 V170" stroke="#3d2314" stroke-width="9"/>
+        <path class="h-steel" d="M40 -1.5 Q106 45.5 172 170 M80 -1.9 Q126 34.9 172 100 M172 100 V170" stroke-width="4.5"/>
+      </g>
+      <!-- night: lights along the top of the arch and along the deck -->
+      <g class="night-only" fill="none" stroke-linecap="round">
+        <path d="M80 -1.9 Q126 34.9 172 100" stroke="#ffe08a" stroke-width="3" stroke-dasharray="0 7"/>
+        <path d="M22 126.5 H256" stroke="#fff3c4" stroke-width="2.2" stroke-dasharray="0 6"/>
+      </g>
+      <!-- a granite pylon (the deck passes behind it); the arch rests on its footing -->
+      <path class="h-pylon" d="M160 190 V168 H178 V76 H181 V66 H184 V58 H212 V66 H215 V76 H218 V190 Z" stroke="#3d2314" stroke-width="2.5" stroke-linejoin="round"/>
+      <path d="M210 77 H216.8 V188 H210 Z" fill="#3d2314" opacity=".14"/>
+      <path d="M180 112 H216 M180 140 H216 M180 164 H216" stroke="#3d2314" stroke-width="1.2" opacity=".28"/>
+      <path d="M192 100 V88 A6 6 0 0 1 204 88 V100 Z" fill="#3d2314" opacity=".5"/>
+      <path class="night-only" d="M193.5 99 V88.5 A4.5 4.5 0 0 1 202.5 88.5 V99 Z" fill="#ffd970"/>
+      <!-- Sydney Opera House, in front on the left -->
+      <ellipse class="night-only" cx="85" cy="172" rx="34" ry="16" fill="#ffcf70" opacity=".35"/>
+      <g transform="translate(-6 36.6) scale(.85)">
+        <g stroke="#3d2314" stroke-width="2.4" stroke-linejoin="round">
+          <rect class="h-pylon" x="68" y="164" width="78" height="9"/>
+          <path class="h-sail" d="M74 165 C76 145 89 133 106 129 C98 141 98 153 100 165 Z"/>
+          <path class="h-sail" d="M92 165 C96 148 108 138 124 135 C116 145 116 155 118 165 Z"/>
+          <path class="h-sail" d="M111 165 C115 153 124 147 138 145 C131 153 131 159 133 165 Z"/>
+        </g>
+        <path d="M84 162 C86 150 92 142 100 137 M102 162 C105 152 111 146 118 142 M120 162 C122 156 126 152 132 150" fill="none" stroke="#cfc6b6" stroke-width="1.8" stroke-linecap="round"/>
+        <path class="night-only" d="M84 178 v4 M98 178 v6 M112 178 v4 M126 178 v5" stroke="#ffe7a8" stroke-width="2" stroke-linecap="round" opacity=".8"/>
+      </g>
+    </g>
+    <rect x="30" y="24" width="218" height="186" rx="4" fill="none" stroke="#3d2314" stroke-width="4"/>
+    <!-- curtains, tied back -->
+    <path d="M-12 8 H58 C56 56 42 92 34 116 C44 150 50 196 56 238 H-12 Z" fill="#ffb3c1" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M290 8 H220 C222 56 236 92 244 116 C234 150 228 196 222 238 H290 Z" fill="#ffb3c1" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/>
+    <g fill="#fff" opacity=".85"><circle cx="8" cy="40" r="5"/><circle cx="34" cy="30" r="5"/><circle cx="12" cy="94" r="5"/><circle cx="20" cy="152" r="5"/><circle cx="6" cy="202" r="5"/><circle cx="38" cy="214" r="5"/><circle cx="270" cy="40" r="5"/><circle cx="244" cy="30" r="5"/><circle cx="266" cy="94" r="5"/><circle cx="258" cy="152" r="5"/><circle cx="272" cy="202" r="5"/><circle cx="240" cy="214" r="5"/></g>
+    <rect x="22" y="108" width="24" height="16" rx="6" fill="#ff7a8f" stroke="#3d2314" stroke-width="3.5"/>
+    <rect x="232" y="108" width="24" height="16" rx="6" fill="#ff7a8f" stroke="#3d2314" stroke-width="3.5"/>
+    <!-- sill and a pot of basil -->
+    <rect x="6" y="212" width="266" height="18" rx="6" fill="#fffaf0" stroke="#3d2314" stroke-width="4"/>
+    <g transform="translate(214 212)">
+      <path d="M-4 -26 C-26 -40 -24 -60 -8 -58 C-2 -50 -2 -38 -4 -26 Z M4 -26 C20 -46 40 -40 34 -26 C26 -20 14 -22 4 -26 Z M0 -26 C-6 -50 6 -66 14 -60 C16 -46 8 -34 0 -26 Z" fill="#5cb94a" stroke="#3d2314" stroke-width="3.5" stroke-linejoin="round"/>
+      <path d="M-18 -26 H18 L14 0 H-14 Z" fill="#e57a4a" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/>
+      <rect x="-21" y="-30" width="42" height="9" rx="3" fill="#f0915f" stroke="#3d2314" stroke-width="3.5"/>
+    </g>
+  </g>
+
+  <!-- Wall clock: scene.js sets the hands to the visitor's local time (the device clock)
+       and keeps them current. The red second hand ticks only while animations are on. -->
+  <g class="decor" id="decor-clock" transform="translate(1502 86)" aria-hidden="true">
+    <circle r="54" fill="#ff8fa6" stroke="#3d2314" stroke-width="5"/>
+    <circle r="42" fill="#fffaf0" stroke="#3d2314" stroke-width="3.5"/>
+    <g stroke="#3d2314" stroke-width="4" stroke-linecap="round">
+      <path d="M0 -34 V-28 M34 0 H28 M0 34 V28 M-34 0 H-28"/>
+    </g>
+    <g fill="#3d2314"><circle cx="17" cy="-29.4" r="2.2"/><circle cx="29.4" cy="-17" r="2.2"/><circle cx="29.4" cy="17" r="2.2"/><circle cx="17" cy="29.4" r="2.2"/><circle cx="-17" cy="29.4" r="2.2"/><circle cx="-29.4" cy="17" r="2.2"/><circle cx="-29.4" cy="-17" r="2.2"/><circle cx="-17" cy="-29.4" r="2.2"/></g>
+    <path id="clock-h" d="M0 4 V-20" stroke="#3d2314" stroke-width="6.5" stroke-linecap="round" transform="rotate(300)"/>
+    <path id="clock-m" d="M0 6 V-32" stroke="#3d2314" stroke-width="4" stroke-linecap="round" transform="rotate(60)"/>
+    <g id="clock-s" class="clock-s" transform="rotate(0)">
+      <path d="M0 10 V-35" stroke="#ef4b3c" stroke-width="2" stroke-linecap="round"/>
+      <circle cy="7" r="3" fill="#ef4b3c"/>
+    </g>
+    <circle r="5" fill="#3d2314"/>
+    <circle r="2" fill="#ef4b3c"/>
+  </g>
+
+  <!-- Range hood over the stove, with a warm light falling on the wok -->
+  <g class="decor" id="decor-hood" transform="translate(1336 262)" aria-hidden="true">
+    <rect x="-46" y="-3000" width="92" height="2880" fill="#e2e9f0" stroke="#3d2314" stroke-width="5"/>
+    <path d="M-36 -3000 V-124" stroke="#f7fafc" stroke-width="10"/>
+    <path d="M-62 -124 H62 L156 -24 H-156 Z" fill="#eef3f8" stroke="#3d2314" stroke-width="5" stroke-linejoin="round"/>
+    <path d="M-48 -112 H-20 L-100 -30 H-132 Z" fill="#fff" opacity=".7"/>
+    <rect x="-164" y="-28" width="328" height="26" rx="9" fill="#cfd9e3" stroke="#3d2314" stroke-width="5"/>
+    <path d="M-120 -2 H120 L170 230 H-170 Z" fill="url(#g-hood-light)"/>
+    <rect x="-64" y="-2" width="128" height="8" rx="4" fill="#ffe680" stroke="#3d2314" stroke-width="3"/>
+  </g>
+
+  <!-- ==================================================================
+       CLICKABLE THINGS. Structure of each one:
+         .halo   the soft glow behind it          .bob   moves gently (art + badge)
+         .art    the drawing                       .badge yellow hint dot / green tick
+         .tag    the page name, always visible     .hit   the (invisible) click area
+       Order here = keyboard (Tab) order: the recipe, then the extras.
+       ================================================================== -->
+
+  <!-- RICE COOKER -> Research -->
+  <a class="hot" id="hot-rice" data-ingredient="rice" href="#research" transform="translate(165 602)" style="--delay:-.3s">
+    <ellipse class="halo" cx="0" cy="-118" rx="168" ry="150"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="0" cy="-3" rx="122" ry="11" fill="#3d2314" opacity=".14" stroke="none"/>
+        <rect x="-88" y="-20" width="34" height="20" rx="7" fill="#ff8fa6"/>
+        <rect x="54" y="-20" width="34" height="20" rx="7" fill="#ff8fa6"/>
+        <path d="M-112 -132 C-114 -60 -104 -18 -64 -16 H64 C104 -18 114 -60 112 -132 Z" fill="#fffaf2"/>
+        <path d="M84 -126 C90 -66 82 -28 58 -20 H66 C100 -24 108 -62 106 -126 Z" fill="#f0e4d2" stroke="none"/>
+        <path d="M-96 -112 C-98 -78 -93 -50 -82 -34" fill="none" stroke="#fff" stroke-width="9"/>
+        <path d="M-112 -132 H112 L111 -110 H-111 Z" fill="#ffb4c2"/>
+        <path d="M-120 -136 C-118 -194 -64 -206 0 -206 C64 -206 118 -194 120 -136 Z" fill="#ff9fb4"/>
+        <path d="M-82 -178 C-60 -194 -22 -197 8 -196" fill="none" stroke="#ffd5df" stroke-width="9"/>
+        <rect x="-126" y="-144" width="252" height="18" rx="9" fill="#ffc4d1"/>
+        <ellipse cx="46" cy="-184" rx="15" ry="7" fill="#fffaf2"/>
+        <path d="M-46 -202 C-46 -236 46 -236 46 -202" fill="none" stroke-width="13"/>
+        <path d="M-46 -202 C-46 -236 46 -236 46 -202" fill="none" stroke="#ff8fa6" stroke-width="5"/>
+        <rect x="-60" y="-100" width="120" height="64" rx="18" fill="#ffe9ef"/>
+        <circle class="lamp-warm" cx="-36" cy="-80" r="7" fill="#f2e2c9" stroke-width="3"/>
+        <circle class="lamp-cook" cx="-36" cy="-56" r="7" fill="#ffb59e" stroke-width="3"/>
+        <rect x="-18" y="-88" width="60" height="40" rx="12" fill="#ff7a59"/>
+        <text class="svg-label" x="12" y="-62" font-size="15" fill="#fff">COOK</text>
+      </g>
+      <!-- shown once the rice is cooked: steam from the vent -->
+      <g class="done-art steam" fill="none" stroke-linecap="round" aria-hidden="true">
+        <path class="steam-1" d="M38 -200 C28 -216 48 -226 38 -248" stroke="#3d2314" stroke-opacity=".22" stroke-width="11"/>
+        <path class="steam-1" d="M38 -200 C28 -216 48 -226 38 -248" stroke="#fff" stroke-width="6"/>
+        <path class="steam-2" d="M60 -202 C50 -220 70 -230 60 -254" stroke="#3d2314" stroke-opacity=".22" stroke-width="11"/>
+        <path class="steam-2" d="M60 -202 C50 -220 70 -230 60 -254" stroke="#fff" stroke-width="6"/>
+      </g>
+      <g class="badge" transform="translate(116 -222)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 38)"><rect class="tag-bg" x="-60" y="-19" width="120" height="38" rx="19"/><text class="tag-text" dy=".36em"></text></g>
+    <rect class="hit" x="-130" y="-262" width="260" height="316" rx="28"/>
+  </a>
+
+  <!-- EGGS -> Talks -->
+  <a class="hot" id="hot-eggs" data-ingredient="eggs" href="#talks" transform="translate(395 604)" style="--delay:-1.4s">
+    <ellipse class="halo" cx="0" cy="-66" rx="132" ry="104"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="6" cy="-3" rx="100" ry="10" fill="#3d2314" opacity=".14" stroke="none"/>
+        <ellipse cx="0" cy="-66" rx="84" ry="16" fill="#3f88c9"/>
+        <use href="#d-egg" transform="translate(-34 -80) rotate(-12)"/>
+        <use href="#d-egg" transform="translate(32 -82) rotate(14)"/>
+        <g class="todo-art"><use href="#d-egg" transform="translate(-2 -98)"/></g>
+        <!-- once done: a cracked egg waiting in the bowl -->
+        <g class="done-art"><path d="M-30 -74 C-30 -88 30 -90 32 -74 C30 -64 -28 -62 -30 -74 Z" fill="#fffdf4"/><circle cx="0" cy="-77" r="12" fill="#ffc21a"/></g>
+        <path d="M-84 -66 C-82 -20 -50 -6 0 -6 C50 -6 82 -20 84 -66 C60 -52 -60 -52 -84 -66 Z" fill="#5aaee8"/>
+        <path d="M-66 -46 C-40 -38 40 -38 66 -46" fill="none" stroke="#a9dafb" stroke-width="5"/>
+        <g fill="#fff" stroke="none"><circle cx="-52" cy="-30" r="5"/><circle cx="-20" cy="-22" r="5"/><circle cx="16" cy="-22" r="5"/><circle cx="50" cy="-30" r="5"/><circle cx="-34" cy="-14" r="3.5"/><circle cx="34" cy="-14" r="3.5"/></g>
+        <path d="M-32 -8 L-28 0 H28 L32 -8" fill="#3f88c9"/>
+        <g class="loose-egg"><use href="#d-egg" transform="translate(98 -24) rotate(72) scale(.92)"/></g>
+      </g>
+      <g class="badge" transform="translate(76 -126)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(4 36)"><rect class="tag-bg" x="-50" y="-19" width="100" height="38" rx="19"/><text class="tag-text" dy=".36em"></text></g>
+    <rect class="hit" x="-100" y="-150" width="224" height="206" rx="28"/>
+  </a>
+
+  <!-- SPRING ONIONS & GARLIC -> Other Experience (tag text from SITE.pages) -->
+  <a class="hot" id="hot-onions" data-ingredient="onions" href="#experience" transform="translate(655 612)" style="--delay:-.9s">
+    <ellipse class="halo" cx="0" cy="-48" rx="168" ry="92"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="0" cy="0" rx="130" ry="9" fill="#3d2314" opacity=".14" stroke="none"/>
+        <!-- chopping board -->
+        <path d="M-132 -14 Q-134 -2 -120 -2 H116 Q130 -2 128 -14 L128 -2 Q128 8 116 8 H-120 Q-132 8 -132 -2 Z" fill="#d98d45"/>
+        <path d="M-128 -42 Q-130 -54 -116 -54 H104 Q120 -54 124 -42 L128 -14 Q130 -2 116 -2 H-120 Q-134 -2 -132 -14 Z" fill="#f6c27a"/>
+        <path d="M-96 -18 H-30 M10 -40 H70 M-60 -36 H-20" stroke="#e7a85d" stroke-width="3"/>
+        <ellipse cx="110" cy="-28" rx="8" ry="6" fill="#d98d45" stroke-width="3"/>
+        <!-- spring onion A -->
+        <path d="M-40 -42 C0 -52 40 -66 92 -80 M-40 -42 C0 -46 46 -50 100 -56" fill="none" stroke-width="19"/>
+        <path d="M-40 -42 C0 -52 40 -66 92 -80 M-40 -42 C0 -46 46 -50 100 -56" fill="none" stroke="#5bbb4a" stroke-width="10"/>
+        <path d="M-108 -32 L-40 -42" fill="none" stroke-width="23"/>
+        <path d="M-108 -32 L-40 -42" fill="none" stroke="#f6faee" stroke-width="14"/>
+        <path d="M-62 -38 L-40 -42" fill="none" stroke="#c7e9a6" stroke-width="14"/>
+        <path d="M-118 -38 l-10 -4 M-118 -32 l-13 1 M-118 -27 l-10 6" stroke-width="3"/>
+        <!-- spring onion B -->
+        <g class="todo-art">
+          <path d="M-30 -24 C10 -30 50 -40 104 -44 M-30 -24 C14 -22 56 -26 110 -26" fill="none" stroke-width="19"/>
+          <path d="M-30 -24 C10 -30 50 -40 104 -44 M-30 -24 C14 -22 56 -26 110 -26" fill="none" stroke="#6cc957" stroke-width="10"/>
+          <path d="M-98 -18 L-30 -24" fill="none" stroke-width="23"/>
+          <path d="M-98 -18 L-30 -24" fill="none" stroke="#f6faee" stroke-width="14"/>
+          <path d="M-52 -21 L-30 -24" fill="none" stroke="#c7e9a6" stroke-width="14"/>
+        </g>
+        <!-- once done: chopped rings -->
+        <g class="done-art">
+          <g fill="#7fd36a" stroke-width="3.5"><circle cx="-20" cy="-24" r="8"/><circle cx="-2" cy="-20" r="8"/><circle cx="16" cy="-24" r="8"/><circle cx="34" cy="-20" r="8"/><circle cx="52" cy="-25" r="8"/></g>
+          <g fill="#f6faee" stroke-width="3.5"><circle cx="-38" cy="-20" r="7"/><circle cx="-54" cy="-24" r="7"/></g>
+        </g>
+        <!-- garlic bulb and a clove -->
+        <g transform="translate(78 -40)">
+          <path d="M0 -42 C6 -30 26 -24 28 -6 C30 12 14 18 0 18 C-14 18 -30 12 -28 -6 C-26 -24 -6 -30 0 -42 Z" fill="#fdf7ec"/>
+          <path d="M0 -30 C-7 -14 -9 4 -4 16 M0 -30 C7 -14 9 4 4 16" fill="none" stroke="#d8c2d6" stroke-width="3"/>
+          <path d="M-20 0 C-17 8 -11 12 -5 14" fill="none" stroke="#c99bc6" stroke-width="3"/>
+          <path d="M0 -42 L-2 -52" stroke-width="4"/>
+        </g>
+        <path d="M108 -10 C100 -26 112 -40 124 -38 C122 -26 120 -16 108 -10 Z" fill="#fdf7ec" stroke-width="4"/>
+      </g>
+      <g class="badge" transform="translate(116 -104)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 28)"><rect class="tag-bg" x="-100" y="-19" width="200" height="38" rx="19"/><text class="tag-text" dy=".36em"></text></g>
+    <rect class="hit" x="-136" y="-124" width="272" height="174" rx="28"/>
+  </a>
+
+  <!-- TOMATOES -> Art -->
+  <a class="hot" id="hot-tomatoes" data-ingredient="tomatoes" href="#art" transform="translate(905 608)" style="--delay:-2.1s">
+    <ellipse class="halo" cx="0" cy="-60" rx="134" ry="104"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="0" cy="-2" rx="102" ry="10" fill="#3d2314" opacity=".14" stroke="none"/>
+        <ellipse cx="0" cy="-14" rx="98" ry="21" fill="#e6f3ff"/>
+        <ellipse cx="0" cy="-16" rx="70" ry="12" fill="#cfe5fa" stroke-width="3"/>
+        <use href="#d-tomato" transform="translate(4 -76) scale(1.04)"/>
+        <use href="#d-tomato" transform="translate(-46 -42) scale(.9)"/>
+        <g class="todo-art"><use href="#d-tomato" transform="translate(48 -40) scale(.94)"/></g>
+        <!-- once done: tomato wedges -->
+        <g class="done-art">
+          <path d="M26 -22 C26 -52 66 -60 76 -34 Z" fill="#ff4f3f"/><path d="M33 -28 C36 -44 56 -48 66 -36" fill="none" stroke="#ffb09a" stroke-width="5"/>
+          <path d="M46 -16 C56 -46 90 -36 90 -14 Z" fill="#ff4f3f"/><circle cx="66" cy="-24" r="3" fill="#ffe08a" stroke="none"/><circle cx="74" cy="-20" r="3" fill="#ffe08a" stroke="none"/>
+        </g>
+      </g>
+      <g class="badge" transform="translate(72 -134)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 32)"><rect class="tag-bg" x="-40" y="-19" width="80" height="38" rx="19"/><text class="tag-text" dy=".36em"></text></g>
+    <rect class="hit" x="-104" y="-152" width="208" height="200" rx="28"/>
+  </a>
+
+  <!-- SEASONING SHELF -> CV
+       Oyster sauce, Shao Hsing cooking wine, salt, sugar, MSG (left to right) -->
+  <a class="hot" id="hot-seasoning" data-ingredient="seasoning" href="#cv" transform="translate(1010 322)" style="--delay:-2.6s">
+    <ellipse class="halo" cx="0" cy="-80" rx="186" ry="132"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <!-- shelf -->
+        <path d="M-110 14 L-110 46 L-84 14 Z M110 14 L110 46 L84 14 Z" fill="#b8733a"/>
+        <rect x="-150" y="0" width="300" height="16" rx="5" fill="#c98446"/>
+        <!-- oyster sauce -->
+        <g transform="translate(-110 0)">
+          <path d="M-26 0 V-104 C-26 -120 -12 -124 -10 -136 V-150 H10 V-136 C12 -124 26 -120 26 -104 V0 Z" fill="#5b2a14"/>
+          <rect x="-12" y="-164" width="24" height="16" rx="4" fill="#e8463b"/>
+          <rect x="-22" y="-92" width="44" height="58" rx="6" fill="#fff1c7" stroke-width="3.5"/>
+          <path d="M-12 -50 C-12 -66 12 -66 12 -50 Z M-6 -50 L-3 -62 M0 -50 V-63 M6 -50 L3 -62" fill="#f3d3a0" stroke-width="2.5"/>
+          <text class="svg-label" y="-78" font-size="10.5" fill="#5b2a14">OYSTER</text>
+          <text class="svg-label" y="-67" font-size="10.5" fill="#5b2a14">SAUCE</text>
+          <path d="M-18 -16 V-30" stroke="#8c5634" stroke-width="5"/>
+        </g>
+        <!-- Shao Hsing cooking wine -->
+        <g transform="translate(-52 0)">
+          <path d="M-22 0 V-118 C-22 -130 -9 -134 -8 -146 V-176 H8 V-146 C9 -134 22 -130 22 -118 V0 Z" fill="#a85b1d"/>
+          <rect x="-10" y="-190" width="20" height="16" rx="4" fill="#e3b341"/>
+          <path d="M-20 -98 L0 -112 L20 -98 V-36 H-20 Z" fill="#d8342b" stroke-width="3.5"/>
+          <text class="svg-label" y="-80" font-size="10" fill="#ffe7a1">SHAO</text>
+          <text class="svg-label" y="-68" font-size="10" fill="#ffe7a1">HSING</text>
+          <text class="svg-label" y="-52" font-size="8" fill="#ffe7a1">WINE</text>
+          <path d="M-14 -112 V-124" stroke="#d48a49" stroke-width="5"/>
+        </g>
+        <!-- salt -->
+        <g transform="translate(2 0)">
+          <path d="M-22 0 V-82 C-22 -88 22 -88 22 -82 V0 Z" fill="#ffffff"/>
+          <path d="M-22 -84 C-22 -104 22 -104 22 -84 Z" fill="#7fb8ea"/>
+          <g fill="#3d2314" stroke="none"><circle cx="-8" cy="-94" r="2.2"/><circle cx="0" cy="-97" r="2.2"/><circle cx="8" cy="-94" r="2.2"/></g>
+          <rect x="-22" y="-62" width="44" height="26" fill="#5aa0e0" stroke-width="3.5"/>
+          <text class="svg-label" y="-44" font-size="12" fill="#fff">SALT</text>
+        </g>
+        <!-- sugar -->
+        <g transform="translate(58 0)">
+          <rect x="-26" y="-80" width="52" height="80" rx="10" fill="#eaf6ff"/>
+          <g fill="#fff" stroke-width="3"><rect x="-18" y="-30" width="15" height="15" rx="2"/><rect x="2" y="-32" width="15" height="15" rx="2"/><rect x="-10" y="-16" width="15" height="15" rx="2"/><rect x="-16" y="-50" width="15" height="15" rx="2"/></g>
+          <rect x="-30" y="-94" width="60" height="16" rx="6" fill="#ff9fb4"/>
+          <rect x="-20" y="-72" width="40" height="18" rx="4" fill="#fff" stroke-width="3"/>
+          <text class="svg-label" y="-59" font-size="10" fill="#d0566e">SUGAR</text>
+        </g>
+        <!-- MSG -->
+        <g transform="translate(114 0)">
+          <path d="M-22 0 V-80 C-22 -90 22 -90 22 -80 V0 Z" fill="#ffd23f"/>
+          <rect x="-16" y="-104" width="32" height="20" rx="6" fill="#e8463b"/>
+          <ellipse cx="0" cy="-46" rx="18" ry="14" fill="#fff" stroke-width="3"/>
+          <text class="svg-label" y="-41" font-size="12" fill="#d8342b">MSG</text>
+          <path d="M-14 -70 V-80" stroke="#fff3b0" stroke-width="5"/>
+        </g>
+      </g>
+      <g class="done-art sparkles" fill="#ffd23f" stroke="#3d2314" stroke-width="3" aria-hidden="true">
+        <path d="M-150 -150 l6 14 l14 6 l-14 6 l-6 14 l-6 -14 l-14 -6 l14 -6 z"/>
+        <path d="M150 -120 l5 11 l11 5 l-11 5 l-5 11 l-5 -11 l-11 -5 l11 -5 z"/>
+      </g>
+      <g class="badge" transform="translate(146 -96)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 42)"><rect class="tag-bg" x="-36" y="-19" width="72" height="38" rx="19"/><text class="tag-text" dy=".36em"></text></g>
+    <rect class="hit" x="-160" y="-206" width="320" height="270" rx="28"/>
+  </a>
+
+  <!-- STOVE + WOK -> stir-fry and serve (the finale) -->
+  <a class="hot hot--wok" id="hot-wok" data-kind="wok" href="#finale" transform="translate(1336 600)" style="--delay:-1.9s">
+    <ellipse class="halo" cx="0" cy="-70" rx="196" ry="110"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <!-- cooktop and knobs -->
+        <rect x="-178" y="-16" width="356" height="18" rx="6" fill="#4a4f5c"/>
+        <path d="M-160 -10 H40" stroke="#6c7280" stroke-width="3"/>
+        <g transform="translate(0 18)" stroke-width="4">
+          <circle cx="-134" r="10" fill="#fffaf2"/><circle cx="-102" r="10" fill="#ff7a59"/>
+          <circle cx="102" r="10" fill="#ff7a59"/><circle cx="134" r="10" fill="#fffaf2"/>
+        </g>
+        <!-- burner and flames -->
+        <ellipse cx="0" cy="-20" rx="72" ry="9" fill="#2c2f37"/>
+        <g class="flames" stroke="none">
+          <path class="flame" d="M-60 -22 C-66 -34 -58 -44 -54 -52 C-50 -42 -46 -34 -48 -22 Z" fill="#4fb8f5"/>
+          <path class="flame" d="M-34 -22 C-40 -38 -30 -50 -26 -58 C-22 -46 -18 -36 -20 -22 Z" fill="#4fb8f5"/>
+          <path class="flame" d="M-8 -22 C-14 -40 -4 -52 0 -62 C4 -50 10 -40 8 -22 Z" fill="#4fb8f5"/>
+          <path class="flame" d="M20 -22 C14 -38 24 -50 28 -58 C32 -46 36 -36 34 -22 Z" fill="#4fb8f5"/>
+          <path class="flame" d="M46 -22 C40 -34 48 -44 52 -52 C56 -42 60 -34 58 -22 Z" fill="#4fb8f5"/>
+          <path d="M-52 -22 C-54 -30 -50 -36 -48 -40 C-46 -34 -44 -28 -45 -22 Z M-26 -22 C-28 -32 -24 -40 -22 -44 C-20 -36 -18 -30 -19 -22 Z M0 -22 C-3 -34 0 -42 1 -48 C3 -40 6 -32 5 -22 Z M28 -22 C26 -32 30 -40 32 -44 C34 -36 35 -30 34 -22 Z" fill="#c8eeff"/>
+        </g>
+        <!-- wok -->
+        <path d="M-132 -80 C-120 -30 -64 -24 0 -24 C64 -24 120 -30 132 -80 Z" fill="#474d58"/>
+        <path d="M-100 -60 C-80 -40 -40 -36 -10 -36" fill="none" stroke="#6b7280" stroke-width="5"/>
+        <ellipse cx="0" cy="-80" rx="134" ry="20" fill="#2a2e36"/>
+        <ellipse cx="0" cy="-77" rx="110" ry="12" fill="#363b45" stroke="none"/>
+        <!-- food appears in the wok once every ingredient is ready -->
+        <g class="wok-food" stroke-width="3.5">
+          <path d="M-84 -82 C-70 -100 -40 -96 -30 -86 C-20 -100 10 -98 18 -86 C30 -98 64 -98 78 -84 C50 -70 -60 -70 -84 -82 Z" fill="#ffd34d"/>
+          <path d="M-50 -88 l14 -12 l10 14 z M10 -90 l16 -10 l6 16 z M44 -84 l12 -12 l10 12 z" fill="#ff4f3f"/>
+          <g fill="#6cc957"><circle cx="-14" cy="-88" r="5"/><circle cx="30" cy="-80" r="5"/><circle cx="-64" cy="-80" r="5"/></g>
+        </g>
+        <path d="M-128 -76 C-60 -62 60 -62 128 -76" fill="none" stroke="#7d8593" stroke-width="4"/>
+        <!-- handle -->
+        <path d="M124 -86 L240 -118" stroke-width="22"/>
+        <path d="M124 -86 L240 -118" stroke="#c07a38" stroke-width="13"/>
+        <path d="M118 -84 L148 -92" stroke-width="13"/>
+        <path d="M-132 -82 C-156 -86 -160 -64 -138 -62" fill="none" stroke-width="7"/>
+        <!-- spatula -->
+        <path d="M-36 -86 L-110 -168" stroke-width="15"/>
+        <path d="M-36 -86 L-110 -168" stroke="#c07a38" stroke-width="7"/>
+      </g>
+      <g class="steam" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" aria-hidden="true">
+        <path class="steam-1" d="M-30 -120 C-40 -136 -20 -146 -30 -164"/>
+        <path class="steam-2" d="M14 -124 C4 -142 26 -152 14 -174"/>
+        <path class="steam-3" d="M56 -118 C46 -134 66 -142 56 -160"/>
+      </g>
+      <g class="badge" transform="translate(150 -132)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 40)"><rect class="tag-bg" x="-90" y="-19" width="180" height="38" rx="19"/><text class="tag-text" dy=".36em">Stir-fry &amp; serve</text></g>
+    <rect class="hit" x="-186" y="-186" width="436" height="252" rx="28"/>
+  </a>
+
+  <!-- RECIPE BOOK -> the playable fried rice recipe + the blog -->
+  <a class="hot" id="hot-book" data-kind="book" href="#recipe-book" transform="translate(1088 602)" style="--delay:-.6s">
+    <ellipse class="halo" cx="0" cy="-92" rx="110" ry="140"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <ellipse cx="4" cy="-3" rx="78" ry="9" fill="#3d2314" opacity=".14" stroke="none"/>
+        <path d="M26 -6 L44 -130" stroke-width="13"/>
+        <path d="M26 -6 L44 -130" stroke="#c98446" stroke-width="6"/>
+        <path d="M-52 -14 L-40 -178 L62 -170 L54 -10 Z" fill="#fff6e0"/>
+        <path d="M56 -150 L50 -22 M60 -150 L54 -22" stroke="#e5d6b4" stroke-width="2"/>
+        <path d="M-62 -10 L-50 -180 L50 -174 L42 -6 Z" fill="#ec4b3f"/>
+        <path d="M-62 -10 L-50 -180 L-34 -179 L-46 -9 Z" fill="#c0352c"/>
+        <path d="M-30 -150 L-27 -104 L36 -100 L38 -146 Z" fill="#fff1c7" stroke-width="4"/>
+        <text class="svg-label" transform="translate(4 -118) rotate(3)" font-size="17" fill="#c0352c">RECIPES</text>
+        <path d="M3 -72 C-7 -86 -26 -76 -14 -62 L3 -46 L20 -62 C32 -76 13 -86 3 -72 Z" fill="#ffd23f" stroke-width="4"/>
+        <path d="M18 -8 V18 L25 12 L32 18 V-7" fill="#ffd23f" stroke-width="4"/>
+        <rect x="-76" y="-14" width="138" height="14" rx="5" fill="#c98446"/>
+      </g>
+      <g class="badge" transform="translate(56 -190)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(0 38)"><rect class="tag-bg" x="-56" y="-19" width="112" height="38" rx="19"/><text class="tag-text" dy=".36em">Recipes</text></g>
+    <rect class="hit" x="-80" y="-206" width="150" height="260" rx="28"/>
+  </a>
+
+  <!-- FRAMED PICTURES -> photography site (new tab). Cartoon versions of three of Lehan's own
+       photos (left to right): a concert, a fashion shoot (with a giant leek) and an alpine lake
+       in autumn. Each picture is drawn on its own small canvas (360 x 240 for the two landscapes,
+       290 x 430 for the portrait) and scaled by 0.4 into its frame. Screen-reader descriptions:
+       text.js (frames.pictures). -->
+  <a class="hot hot--link" id="hot-frames" data-kind="frames" target="_blank" rel="noopener" transform="translate(376 6)" style="--delay:-1.1s">
+    <ellipse class="halo" cx="237" cy="114" rx="270" ry="138"/>
+    <g class="bob">
+      <g class="art" stroke="#3d2314" stroke-linejoin="round" stroke-linecap="round">
+        <!-- strings and nails -->
+        <path d="M43 56 L81 30 L119 56 M199 19 L237 4 L275 19 M355 56 L393 30 L431 56" fill="none" stroke="#7a5236" stroke-width="3"/>
+
+        <!-- frame A: a singer in sunglasses, belting into the mic amid stage flames and smoke -->
+        <g transform="translate(81 114) rotate(-3)">
+          <rect x="-81" y="-59" width="162" height="118" rx="7" fill="#2f2a28" stroke-width="5"/>
+          <path d="M-74 -53 H74" stroke="#5c5450" stroke-width="2.5"/>
+          <g clip-path="url(#clip-photo-land)" stroke="none">
+            <g transform="translate(-72 -48) scale(.4)">
+              <rect width="360" height="240" fill="url(#g-fire)"/>
+              <path d="M296 0 H360 V240 H286 C298 176 278 96 296 0 Z" fill="#6e3313" opacity=".5"/>
+              <g fill="#fff1c9" opacity=".5"><circle cx="232" cy="58" r="40"/><circle cx="272" cy="112" r="34"/><circle cx="112" cy="66" r="44"/><circle cx="62" cy="128" r="30"/><circle cx="168" cy="30" r="30"/></g>
+              <!-- flames: a column on the left, one top right, fireballs bottom left and right -->
+              <path d="M0 0 H26 C16 20 30 36 20 54 C12 68 28 82 16 102 C8 118 22 134 12 152 C6 164 14 178 0 190 Z" fill="#ffad42"/>
+              <path d="M0 8 H12 C7 26 18 40 9 56 C3 70 13 86 5 104 C1 116 7 130 0 142 Z" fill="#fff3c4"/>
+              <path d="M360 0 V100 C344 92 352 74 340 64 C330 54 344 40 334 28 C328 18 340 8 334 0 Z" fill="#ffad42"/>
+              <path d="M360 6 V76 C352 70 356 58 350 50 C344 42 352 30 348 20 C346 14 350 8 348 6 Z" fill="#fff3c4"/>
+              <path d="M24 240 C14 214 32 194 48 196 C46 174 68 158 86 168 C94 146 124 146 132 166 C150 160 164 178 154 196 C170 202 172 226 162 240 Z" fill="#ffad42"/>
+              <path d="M46 240 C40 222 54 210 66 212 C66 194 86 184 98 196 C106 180 128 186 128 200 C142 200 148 220 140 240 Z" fill="#ffdf8a"/>
+              <path d="M66 240 C64 226 76 218 88 222 C92 208 114 208 116 224 C124 226 126 236 122 240 Z" fill="#fffbe8"/>
+              <path d="M280 240 C276 224 292 212 306 216 C312 202 336 202 340 216 C354 214 364 228 360 240 Z" fill="#ffc45a"/>
+              <path d="M300 240 C300 230 312 226 320 228 C326 220 342 222 344 232 C350 232 352 238 350 240 Z" fill="#fff3c4"/>
+              <g fill="#fff"><circle cx="97" cy="122" r="3.5"/><circle cx="94" cy="138" r="2.5"/><circle cx="252" cy="34" r="2.5"/></g>
+              <!-- the singer -->
+              <g stroke="#3d2314" stroke-width="4">
+                <path d="M116 240 C114 200 110 172 122 150 C130 136 150 130 166 130 L206 132 C222 132 236 140 240 158 C246 182 242 212 238 240 Z" fill="#221c1c"/>
+                <path d="M118 156 C108 142 116 126 132 126 C148 124 160 128 166 134 L150 152 Z" fill="#2c2525"/>
+                <path d="M168 120 H196 V138 H168 Z" fill="#d6977a"/>
+                <path d="M158 130 C170 144 196 146 212 132 L208 148 C196 156 174 156 160 146 Z" fill="#2c2525"/>
+                <g transform="rotate(6 182 106)">
+                  <ellipse cx="182" cy="106" rx="17" ry="21" fill="#eab597"/>
+                  <path d="M165 112 C165 128 175 137 185 137 C195 137 201 128 199 112 C195 121 189 125 183 125 C175 125 169 120 165 112 Z" fill="#5a3420"/>
+                  <ellipse cx="184" cy="118" rx="5.5" ry="6.5" fill="#6b1414" stroke-width="2.5"/>
+                  <path d="M179.5 114 H188.5" stroke="#fff" stroke-width="2"/>
+                  <path d="M163 99 C161 80 176 72 190 76 C199 74 206 83 203 96 C197 87 187 85 177 89 C170 91 166 95 163 99 Z" fill="#4a2a17"/>
+                  <path d="M165 96 L203 94 L203 98 C203 104 199 107 194 107 C189 107 186 104 185 100 L183 100 C182 104 179 107 174 107 C169 107 165 103 165 98 Z" fill="#141414" stroke-width="2.5"/>
+                  <path d="M170 99 l3 -2 M189 98 l3 -2" stroke="#8fa3b8" stroke-width="1.8"/>
+                  <ellipse cx="164" cy="108" rx="4" ry="6" fill="#d6977a" stroke-width="2.5"/>
+                  <circle cx="164" cy="110" r="2.4" fill="#141414" stroke="none"/>
+                </g>
+                <!-- arms, the microphone and the hands around it -->
+                <path d="M130 150 C124 168 126 182 138 186 C158 176 180 154 198 136" fill="none" stroke-width="24"/>
+                <path d="M130 150 C124 168 126 182 138 186 C158 176 180 154 198 136" fill="none" stroke="#2a2323" stroke-width="16"/>
+                <path d="M226 142 C236 158 240 172 234 182 C226 168 218 154 212 140" fill="none" stroke-width="24"/>
+                <path d="M226 142 C236 158 240 172 234 182 C226 168 218 154 212 140" fill="none" stroke="#2a2323" stroke-width="16"/>
+                <path d="M210 123 L244 120" stroke-width="11"/>
+                <path d="M210 123 L244 120" stroke="#2b2b2b" stroke-width="6"/>
+                <path d="M237 117.5 V124" stroke="#a9b2bc" stroke-width="2"/>
+                <path d="M194 127 C194 118 202 114 208 116 C214 114 222 118 222 127 C222 137 214 143 207 143 C199 143 194 137 194 127 Z" fill="#eab597" stroke-width="3"/>
+                <path d="M202 120 V139 M208 119 V140 M214 121 V138" stroke="#b97c5e" stroke-width="1.6"/>
+                <!-- jacket details -->
+                <path d="M198 152 V240" stroke="#4a4040" stroke-width="2"/>
+                <rect x="132" y="154" width="13" height="6" fill="#fff" stroke="none"/>
+                <path d="M157 148 l5 4 M162 148 l-5 4 M168 148 l5 4" stroke="#fff" stroke-width="1.6"/>
+                <path d="M146 222 l-3 10" stroke="#fff" stroke-width="2.4"/>
+              </g>
+            </g>
+          </g>
+          <rect x="-72" y="-48" width="144" height="96" fill="none" stroke-width="3"/>
+        </g>
+
+        <!-- frame B: a fashion shoot. A blonde model in a pale silver-blue suit, perched on a
+             tilted white box, holding a (much exaggerated) leek -->
+        <g transform="translate(237 112) rotate(2)">
+          <rect x="-67" y="-95" width="134" height="190" rx="7" fill="#ff9fb4" stroke-width="5"/>
+          <path d="M-60 -89 H60" stroke="#ffd2dc" stroke-width="2.5"/>
+          <g clip-path="url(#clip-photo-port)" stroke="none">
+            <g transform="translate(-58 -86) scale(.4)">
+              <rect width="290" height="430" fill="url(#g-studio)"/>
+              <g transform="translate(164 214) scale(1.1) translate(-160 -218)">
+              <ellipse cx="190" cy="346" rx="90" ry="11" fill="#2e2e33" opacity=".35"/>
+              <g stroke="#3d2314" stroke-width="4.5">
+                <!-- the white box, standing on one corner -->
+                <path d="M117 219 L181 175 L185 185 L121 229 Z" fill="#ffffff"/>
+                <path d="M121 229 L185 185 L270 286 L223 332 Z" fill="#f4f4f2"/>
+                <path d="M223 332 L270 286 L272 295 L226 341 Z" fill="#c6c6ca"/>
+                <!-- legs in pale silver-blue trousers, blush-pink heels -->
+                <path d="M140 204 L96 220 L132 264" fill="none" stroke-width="31"/>
+                <path d="M140 204 L96 220 L132 264" fill="none" stroke="#bccde4" stroke-width="22"/>
+                <path d="M132 198 L58 203 L34 236" fill="none" stroke-width="31"/>
+                <path d="M132 198 L58 203 L34 236" fill="none" stroke="#c9d8ec" stroke-width="22"/>
+                <path d="M118 201 L64 205" fill="none" stroke="#a3b6d0" stroke-width="2.5"/>
+                <path d="M40 238 C34 250 24 257 12 259 C8 253 14 245 28 236 Z" fill="#f4aea6"/>
+                <path d="M36 245 L44 259" stroke-width="5"/>
+                <path d="M124 264 C126 278 130 287 136 293 C142 289 144 277 142 263 Z" fill="#f4aea6"/>
+                <path d="M142 271 L149 285" stroke-width="5"/>
+                <!-- the pale floral jacket, and the arm holding the leek -->
+                <path d="M104 132 C118 126 152 130 168 138 C176 158 174 180 170 198 C156 205 136 205 122 200 C114 180 106 158 104 132 Z" fill="#e4e9f0"/>
+                <g stroke="none"><circle cx="118" cy="152" r="6" fill="#a9bad0"/><circle cx="146" cy="146" r="5" fill="#f0c6d0"/><circle cx="158" cy="172" r="6" fill="#a9bad0"/><circle cx="128" cy="180" r="5" fill="#f0c6d0"/><circle cx="150" cy="192" r="4" fill="#a9bad0"/><circle cx="137" cy="162" r="3.5" fill="#c9b2d8"/></g>
+                <path d="M126 134 L138 168 L150 136" fill="none" stroke-width="3"/>
+                <path d="M162 142 L190 160 L202 174" fill="none" stroke-width="22"/>
+                <path d="M162 142 L190 160 L202 174" fill="none" stroke="#e4e9f0" stroke-width="14"/>
+                <circle cx="184" cy="157" r="3.5" fill="#f0c6d0" stroke="none"/>
+                <path d="M118 120 L134 117 L137 136 L121 139 Z" fill="#f6d5bd"/>
+                <!-- head tilted, blonde bob, eyes closed -->
+                <g transform="rotate(-22 113 108)">
+                  <path d="M88 110 C86 84 102 76 116 76 C134 76 146 90 142 112 L144 138 C132 140 126 132 124 124 L104 124 C100 134 94 140 86 138 Z" fill="#f2cd68"/>
+                  <ellipse cx="114" cy="110" rx="17" ry="21" fill="#f6d5bd"/>
+                  <path d="M95 104 C98 86 116 80 132 88 C138 94 140 102 138 112 C130 98 112 96 98 112 Z" fill="#f2cd68"/>
+                  <path d="M104 113 q4 3 8 0 M117 113 q4 3 8 0" fill="none" stroke-width="2.6"/>
+                  <path d="M110 124 q4 2 8 0" fill="none" stroke="#c46b6b" stroke-width="3"/>
+                </g>
+                <!-- the leek, hugely exaggerated: its leaves burst out of the frame -->
+                <path d="M252 228 C268 250 276 274 282 302 L262 308 C258 282 250 262 238 244 Z" fill="#3f9a36"/>
+                <path d="M248 236 C262 274 270 312 274 354 L252 356 C250 316 244 282 234 250 Z" fill="#2f7d2a"/>
+                <path d="M242 242 C250 290 252 340 250 398 L228 396 C230 340 230 296 228 250 Z" fill="#5bb34a"/>
+                <path d="M232 246 C230 296 226 352 218 406 L196 400 C208 350 214 302 218 252 Z" fill="#3f9a36"/>
+                <path d="M250 240 C262 260 268 280 272 304 M243 248 C254 280 260 314 262 354 M236 252 C240 296 240 344 239 396 M225 254 C222 300 218 350 207 402" fill="none" stroke="#9bd77f" stroke-width="3"/>
+                <path d="M190 148 L248 236" stroke-width="40"/>
+                <path d="M190 148 L248 236" stroke="#f6f8ec" stroke-width="30"/>
+                <path d="M226 203 L248 236" stroke="#cfe8a2" stroke-width="30"/>
+                <path d="M200 160 L236 214" stroke="#e3ead2" stroke-width="3"/>
+                <path d="M182 140 l-14 -4 M182 143 l-14 7 M184 139 l-6 -14 M188 137 l1 -15 M191 138 l8 -12" stroke="#cdbf98" stroke-width="3.5"/>
+                <ellipse cx="204" cy="172" rx="12" ry="10" fill="#f6d5bd"/>
+                <path d="M198 168 q6 3 12 0" fill="none" stroke="#d6a98a" stroke-width="2.5"/>
+              </g>
+              </g>
+            </g>
+          </g>
+          <rect x="-58" y="-86" width="116" height="172" fill="none" stroke-width="3"/>
+        </g>
+
+        <!-- frame C: an alpine lake in autumn, golden larches dusted with snow -->
+        <g transform="translate(393 114) rotate(3)">
+          <rect x="-81" y="-59" width="162" height="118" rx="7" fill="#c98446" stroke-width="5"/>
+          <path d="M-74 -53 H74" stroke="#e6ad74" stroke-width="2.5"/>
+          <g clip-path="url(#clip-photo-land)" stroke="none">
+            <g transform="translate(-72 -48) scale(.4)">
+              <rect width="360" height="240" fill="url(#g-alpine-sky)"/>
+              <g fill="#fff">
+                <circle cx="192" cy="32" r="12"/><circle cx="207" cy="22" r="14"/><circle cx="223" cy="29" r="12"/><circle cx="213" cy="39" r="10"/><circle cx="198" cy="41" r="9"/>
+                <circle cx="281" cy="31" r="9"/><circle cx="295" cy="24" r="12"/><circle cx="309" cy="31" r="9"/><rect x="278" y="30" width="34" height="9" rx="4.5"/>
+                <circle cx="334" cy="10" r="10"/><circle cx="350" cy="5" r="13"/>
+                <circle cx="210" cy="66" r="9"/><circle cx="226" cy="59" r="12"/><circle cx="244" cy="63" r="11"/><circle cx="258" cy="68" r="8"/><rect x="204" y="64" width="58" height="10" rx="5"/>
+                <circle cx="108" cy="76" r="9"/><circle cx="121" cy="68" r="12"/><circle cx="134" cy="76" r="9"/>
+              </g>
+              <!-- the snowy peaks -->
+              <path d="M226 98 C244 86 266 74 288 65 C306 58 326 50 344 44 L360 40 V140 H226 Z" fill="#8f918f"/>
+              <path d="M256 78 C268 74 280 68 288 65 C300 60 318 54 334 48 C328 58 318 60 310 68 C300 66 296 76 284 78 C276 76 266 84 256 78 Z M300 82 C310 76 322 72 336 66 C340 72 330 78 322 82 C314 80 308 86 300 82 Z" fill="#f2f3f1"/>
+              <path d="M98 122 L114 90 L121 78 L129 81 L136 92 L152 120 Z" fill="#eef2f4"/>
+              <path d="M121 78 L129 81 L136 92 L152 120 L132 120 C134 106 130 90 121 78 Z" fill="#c4ced6"/>
+              <!-- the forested hillside: dark pines, golden larches -->
+              <path d="M106 138 C126 116 150 102 176 92 C200 86 226 88 248 90 C284 92 320 94 360 96 V178 H106 Z" fill="#2d4831"/>
+              <path fill="#40603f" d="M140 132 l5 -14 l5 14 Z M156 120 l5 -14 l5 14 Z M172 110 l5 -14 l5 14 Z M188 106 l5 -14 l5 14 Z M204 104 l5 -14 l5 14 Z M222 106 l5 -14 l5 14 Z M240 106 l5 -14 l5 14 Z M258 108 l5 -14 l5 14 Z M276 108 l5 -14 l5 14 Z M294 110 l5 -14 l5 14 Z M312 110 l5 -14 l5 14 Z M330 112 l5 -14 l5 14 Z M348 112 l5 -14 l5 14 Z M164 142 l6 -16 l6 16 Z M196 130 l6 -16 l6 16 Z M228 126 l6 -16 l6 16 Z M262 130 l6 -16 l6 16 Z M300 132 l6 -16 l6 16 Z M336 134 l6 -16 l6 16 Z M180 158 l6 -16 l6 16 Z M212 152 l6 -16 l6 16 Z M244 150 l6 -16 l6 16 Z M280 154 l6 -16 l6 16 Z M318 156 l6 -16 l6 16 Z"/>
+              <g fill="#eef3ee" opacity=".6"><circle cx="150" cy="126" r="1.6"/><circle cx="182" cy="114" r="1.6"/><circle cx="216" cy="118" r="1.6"/><circle cx="250" cy="112" r="1.6"/><circle cx="288" cy="120" r="1.6"/><circle cx="322" cy="118" r="1.6"/><circle cx="200" cy="142" r="1.6"/><circle cx="266" cy="146" r="1.6"/><circle cx="306" cy="144" r="1.6"/></g>
+              <path fill="#d48a2c" d="M124 168 L134 120 L144 168 Z M138 170 L150 110 L162 170 Z M154 168 L163 128 L172 168 Z M192 156 l6 -20 l6 20 Z M206 150 l5 -16 l5 16 Z M226 164 l6 -20 l6 20 Z M252 142 l5 -16 l5 16 Z M270 166 l6 -22 l6 22 Z M292 170 L304 122 L316 170 Z M310 170 L322 112 L334 170 Z M328 170 L340 118 L352 170 Z M344 170 L356 106 L368 170 Z"/>
+              <path fill="#a9631c" d="M134 120 L144 168 L136 168 Z M150 110 L162 170 L153 170 Z M304 122 L316 170 L308 170 Z M322 112 L334 170 L326 170 Z M340 118 L352 170 L344 170 Z"/>
+              <path d="M130 140 h6 M146 132 h7 M142 152 h8 M160 146 h6 M300 140 h7 M318 132 h7 M314 152 h9 M336 140 h7 M352 128 h6" stroke="#f6f3ea" stroke-width="2.4" stroke-linecap="round"/>
+              <!-- the big larch on the left -->
+              <path d="M0 0 H58 C54 22 68 44 76 70 C82 98 92 126 102 160 C80 170 40 176 0 178 Z" fill="#b8742a"/>
+              <path d="M0 20 C18 18 34 30 46 52 C56 72 60 100 68 130 C52 140 28 146 0 148 Z" fill="#d39a3e"/>
+              <path d="M22 176 C28 130 30 90 38 50 M8 170 C10 130 14 90 12 50" fill="none" stroke="#5a3a1e" stroke-width="2.5"/>
+              <g fill="#f3efe4" opacity=".8"><circle cx="28" cy="40" r="2.2"/><circle cx="48" cy="70" r="2.2"/><circle cx="20" cy="88" r="2.2"/><circle cx="62" cy="110" r="2.2"/><circle cx="40" cy="126" r="2.2"/><circle cx="80" cy="144" r="2.2"/><circle cx="12" cy="130" r="2.2"/></g>
+              <!-- the snowy shore -->
+              <path d="M0 150 C40 146 92 150 132 156 C162 160 188 163 204 168 C172 174 124 178 84 181 C52 183 22 186 0 188 Z" fill="#f1f0eb"/>
+              <path d="M60 176 C100 172 150 168 196 168" stroke="#c7ccd0" stroke-width="2" fill="none"/>
+              <!-- the lake: reflections and thin ice -->
+              <path d="M0 186 C44 182 104 178 160 173 C200 169 260 167 360 167 V240 H0 Z" fill="url(#g-lake)"/>
+              <path d="M0 190 C24 189 50 188 72 187 C68 206 74 224 66 240 H0 Z" fill="#8a5a22" opacity=".85"/>
+              <path d="M98 184 L196 174 L202 240 H92 Z" fill="#26372b" opacity=".75"/>
+              <path d="M98 192 C110 200 116 210 122 222 C126 210 134 200 148 191 Z" fill="#cfd8dc" opacity=".22"/>
+              <path d="M206 170 C240 168 300 168 360 168 V240 H250 C240 218 224 194 206 170 Z" fill="#8c958a"/>
+              <path d="M232 186 H330 M246 204 H350 M262 222 H352" stroke="#a7afa4" stroke-width="3" stroke-linecap="round"/>
+              <!-- larch twigs hanging in from the top -->
+              <path d="M60 0 C90 10 120 12 150 20 M96 8 C104 20 116 28 128 34 M130 16 C140 26 150 34 166 40 M150 0 C150 12 158 22 170 28" fill="none" stroke="#4a3322" stroke-width="2.2"/>
+              <g fill="#c9802c"><circle cx="128" cy="34" r="2.5"/><circle cx="166" cy="40" r="2.5"/><circle cx="170" cy="28" r="2"/><circle cx="150" cy="20" r="2"/></g>
+            </g>
+          </g>
+          <rect x="-72" y="-48" width="144" height="96" fill="none" stroke-width="3"/>
+        </g>
+
+        <!-- nails -->
+        <g fill="#9aa3ad" stroke-width="3"><circle cx="81" cy="30" r="6"/><circle cx="237" cy="4" r="6"/><circle cx="393" cy="30" r="6"/></g>
+      </g>
+      <g class="badge" transform="translate(470 50)"><g class="badge-in"><circle class="badge-ring" r="13"/><circle class="badge-dot" r="13"/><path class="badge-tick" d="M-6 0 l4 5 l8 -10"/></g></g>
+    </g>
+    <g class="tag" transform="translate(237 234)"><rect class="tag-bg" x="-86" y="-19" width="172" height="38" rx="19"/><text class="tag-text" dy=".36em">Photography ↗</text></g>
+    <rect class="hit" x="-6" y="-4" width="486" height="262" rx="28"/>
+  </a>
+</svg>
+</div>
+
+<!-- Floating helpers over the scene (positioned by scene.js) -->
+<div class="hover-label" id="hover-label" hidden></div>
+<div class="start-here" id="start-here" aria-hidden="true" hidden><span id="start-here-text">Start here!</span></div>
+
+<!-- Phones held upright: arrows at the edges to slide along the kitchen (for fingers and mice;
+     keyboard users simply Tab to each thing, and the kitchen scrolls to show it), and a
+     one-time hint: "swipe", "or turn your phone sideways", and (where the browser allows it,
+     e.g. Chrome on Android) a full-screen button. Words: text.js (pan). -->
+<button class="pan-arrow pan-arrow--prev" id="pan-prev" type="button" tabindex="-1" aria-hidden="true" hidden>
+  <svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<button class="pan-arrow pan-arrow--next" id="pan-next" type="button" tabindex="-1" aria-hidden="true" hidden>
+  <svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+<div class="pan-hint" id="pan-hint" hidden>
+  <svg class="pan-hint-icon" viewBox="0 0 64 48" aria-hidden="true" focusable="false">
+    <g fill="none" stroke="#3d2314" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+      <path class="pan-hint-arrows" d="M6 12 H22 M10 7 L5 12 L10 17 M42 12 H58 M54 7 L59 12 L54 17"/>
+      <g class="pan-hint-hand">
+        <path d="M27 44 C22 38 19 33 17 29 C16 26 19 24 21.5 26.5 L26 31 V12 C26 8.5 31 8.5 31 12 V24 C31 21 36 21 36 24 V26 C36 23 41 23 41 26 V28 C41 25.5 46 25.5 46 28 V36 C46 40 44 43 42 44 Z" fill="#fffaf0"/>
+      </g>
+    </g>
+  </svg>
+  <div class="pan-hint-body">
+    <p class="pan-hint-text">
+      <strong id="pan-hint-swipe">Swipe to see the whole kitchen</strong>
+      <span id="pan-hint-turn">Or turn your phone sideways to see it all.</span>
+    </p>
+    <button class="btn pan-hint-full" id="pan-hint-full" type="button" hidden>Full screen</button>
+  </div>
+  <button class="icon-btn pan-hint-close" id="pan-hint-close" type="button" aria-label="Got it">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- ======================================================================
+     3. THE RECIPE CARD (progress tracker; every step is also a shortcut)
+     ====================================================================== -->
+<nav class="recipe" id="recipe-card" aria-labelledby="recipe-title" tabindex="-1">
+  <div class="recipe-head">
+    <p class="recipe-kicker" id="recipe-kicker">Today’s recipe</p>
+    <h2 class="recipe-title" id="recipe-title"><span id="recipe-dish">Tomato &amp; egg stir-fry</span> <span class="recipe-served" id="recipe-served">served with rice</span></h2>
+    <div class="recipe-progress">
+      <span class="recipe-bar" aria-hidden="true"><span class="recipe-bar-fill" id="recipe-bar-fill"></span></span>
+      <span class="recipe-count" id="recipe-count">0 of 5 ingredients ready</span>
+    </div>
+  </div>
+  <ol class="recipe-steps" id="recipe-steps"><!-- filled by scene.js --></ol>
+</nav>
+
+<!-- "About this kitchen": a little blue-and-white porcelain rice bowl (bottom right), heaped
+     with rice, chopsticks across the top and an "i" on the bowl. It opens a small popup
+     (words in text.js; #about opens it directly). scene.js keeps it clear of the recipe card. -->
+<button class="info-btn" id="info-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="info-pop" title="About this kitchen">
+  <svg viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+    <g stroke="#3d2314" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+      <!-- heaped rice -->
+      <path d="M9 31 C9 14 20 3 32 3 C44 3 55 14 55 31 Z" fill="#fffdf6"/>
+      <path d="M22 14 l3 -1 M31 9 l3 1 M40 13 l3 -1 M17 21 l2 1 M28 18 l3 0 M44 20 l2 -1" stroke="#d9cfbd" stroke-width="2"/>
+      <!-- the bowl: white porcelain, cobalt-blue rim band and foot ring -->
+      <path d="M5 31 H59 C58 45 47 54 32 54 C17 54 6 45 5 31 Z" fill="#fbfdff"/>
+      <path d="M6.5 37 C10 37 12 34.5 15.5 34.5 C19 34.5 21 37 24.5 37 C28 37 30 34.5 33.5 34.5 C37 34.5 39 37 42.5 37 C46 37 48 34.5 51.5 34.5 C54 34.5 55.5 36 57.5 36.5" fill="none" stroke="#1f4fa8" stroke-width="2.4"/>
+      <path d="M12 47 C16 50 22 51.5 32 51.5 C42 51.5 48 50 52 47" fill="none" stroke="#1f4fa8" stroke-width="2"/>
+      <path d="M22 54 L23 59 H41 L42 54" fill="#fbfdff"/>
+      <path d="M23.3 57 H40.7" stroke="#1f4fa8" stroke-width="2"/>
+      <!-- the "i" medallion on the bowl -->
+      <circle cx="32" cy="43" r="6.6" fill="#1f4fa8" stroke-width="2"/>
+      <circle cx="32" cy="39.6" r="1.3" fill="#fff" stroke="none"/>
+      <path d="M32 42.4 V47" stroke="#fff" stroke-width="2.4"/>
+      <!-- little cobalt flower motifs either side -->
+      <g fill="#1f4fa8" stroke="none"><circle cx="16" cy="43.5" r="1.7"/><circle cx="19.6" cy="41.2" r="1.7"/><circle cx="19.4" cy="45.8" r="1.7"/><circle cx="48" cy="43.5" r="1.7"/><circle cx="44.4" cy="41.2" r="1.7"/><circle cx="44.6" cy="45.8" r="1.7"/></g>
+      <!-- chopsticks resting across the top -->
+      <path d="M2 28 L62 19" stroke-width="6"/>
+      <path d="M2 28 L62 19" stroke="#c98446" stroke-width="2.6"/>
+      <path d="M4 32.5 L62 24.5" stroke-width="6"/>
+      <path d="M4 32.5 L62 24.5" stroke="#c98446" stroke-width="2.6"/>
+    </g>
+  </svg>
+  <span class="sr-only" id="info-btn-label">About this kitchen</span>
+</button>
+<section class="info-pop" id="info-pop" role="dialog" aria-modal="true" aria-labelledby="info-title" aria-describedby="info-body" tabindex="-1" hidden>
+  <h2 class="info-title" id="info-title"></h2>
+  <p class="info-body" id="info-body"></p>
+  <p class="info-small" id="info-small"></p>
+  <button class="icon-btn info-close" id="info-close" type="button" aria-label="Close">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+  </button>
+</section>
+
+</main>
+
+<!-- ======================================================================
+     4. OVERLAYS (one open at a time; the URL hash says which)
+     ====================================================================== -->
+
+<!-- Page panel: the content of one page (pages and their names: SITE.pages in content.js) -->
+<div class="overlay" id="panel-overlay" hidden>
+  <div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title">
+    <header class="panel-head">
+      <span class="panel-icon" id="panel-icon" aria-hidden="true"></span>
+      <div class="panel-heading">
+        <p class="panel-kicker" id="panel-kicker"></p>
+        <h1 class="panel-title" id="panel-title" tabindex="-1"></h1>
+      </div>
+      <button class="icon-btn panel-close" type="button" data-close aria-label="Back to the kitchen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+    <div class="panel-body content" id="panel-body"></div>
+    <footer class="panel-foot">
+      <a class="nav-btn nav-btn--prev" id="panel-prev" href="#home"></a>
+      <a class="nav-btn nav-btn--kitchen" id="panel-kitchen" href="#kitchen" data-close>Back to the kitchen</a>
+      <a class="nav-btn nav-btn--next" id="panel-next" href="#research"></a>
+    </footer>
+  </div>
+</div>
+
+<!-- Cooking moment: a quick, can't-fail close-up before a page opens -->
+<div class="overlay" id="station-overlay" hidden>
+  <section class="station" id="station" role="dialog" aria-modal="true" aria-labelledby="station-title" tabindex="-1">
+    <header class="station-head">
+      <p class="station-step" id="station-step"></p>
+      <h2 class="station-title" id="station-title"></h2>
+      <button class="icon-btn station-close" type="button" data-close aria-label="Back to the kitchen">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+    <div class="station-stage" id="station-stage">
+      <div class="station-art" id="station-art"></div>
+      <!-- The whole close-up is one big button: click, tap, Enter or Space all work. -->
+      <button class="station-hit" id="station-hit" type="button"></button>
+      <div class="cheer" id="station-cheer" aria-hidden="true" hidden></div>
+    </div>
+    <p class="station-instruction" id="station-instruction" aria-live="polite"></p>
+    <footer class="station-foot">
+      <ol class="pips" id="station-pips" aria-hidden="true"></ol>
+      <button class="link-btn" id="station-skip" type="button"></button>
+    </footer>
+  </section>
+</div>
+
+<!-- Recipe book: the playable fried rice recipe, and the blog -->
+<div class="overlay" id="book-overlay" hidden>
+  <section class="book" id="book" role="dialog" aria-modal="true" aria-labelledby="book-title">
+    <h2 class="sr-only" id="book-title">Lehan’s recipe book</h2>
+    <button class="icon-btn book-close" type="button" data-close aria-label="Close the recipe book">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+    </button>
+    <div class="book-page book-page--left">
+      <p class="book-kicker">Recipe No. 2</p>
+      <h3 class="book-heading" id="book-play-title">Fried rice</h3>
+      <svg class="book-dish" viewBox="0 0 220 120" aria-hidden="true">
+        <g stroke="#3d2314" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+          <ellipse cx="110" cy="92" rx="100" ry="22" fill="#fffaf0"/>
+          <ellipse cx="110" cy="90" rx="76" ry="14" fill="#e3f0fb" stroke-width="3"/>
+          <path d="M40 88 C40 50 70 30 110 30 C150 30 180 50 180 88 C150 98 70 98 40 88 Z" fill="#ffe8a8"/>
+          <g stroke-width="2.5"><rect x="70" y="56" width="10" height="10" rx="2" fill="#ff8c2a"/><rect x="128" y="62" width="10" height="10" rx="2" fill="#ff8c2a"/><rect x="104" y="44" width="10" height="10" rx="2" fill="#ff8c2a"/></g>
+          <g fill="#6cc957" stroke-width="2.5"><circle cx="92" cy="70" r="5"/><circle cx="150" cy="76" r="5"/><circle cx="62" cy="76" r="5"/><circle cx="120" cy="80" r="5"/></g>
+          <g fill="#ffd34d" stroke-width="2.5"><path d="M84 46 c6 -6 14 -2 12 6 c-4 4 -12 4 -12 -6z"/><path d="M140 48 c6 -6 14 -2 12 6 c-4 4 -12 4 -12 -6z"/></g>
+        </g>
+      </svg>
+      <p class="book-blurb" id="book-play-blurb"></p>
+      <ol class="book-steps" id="book-play-steps"></ol>
+      <p class="book-meta" id="book-play-meta"></p>
+      <a class="btn btn--primary" id="book-play" href="#fried-rice">Play</a>
+    </div>
+    <div class="book-spine" aria-hidden="true"></div>
+    <div class="book-page book-page--right">
+      <p class="book-kicker">More recipes</p>
+      <h3 class="book-heading" id="book-more-title">Hungry for more?</h3>
+      <p class="book-line" id="book-more-line">You can find more recipes here</p>
+      <svg class="book-arrow" viewBox="0 0 120 60" aria-hidden="true"><path d="M8 10 C40 4 70 20 82 44" fill="none" stroke="#3d2314" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 10"/><path d="M70 40 L84 48 L88 32" fill="none" stroke="#3d2314" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <a class="btn btn--blog" id="book-blog" href="#" target="_blank" rel="noopener"></a>
+      <p class="book-url" id="book-blog-url"></p>
+    </div>
+  </section>
+</div>
+
+<!-- The fried rice mini-game (game.js) -->
+<div class="overlay overlay--game" id="game-overlay" hidden>
+  <section class="game" id="game" role="dialog" aria-modal="true" aria-labelledby="game-title">
+    <header class="game-head">
+      <div class="game-heading">
+        <p class="game-kicker" id="game-kicker"></p>
+        <h2 class="game-title" id="game-title" tabindex="-1"></h2>
+      </div>
+      <ol class="pips game-pips" id="game-pips" aria-hidden="true"></ol>
+      <button class="icon-btn game-quit" id="game-quit" type="button" aria-label="Quit the game">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+      </button>
+    </header>
+    <div class="game-stage" id="game-stage">
+      <div class="game-art" id="game-art"></div>
+      <button class="game-hit" id="game-hit" type="button"></button>
+      <div class="game-pop" id="game-pop" aria-hidden="true"></div>
+    </div>
+    <p class="game-instruction" id="game-instruction" aria-live="polite"></p>
+    <footer class="game-foot" id="game-foot">
+      <span class="game-keys" id="game-keys"></span>
+      <button class="link-btn" id="game-skip" type="button"></button>
+      <div class="game-actions" id="game-actions" hidden></div>
+    </footer>
+  </section>
+</div>
+
+<!-- Finale: the plated dish and a celebration -->
+<div class="overlay overlay--finale" id="finale-overlay" hidden>
+  <!-- sunburst and confetti fill the whole screen, behind / over the card -->
+  <div class="finale-rays" aria-hidden="true"></div>
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+  <section class="finale" id="finale" role="dialog" aria-modal="true" aria-labelledby="finale-title">
+    <button class="icon-btn finale-close" type="button" data-close aria-label="Back to the kitchen">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+    </button>
+    <div class="finale-art" id="finale-art"></div>
+    <p class="finale-cooking" id="finale-cooking" aria-hidden="true"></p>
+    <div class="finale-text" id="finale-text">
+      <p class="finale-stars" aria-hidden="true"><span>★</span><span>★</span><span>★</span></p>
+      <h2 class="finale-title" id="finale-title" tabindex="-1"></h2>
+      <p class="finale-dish" id="finale-dish"></p>
+      <p class="finale-body" id="finale-body"></p>
+      <div class="finale-actions">
+        <a class="btn btn--primary" id="finale-classic" href="../../classic/index.html"></a>
+        <a class="btn" id="finale-cv" href="#" target="_blank" rel="noopener"></a>
+        <a class="btn" id="finale-play" href="#recipe-book"></a>
+        <a class="btn btn--quiet" id="finale-start" href="../../index.html"></a>
+      </div>
+      <!-- links to the other fun versions (from config.js) -->
+      <p class="finale-versions" id="finale-versions"></p>
+    </div>
+  </section>
+</div>
+
+<!-- Screen-reader announcements -->
+<div class="sr-only" id="announcer" aria-live="polite"></div>
+
+<noscript><p class="noscript">This kitchen needs JavaScript. <a href="../../classic/index.html">Read the classic website</a> instead.</p></noscript>
+
+<!-- ======================================================================
+     5. TEMPLATES: close-up drawings (cloned by scene.js / game.js)
+     Animations are driven by CSS classes added to the stage:
+     .s1, .s2 = after the first / second press; .done = finished.
+     ====================================================================== -->
+
+<!-- Icons used on the recipe card and the page panels -->
+<svg class="sprite" aria-hidden="true" focusable="false">
+  <symbol id="i-rice" viewBox="0 0 48 48">
+    <g stroke="#3d2314" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M9 23 C8 11 40 11 39 23 Z" fill="#fff"/>
+      <path d="M5 23 H43 C42 35 34 41 24 41 C14 41 6 35 5 23 Z" fill="#ff9fb4"/>
+      <path d="M17 45 H31"/>
+    </g>
+    <path d="M17 17 l2 -1 M24 15 l2 1 M30 18 l2 -1 M20 20 l1 1" stroke="#c9bfae" stroke-width="2" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-egg" viewBox="0 0 48 48">
+    <path d="M24 5 C34 5 40 20 40 29 C40 39 33 44 24 44 C15 44 8 39 8 29 C8 20 14 5 24 5 Z" fill="#fff3df" stroke="#3d2314" stroke-width="2.6"/>
+    <ellipse cx="18" cy="20" rx="3" ry="6" fill="#fff" transform="rotate(20 18 20)"/>
+  </symbol>
+  <symbol id="i-tomato" viewBox="0 0 48 48">
+    <path d="M24 12 C38 10 45 21 44 29 C43 39 34 44 24 44 C14 44 5 39 4 29 C3 21 10 10 24 12 Z" fill="#ff4f3f" stroke="#3d2314" stroke-width="2.6"/>
+    <path d="M24 10 l5 -5 l0 7 l7 1 l-6 3 l3 6 l-9 -4 l-9 4 l3 -6 l-6 -3 l7 -1 l0 -7 z" fill="#46a64a" stroke="#3d2314" stroke-width="2.2" stroke-linejoin="round"/>
+    <path d="M11 24 C12 19 16 17 19 16" fill="none" stroke="#ffb3a8" stroke-width="3" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-onion" viewBox="0 0 48 48">
+    <path d="M6 40 L22 26" stroke="#3d2314" stroke-width="9" stroke-linecap="round"/>
+    <path d="M6 40 L22 26" stroke="#f6faee" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M21 27 C26 18 32 12 42 6 M21 27 C28 22 36 20 44 18" fill="none" stroke="#3d2314" stroke-width="8" stroke-linecap="round"/>
+    <path d="M21 27 C26 18 32 12 42 6 M21 27 C28 22 36 20 44 18" fill="none" stroke="#5bbb4a" stroke-width="3.5" stroke-linecap="round"/>
+    <path d="M34 26 C37 31 44 33 44 39 C44 44 39 46 34 46 C29 46 24 44 24 39 C24 33 31 31 34 26 Z" fill="#fdf7ec" stroke="#3d2314" stroke-width="2.4"/>
+  </symbol>
+  <symbol id="i-seasoning" viewBox="0 0 48 48">
+    <g stroke="#3d2314" stroke-width="2.4" stroke-linejoin="round">
+      <path d="M9 45 V18 C9 13 14 12 14 8 V4 H20 V8 C20 12 25 13 25 18 V45 Z" fill="#5b2a14"/>
+      <rect x="11" y="24" width="12" height="13" rx="2" fill="#fff1c7"/>
+      <path d="M28 45 V24 C28 20 44 20 44 24 V45 Z" fill="#ffd23f"/>
+      <path d="M28 25 C28 15 44 15 44 25 Z" fill="#e8463b"/>
+    </g>
+  </symbol>
+  <symbol id="i-wok" viewBox="0 0 48 48">
+    <g stroke="#3d2314" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M4 20 C6 32 14 35 22 35 C30 35 38 32 40 20 Z" fill="#474d58"/>
+      <path d="M38 21 L46 16" stroke-width="5"/>
+      <path d="M14 42 C12 39 15 37 16 35 M24 43 C22 40 25 38 26 36" fill="none" stroke="#4fb8f5" stroke-width="3"/>
+    </g>
+    <path d="M12 18 C11 14 14 12 13 9 M22 17 C21 13 24 11 23 7" fill="none" stroke="#ef4b3c" stroke-width="2.4" stroke-linecap="round"/>
+  </symbol>
+  <symbol id="i-hat" viewBox="0 0 48 48">
+    <g stroke="#3d2314" stroke-width="2.6" stroke-linejoin="round">
+      <path d="M12 30 C3 29 2 17 11 15 C11 6 22 3 24 10 C27 3 38 6 37 15 C46 17 45 29 36 30 Z" fill="#fff"/>
+      <path d="M13 28 H35 L34 40 H14 Z" fill="#fff"/>
+    </g>
+  </symbol>
+  <symbol id="i-book" viewBox="0 0 48 48">
+    <g stroke="#3d2314" stroke-width="2.6" stroke-linejoin="round">
+      <path d="M8 6 H38 V42 H8 Z" fill="#ec4b3f"/>
+      <path d="M8 6 H13 V42 H8 Z" fill="#c0352c"/>
+      <rect x="17" y="12" width="16" height="10" rx="1.5" fill="#fff1c7" stroke-width="2"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- Cooking moment: rice -->
+<template id="tpl-cook-rice">
+  <svg class="st-svg st-rice" viewBox="0 0 600 360" aria-hidden="true">
+    <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="-30" y="324" width="660" height="60" fill="#f7c47c"/>
+      <!-- the pot of rice, hidden under the lid until it opens -->
+      <ellipse cx="300" cy="138" rx="160" ry="24" fill="#d9cbb6"/>
+      <path class="st-rice-fluff" d="M166 140 C172 112 204 104 226 116 C242 94 278 92 298 108 C318 90 356 94 372 112 C394 100 426 110 434 140 Z" fill="#fff"/>
+      <path d="M130 140 C126 252 152 306 214 308 H386 C448 306 474 252 470 140 Z" fill="#fffaf2"/>
+      <path d="M130 140 H470 L469 170 H131 Z" fill="#ffb4c2"/>
+      <rect x="116" y="300" width="64" height="24" rx="10" fill="#ff8fa6"/>
+      <rect x="420" y="300" width="64" height="24" rx="10" fill="#ff8fa6"/>
+      <rect x="204" y="186" width="192" height="108" rx="28" fill="#ffe9ef"/>
+      <rect x="222" y="200" width="156" height="32" rx="10" fill="#45524b"/>
+      <rect class="st-bar" x="229" y="207" width="142" height="18" rx="6" fill="#9cf28e" stroke="none"/>
+      <circle class="st-lamp-warm" cx="240" cy="262" r="11" fill="#f2e2c9" stroke-width="4"/>
+      <text class="svg-label" x="240" y="288" font-size="11" fill="#8a6d5a">WARM</text>
+      <g class="st-target st-cookbtn">
+        <circle class="st-ring" cx="320" cy="262" r="40" fill="none" stroke="#ffd23f" stroke-width="9"/>
+        <rect x="278" y="242" width="86" height="42" rx="14" fill="#ff7a59"/>
+        <text class="svg-label" x="321" y="270" font-size="19" fill="#fff">COOK</text>
+      </g>
+      <!-- lid: hinged at the back right (470, 140) -->
+      <g class="st-lid">
+        <path d="M120 144 C122 70 210 52 300 52 C390 52 478 70 480 144 Z" fill="#ff9fb4"/>
+        <rect x="112" y="132" width="376" height="24" rx="12" fill="#ffc4d1"/>
+        <path d="M190 92 C226 70 276 66 318 67" fill="none" stroke="#ffd6df" stroke-width="12"/>
+        <path d="M238 58 C238 14 362 14 362 58" fill="none" stroke-width="16"/>
+        <path d="M238 58 C238 14 362 14 362 58" fill="none" stroke="#ff8fa6" stroke-width="6"/>
+        <ellipse cx="380" cy="86" rx="20" ry="9" fill="#fffaf2"/>
+      </g>
+    </g>
+    <g class="st-steam" fill="#fff" stroke="#3d2314" stroke-width="4">
+      <circle class="puff p1" cx="380" cy="64" r="14"/><circle class="puff p2" cx="396" cy="44" r="17"/><circle class="puff p3" cx="378" cy="22" r="12"/>
+    </g>
+    <g transform="translate(470 70)"><g class="st-ding">
+      <path d="M0 -46 L12 -16 L44 -22 L20 2 L40 28 L8 18 L0 48 L-8 18 L-40 28 L-20 2 L-44 -22 L-12 -16 Z" fill="#ffd23f" stroke="#3d2314" stroke-width="5" stroke-linejoin="round"/>
+      <text class="svg-label" y="9" font-size="21" fill="#3d2314">Ding!</text>
+    </g></g>
+  </svg>
+</template>
+
+<!-- Cooking moment: eggs -->
+<template id="tpl-cook-eggs">
+  <svg class="st-svg st-eggs" viewBox="0 0 600 360" aria-hidden="true">
+    <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="-30" y="324" width="660" height="60" fill="#f7c47c"/>
+      <ellipse cx="300" cy="240" rx="160" ry="32" fill="#3f88c9"/>
+      <g class="st-yolk">
+        <path d="M232 238 C234 220 366 216 370 238 C366 254 236 256 232 238 Z" fill="#fffdf6" stroke-width="4"/>
+        <circle cx="302" cy="234" r="19" fill="#ffc21a" stroke-width="4"/>
+        <ellipse cx="296" cy="228" rx="6" ry="4" fill="#fff3c2" stroke="none"/>
+      </g>
+      <path d="M140 240 C142 304 214 330 300 330 C386 330 458 304 460 240 C430 262 170 262 140 240 Z" fill="#5aaee8"/>
+      <path d="M170 262 C230 282 370 282 430 262" fill="none" stroke="#a9dafb" stroke-width="6"/>
+      <g fill="#fff" stroke="none"><circle cx="190" cy="290" r="8"/><circle cx="250" cy="306" r="8"/><circle cx="350" cy="306" r="8"/><circle cx="410" cy="290" r="8"/></g>
+      <!-- the egg -->
+      <g class="st-egg">
+        <g class="st-egg-top">
+          <path d="M244 126 C244 84 268 50 300 50 C332 50 356 84 356 126 L342 116 L328 130 L314 116 L300 130 L286 116 L272 130 L258 116 Z" fill="#fff3df"/>
+        </g>
+        <g class="st-egg-bottom">
+          <path d="M244 126 L258 116 L272 130 L286 116 L300 130 L314 116 L328 130 L342 116 L356 126 C356 170 332 196 300 196 C268 196 244 170 244 126 Z" fill="#fff3df"/>
+        </g>
+        <g class="st-egg-whole">
+          <path d="M300 50 C332 50 356 88 356 126 C356 170 332 196 300 196 C268 196 244 170 244 126 C244 88 268 50 300 50 Z" fill="#fff3df"/>
+          <ellipse cx="276" cy="100" rx="9" ry="18" fill="#fff" stroke="none" transform="rotate(18 276 100)"/>
+          <path class="st-crack" d="M262 118 L276 128 L288 114 L300 128 L312 114 L324 126" fill="none" stroke-width="5"/>
+        </g>
+        <ellipse class="st-ring" cx="300" cy="123" rx="78" ry="94" fill="none" stroke="#ffd23f" stroke-width="9"/>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<!-- Cooking moment: tomatoes -->
+<template id="tpl-cook-tomatoes">
+  <svg class="st-svg st-tomatoes" viewBox="0 0 600 360" aria-hidden="true">
+    <defs>
+      <clipPath id="stt-l"><rect x="0" y="0" width="262" height="360"/></clipPath>
+      <clipPath id="stt-m"><rect x="262" y="0" width="76" height="360"/></clipPath>
+      <clipPath id="stt-r"><rect x="338" y="0" width="262" height="360"/></clipPath>
+      <g id="stt-tomato">
+        <path d="M300 112 C372 104 410 160 406 214 C402 270 356 298 300 298 C244 298 198 270 194 214 C190 160 228 104 300 112 Z" fill="#ff4f3f" stroke="#3d2314" stroke-width="6"/>
+        <path d="M230 186 C234 160 252 144 272 138" fill="none" stroke="#ffb3a8" stroke-width="12" stroke-linecap="round"/>
+        <path d="M300 104 L314 84 L316 106 L340 108 L320 120 L328 140 L300 128 L272 140 L280 120 L260 108 L284 106 L286 84 Z" fill="#46a64a" stroke="#3d2314" stroke-width="5" stroke-linejoin="round"/>
+      </g>
+    </defs>
+    <rect x="-30" y="324" width="660" height="60" fill="#f7c47c" stroke="#3d2314" stroke-width="6"/>
+    <rect x="96" y="286" width="408" height="38" rx="14" fill="#f6c27a" stroke="#3d2314" stroke-width="6"/>
+    <g class="st-part st-part-l" clip-path="url(#stt-l)"><use href="#stt-tomato"/></g>
+    <g class="st-part st-part-m" clip-path="url(#stt-m)"><use href="#stt-tomato"/></g>
+    <g class="st-part st-part-r" clip-path="url(#stt-r)"><use href="#stt-tomato"/></g>
+    <g class="st-flesh" stroke="#3d2314" stroke-width="4">
+      <path class="st-flesh-1" d="M262 126 C252 170 252 250 262 294 C272 250 272 170 262 126 Z" fill="#ff8a6f"/>
+      <path class="st-flesh-2" d="M338 126 C328 170 328 250 338 294 C348 250 348 170 338 126 Z" fill="#ff8a6f"/>
+    </g>
+    <path class="st-cut st-cut-1" d="M262 84 V318" fill="none" stroke="#3d2314" stroke-width="5" stroke-dasharray="12 10"/>
+    <path class="st-cut st-cut-2" d="M338 84 V318" fill="none" stroke="#3d2314" stroke-width="5" stroke-dasharray="12 10"/>
+    <g class="st-juice" fill="#ff6b52" stroke="#3d2314" stroke-width="3">
+      <circle cx="240" cy="150" r="7"/><circle cx="286" cy="130" r="5"/><circle cx="360" cy="140" r="6"/><circle cx="316" cy="118" r="5"/>
+    </g>
+    <!-- knife: edge at y=0, positioned by CSS -->
+    <g class="st-knife">
+      <g stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M-14 0 C-14 -40 -12 -110 -2 -150 H22 V0 Z" fill="#e3eaf1"/>
+        <path d="M-4 -12 C-4 -50 -2 -110 4 -140" fill="none" stroke="#fff" stroke-width="5"/>
+        <rect x="-6" y="-232" width="30" height="86" rx="10" fill="#c07a38"/>
+        <circle cx="9" cy="-210" r="4" fill="#fffaf0" stroke-width="3"/><circle cx="9" cy="-176" r="4" fill="#fffaf0" stroke-width="3"/>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<!-- Cooking moment: spring onions & garlic -->
+<template id="tpl-cook-onions">
+  <svg class="st-svg st-onions" viewBox="0 0 600 360" aria-hidden="true">
+    <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="-30" y="324" width="660" height="60" fill="#f7c47c"/>
+      <rect x="40" y="262" width="520" height="62" rx="18" fill="#f6c27a"/>
+      <path d="M80 300 H200 M300 284 H420" stroke="#e7a85d" stroke-width="4"/>
+      <!-- whole spring onion -->
+      <g class="st-onion-whole">
+        <path d="M150 262 C200 252 280 240 350 226 M150 262 C210 258 290 256 360 252" fill="none" stroke-width="24"/>
+        <path d="M150 262 C200 252 280 240 350 226 M150 262 C210 258 290 256 360 252" fill="none" stroke="#5bbb4a" stroke-width="13"/>
+        <path d="M66 270 L152 262" fill="none" stroke-width="30"/>
+        <path d="M66 270 L152 262" fill="none" stroke="#f6faee" stroke-width="19"/>
+        <path d="M122 265 L152 262" fill="none" stroke="#c7e9a6" stroke-width="19"/>
+        <path d="M56 262 l-14 -6 M56 270 l-16 2 M56 278 l-13 8" stroke-width="4"/>
+      </g>
+      <!-- chopped -->
+      <g class="st-onion-chopped">
+        <g fill="#7fd36a" stroke-width="5"><circle cx="190" cy="268" r="13"/><circle cx="222" cy="262" r="13"/><circle cx="254" cy="270" r="13"/><circle cx="286" cy="262" r="13"/><circle cx="318" cy="269" r="13"/><circle cx="348" cy="263" r="13"/></g>
+        <g fill="#f6faee" stroke-width="5"><circle cx="100" cy="270" r="12"/><circle cx="128" cy="264" r="12"/><circle cx="156" cy="271" r="12"/></g>
+        <g fill="#3d2314" stroke="none" opacity=".25"><circle cx="190" cy="268" r="4"/><circle cx="222" cy="262" r="4"/><circle cx="254" cy="270" r="4"/><circle cx="286" cy="262" r="4"/><circle cx="318" cy="269" r="4"/><circle cx="348" cy="263" r="4"/></g>
+      </g>
+      <!-- garlic clove: whole, then smashed -->
+      <g class="st-garlic">
+        <path d="M470 270 C442 268 430 246 444 220 C456 198 488 192 500 204 C486 214 482 238 492 262 C486 268 478 270 470 270 Z" fill="#fdf7ec"/>
+        <path d="M454 236 C460 222 472 214 484 210" fill="none" stroke="#d8c2d6" stroke-width="4"/>
+      </g>
+      <g class="st-garlic-smashed">
+        <path d="M410 272 C420 254 520 252 532 272 Z" fill="#fdf7ec"/>
+        <g fill="#fdf7ec" stroke-width="4"><circle cx="400" cy="262" r="6"/><circle cx="540" cy="260" r="5"/><circle cx="470" cy="246" r="5"/></g>
+      </g>
+    </g>
+    <!-- cleaver: edge at y=0, positioned by CSS -->
+    <g class="st-cleaver">
+      <g stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M-60 0 V-96 H40 V0 Z" fill="#e3eaf1"/>
+        <circle cx="-38" cy="-74" r="7" fill="#fffaf0" stroke-width="4"/>
+        <path d="M-50 -14 H30" stroke="#fff" stroke-width="5"/>
+        <rect x="36" y="-90" width="80" height="26" rx="10" fill="#c07a38"/>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<!-- Cooking moment: seasoning (five bottles take turns) -->
+<template id="tpl-cook-seasoning">
+  <svg class="st-svg st-seasoning" viewBox="0 0 600 360" aria-hidden="true">
+    <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="-30" y="324" width="660" height="60" fill="#f7c47c"/>
+      <!-- a big wok to catch it all -->
+      <path d="M60 268 C80 318 160 326 300 326 C440 326 520 318 540 268 Z" fill="#474d58"/>
+      <ellipse cx="300" cy="268" rx="242" ry="26" fill="#2a2e36"/>
+      <ellipse class="st-sauce" cx="300" cy="270" rx="200" ry="15" fill="#9a5a2a" stroke="none"/>
+    </g>
+    <!-- each bottle tilts in turn: --i sets the delay, --tilt the direction.
+         The drops sit where the bottle's mouth ends up once tilted. -->
+    <g class="st-bottle" style="--i:0;--tilt:120deg" transform="translate(100 190)">
+      <g class="st-bottle-in" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <path d="M-24 0 V-90 C-24 -104 -10 -108 -9 -118 V-130 H9 V-118 C10 -108 24 -104 24 -90 V0 Z" fill="#5b2a14"/>
+        <rect x="-11" y="-142" width="22" height="14" rx="4" fill="#e8463b"/>
+        <rect x="-19" y="-76" width="38" height="44" rx="5" fill="#fff1c7" stroke-width="3.5"/>
+        <text class="svg-label" y="-57" font-size="9" fill="#5b2a14" stroke="none">OYSTER</text>
+        <text class="svg-label" y="-46" font-size="9" fill="#5b2a14" stroke="none">SAUCE</text>
+      </g>
+      <g class="st-drops" fill="#5b2a14" stroke="#3d2314" stroke-width="2"><circle cx="123" cy="50" r="6"/><circle cx="125" cy="68" r="5"/></g>
+      <text class="st-pop svg-label" y="-152" font-size="16" fill="#3d2314">+ oyster sauce</text>
+    </g>
+    <g class="st-bottle" style="--i:1;--tilt:120deg" transform="translate(200 190)">
+      <g class="st-bottle-in" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <path d="M-20 0 V-100 C-20 -110 -8 -114 -7 -124 V-150 H7 V-124 C8 -114 20 -110 20 -100 V0 Z" fill="#a85b1d"/>
+        <rect x="-9" y="-162" width="18" height="14" rx="4" fill="#e3b341"/>
+        <path d="M-18 -84 L0 -96 L18 -84 V-30 H-18 Z" fill="#d8342b" stroke-width="3.5"/>
+        <text class="svg-label" y="-66" font-size="9" fill="#ffe7a1" stroke="none">SHAO</text>
+        <text class="svg-label" y="-55" font-size="9" fill="#ffe7a1" stroke="none">HSING</text>
+      </g>
+      <g class="st-drops" fill="#c77a2e" stroke="#3d2314" stroke-width="2"><circle cx="140" cy="58" r="6"/><circle cx="138" cy="74" r="5"/></g>
+      <text class="st-pop svg-label" y="-170" font-size="16" fill="#3d2314">+ Shao Hsing wine</text>
+    </g>
+    <g class="st-bottle" style="--i:2;--tilt:120deg" transform="translate(300 190)">
+      <g class="st-bottle-in" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <path d="M-22 0 V-76 C-22 -82 22 -82 22 -76 V0 Z" fill="#fff"/>
+        <path d="M-22 -78 C-22 -98 22 -98 22 -78 Z" fill="#7fb8ea"/>
+        <rect x="-22" y="-56" width="44" height="24" fill="#5aa0e0" stroke-width="3.5"/>
+        <text class="svg-label" y="-39" font-size="11" fill="#fff" stroke="none">SALT</text>
+      </g>
+      <g class="st-drops" fill="#fff" stroke="#3d2314" stroke-width="2"><rect x="80" y="30" width="7" height="7"/><rect x="90" y="44" width="7" height="7"/><rect x="78" y="58" width="7" height="7"/></g>
+      <text class="st-pop svg-label" y="-112" font-size="16" fill="#3d2314">+ salt</text>
+    </g>
+    <g class="st-bottle" style="--i:3;--tilt:-120deg" transform="translate(400 190)">
+      <g class="st-bottle-in" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <rect x="-26" y="-78" width="52" height="78" rx="10" fill="#eaf6ff"/>
+        <g fill="#fff" stroke-width="3"><rect x="-16" y="-30" width="14" height="14" rx="2"/><rect x="2" y="-32" width="14" height="14" rx="2"/><rect x="-8" y="-16" width="14" height="14" rx="2"/></g>
+        <rect x="-30" y="-92" width="60" height="16" rx="6" fill="#ff9fb4"/>
+        <rect x="-19" y="-68" width="38" height="16" rx="4" fill="#fff" stroke-width="3"/>
+        <text class="svg-label" y="-56" font-size="9" fill="#d0566e" stroke="none">SUGAR</text>
+      </g>
+      <g class="st-drops" fill="#fff" stroke="#3d2314" stroke-width="2"><rect x="-86" y="28" width="9" height="9" rx="1"/><rect x="-78" y="46" width="9" height="9" rx="1"/></g>
+      <text class="st-pop svg-label" y="-108" font-size="16" fill="#3d2314">+ sugar</text>
+    </g>
+    <g class="st-bottle" style="--i:4;--tilt:-120deg" transform="translate(500 190)">
+      <g class="st-bottle-in" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <path d="M-22 0 V-76 C-22 -86 22 -86 22 -76 V0 Z" fill="#ffd23f"/>
+        <rect x="-15" y="-100" width="30" height="20" rx="6" fill="#e8463b"/>
+        <ellipse cx="0" cy="-42" rx="17" ry="13" fill="#fff" stroke-width="3"/>
+        <text class="svg-label" y="-37" font-size="11" fill="#d8342b" stroke="none">MSG</text>
+      </g>
+      <g class="st-drops" fill="#fff" stroke="#3d2314" stroke-width="2"><circle cx="-88" cy="30" r="3.5"/><circle cx="-82" cy="44" r="3.5"/><circle cx="-92" cy="56" r="3.5"/></g>
+      <text class="st-pop svg-label" y="-116" font-size="16" fill="#3d2314">+ MSG</text>
+    </g>
+  </svg>
+</template>
+
+<!-- Finale: a wok (while it stir-fries), then the plated dish -->
+<template id="tpl-finale">
+  <svg class="fin-svg" viewBox="0 0 600 340" aria-hidden="true">
+    <!-- 1. the wok, tossing -->
+    <g class="fin-wok">
+      <g class="fin-flames" stroke="none">
+        <path d="M220 300 C206 270 226 250 236 232 C244 256 252 274 248 300 Z" fill="#ff9a3c"/>
+        <path d="M270 302 C256 262 280 236 292 214 C302 244 312 270 306 302 Z" fill="#ffcf48"/>
+        <path d="M330 300 C318 266 340 246 350 228 C358 254 366 274 362 300 Z" fill="#ff9a3c"/>
+      </g>
+      <g class="fin-toss" stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+        <path d="M232 170 C220 150 238 136 256 144 C262 128 290 126 296 142 C308 128 336 132 336 150 C352 146 364 160 352 172 Z" fill="#ffd34d"/>
+        <path d="M262 150 l16 -14 l10 16 z M306 146 l16 -12 l8 16 z" fill="#ff4f3f" stroke-width="4"/>
+      </g>
+      <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M150 212 C164 266 222 278 300 278 C378 278 436 266 450 212 Z" fill="#474d58"/>
+        <ellipse cx="300" cy="212" rx="152" ry="22" fill="#2a2e36"/>
+        <path d="M446 206 L560 172" stroke-width="22"/><path d="M446 206 L560 172" stroke="#c07a38" stroke-width="12"/>
+      </g>
+    </g>
+    <!-- 2. served: tomato & egg stir-fry, and a bowl of rice -->
+    <g class="fin-served">
+      <g class="fin-steam" fill="none" stroke-linecap="round">
+        <g><path d="M200 112 C186 92 214 80 200 56" stroke="#3d2314" stroke-opacity=".2" stroke-width="13"/><path d="M200 112 C186 92 214 80 200 56" stroke="#fff" stroke-width="7"/></g>
+        <g><path d="M250 100 C236 80 264 68 250 44" stroke="#3d2314" stroke-opacity=".2" stroke-width="13"/><path d="M250 100 C236 80 264 68 250 44" stroke="#fff" stroke-width="7"/></g>
+        <g><path d="M440 118 C426 98 454 86 440 62" stroke="#3d2314" stroke-opacity=".2" stroke-width="13"/><path d="M440 118 C426 98 454 86 440 62" stroke="#fff" stroke-width="7"/></g>
+      </g>
+      <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+        <!-- plate -->
+        <ellipse cx="236" cy="252" rx="196" ry="56" fill="#fffaf0"/>
+        <ellipse cx="236" cy="248" rx="150" ry="38" fill="#e3f0fb" stroke-width="4"/>
+        <path d="M60 252 C80 290 392 290 412 252" fill="none" stroke="#7fb8ea" stroke-width="5"/>
+        <!-- the stir-fry -->
+        <path d="M110 240 C104 200 150 170 196 180 C214 152 270 150 290 176 C328 168 370 190 362 230 C364 258 300 270 236 268 C170 268 112 262 110 240 Z" fill="#ffd34d"/>
+        <g fill="#ff4f3f" stroke-width="5">
+          <path d="M150 220 C150 196 186 188 196 210 Z"/><path d="M226 196 C236 172 270 178 266 202 Z"/>
+          <path d="M290 230 C296 206 332 206 330 230 Z"/><path d="M200 250 C204 228 236 228 238 250 Z"/>
+          <path d="M310 196 C320 180 344 186 340 204 Z"/>
+        </g>
+        <g fill="#ffe7a0" stroke="none"><circle cx="170" cy="214" r="4"/><circle cx="246" cy="190" r="4"/><circle cx="310" cy="222" r="4"/><circle cx="218" cy="242" r="4"/></g>
+        <g fill="#6cc957" stroke-width="3.5"><circle cx="130" cy="236" r="7"/><circle cx="214" cy="214" r="7"/><circle cx="280" cy="250" r="7"/><circle cx="342" cy="244" r="7"/><circle cx="262" cy="218" r="6"/><circle cx="180" cy="252" r="6"/></g>
+        <path d="M150 196 C170 184 190 182 204 186" fill="none" stroke="#fff6c8" stroke-width="7" opacity=".9"/>
+        <!-- bowl of rice -->
+        <path d="M404 178 C400 116 532 116 528 178 Z" fill="#fff"/>
+        <path d="M424 150 l6 -2 M452 136 l6 2 M488 140 l5 -3 M470 160 l6 1 M500 160 l5 2 M440 168 l5 -2" stroke="#d9cfbf" stroke-width="3"/>
+        <path d="M392 178 H540 C536 236 506 258 466 258 C426 258 396 236 392 178 Z" fill="#ff9fb4"/>
+        <g fill="#fff" stroke="none"><circle cx="420" cy="206" r="6"/><circle cx="466" cy="222" r="6"/><circle cx="512" cy="206" r="6"/></g>
+        <path d="M444 256 L448 268 H486 L490 256" fill="#ff8fa6"/>
+        <!-- chopsticks -->
+        <path d="M520 290 L590 196 M540 296 L598 208" stroke-width="11"/>
+        <path d="M520 290 L590 196 M540 296 L598 208" stroke="#d88a4a" stroke-width="5"/>
+      </g>
+      <!-- a little flag with the chef's face -->
+      <g class="fin-flag" transform="translate(300 128)">
+        <path d="M0 0 V64" stroke="#3d2314" stroke-width="5" stroke-linecap="round"/>
+        <path d="M0 2 H54 L46 20 L54 38 H0 Z" fill="#ef4b3c" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/>
+        <path d="M14 20 l4 -9 l4 9 l-4 9 z M30 20 l4 -9 l4 9 l-4 9 z" fill="#ffd23f"/>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<!-- ---- Fried rice game: one template per step (game.js wires them up) ---- -->
+<template id="tpl-game-chop">
+  <svg class="g-svg g-chop" viewBox="0 0 640 360" aria-hidden="true">
+    <defs>
+      <g id="g-carrot">
+        <path d="M120 172 C230 166 420 186 524 200 C530 202 530 208 524 210 C420 224 230 240 120 236 C96 235 92 173 120 172 Z" fill="#ff8c2a" stroke="#3d2314" stroke-width="6" stroke-linejoin="round"/>
+        <path d="M170 186 c4 6 4 12 0 18 M260 184 c4 6 4 12 0 18 M350 190 c3 5 3 10 0 15 M440 196 c3 4 3 8 0 12" fill="none" stroke="#e0661a" stroke-width="4" stroke-linecap="round"/>
+        <path d="M150 182 C170 178 200 178 230 180" fill="none" stroke="#ffc08a" stroke-width="7" stroke-linecap="round"/>
+      </g>
+      <clipPath id="gc-0"><rect x="0" y="0" width="200" height="360"/></clipPath>
+      <clipPath id="gc-1"><rect x="200" y="0" width="80" height="360"/></clipPath>
+      <clipPath id="gc-2"><rect x="280" y="0" width="80" height="360"/></clipPath>
+      <clipPath id="gc-3"><rect x="360" y="0" width="80" height="360"/></clipPath>
+      <clipPath id="gc-4"><rect x="440" y="0" width="200" height="360"/></clipPath>
+    </defs>
+    <rect x="-30" y="300" width="700" height="80" fill="#f7c47c" stroke="#3d2314" stroke-width="6"/>
+    <rect x="50" y="244" width="540" height="56" rx="18" fill="#f6c27a" stroke="#3d2314" stroke-width="6"/>
+    <!-- carrot leaves -->
+    <g stroke="#3d2314" stroke-width="5" stroke-linejoin="round" fill="#4cae4f">
+      <path d="M112 196 C80 170 60 160 46 166 C60 184 84 196 112 204 Z"/>
+      <path d="M112 204 C76 206 56 214 50 226 C72 228 96 220 114 210 Z"/>
+      <path d="M110 200 C90 178 84 156 92 146 C104 162 114 182 118 198 Z" fill="#5cbf55"/>
+    </g>
+    <g class="g-seg" data-seg="0" clip-path="url(#gc-0)"><use href="#g-carrot"/></g>
+    <g class="g-seg" data-seg="1" clip-path="url(#gc-1)"><use href="#g-carrot"/></g>
+    <g class="g-seg" data-seg="2" clip-path="url(#gc-2)"><use href="#g-carrot"/></g>
+    <g class="g-seg" data-seg="3" clip-path="url(#gc-3)"><use href="#g-carrot"/></g>
+    <g class="g-seg" data-seg="4" clip-path="url(#gc-4)"><use href="#g-carrot"/></g>
+    <g class="g-lines" fill="none" stroke="#ef4b3c" stroke-width="5" stroke-dasharray="10 9" stroke-linecap="round">
+      <path class="g-line" data-line="0" d="M200 140 V262"/>
+      <path class="g-line" data-line="1" d="M280 140 V262"/>
+      <path class="g-line" data-line="2" d="M360 140 V262"/>
+      <path class="g-line" data-line="3" d="M440 140 V262"/>
+    </g>
+    <!-- the knife follows the pointer; edge at y=0 -->
+    <g class="g-knife"><g class="g-knife-in">
+      <g stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+        <path d="M-14 0 C-14 -36 -12 -96 -2 -128 H22 V0 Z" fill="#e3eaf1"/>
+        <path d="M-4 -12 C-4 -48 -2 -96 4 -120" fill="none" stroke="#fff" stroke-width="5"/>
+        <rect x="-6" y="-206" width="30" height="80" rx="10" fill="#c07a38"/>
+      </g>
+    </g></g>
+  </svg>
+</template>
+
+<template id="tpl-game-crack">
+  <svg class="g-svg g-crack st-eggs" viewBox="0 0 640 360" aria-hidden="true">
+    <g transform="translate(20 0)" stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <rect x="-60" y="324" width="740" height="60" fill="#f7c47c"/>
+      <ellipse cx="300" cy="240" rx="160" ry="32" fill="#3f88c9"/>
+      <g class="st-yolk">
+        <path d="M232 238 C234 220 366 216 370 238 C366 254 236 256 232 238 Z" fill="#fffdf6" stroke-width="4"/>
+        <circle cx="302" cy="234" r="19" fill="#ffc21a" stroke-width="4"/>
+      </g>
+      <path d="M140 240 C142 304 214 330 300 330 C386 330 458 304 460 240 C430 262 170 262 140 240 Z" fill="#ffb4c2"/>
+      <g fill="#fff" stroke="none"><circle cx="190" cy="290" r="8"/><circle cx="250" cy="306" r="8"/><circle cx="350" cy="306" r="8"/><circle cx="410" cy="290" r="8"/></g>
+      <g class="st-egg">
+        <g class="st-egg-top"><path d="M244 126 C244 84 268 50 300 50 C332 50 356 84 356 126 L342 116 L328 130 L314 116 L300 130 L286 116 L272 130 L258 116 Z" fill="#fff3df"/></g>
+        <g class="st-egg-bottom"><path d="M244 126 L258 116 L272 130 L286 116 L300 130 L314 116 L328 130 L342 116 L356 126 C356 170 332 196 300 196 C268 196 244 170 244 126 Z" fill="#fff3df"/></g>
+        <g class="st-egg-whole">
+          <path d="M300 50 C332 50 356 88 356 126 C356 170 332 196 300 196 C268 196 244 170 244 126 C244 88 268 50 300 50 Z" fill="#fff3df"/>
+          <ellipse cx="276" cy="100" rx="9" ry="18" fill="#fff" stroke="none" transform="rotate(18 276 100)"/>
+          <path class="st-crack" d="M262 118 L276 128 L288 114 L300 128 L312 114 L324 126" fill="none" stroke-width="5"/>
+        </g>
+        <ellipse class="st-ring" cx="300" cy="123" rx="78" ry="94" fill="none" stroke="#ffd23f" stroke-width="9"/>
+      </g>
+    </g>
+  </svg>
+</template>
+
+<template id="tpl-game-stir">
+  <svg class="g-svg g-stir" viewBox="0 0 640 360" aria-hidden="true">
+    <!-- seen from above: the wok, its contents (which turn as you stir) and a progress ring -->
+    <circle class="g-ring-track" cx="320" cy="180" r="164" fill="none" stroke="#3d2314" stroke-opacity=".15" stroke-width="12"/>
+    <circle class="g-ring" cx="320" cy="180" r="164" fill="none" stroke="#3fb36b" stroke-width="12" stroke-linecap="round" transform="rotate(-90 320 180)"/>
+    <g stroke="#3d2314" stroke-width="6">
+      <path d="M470 186 L612 224" stroke-width="26" stroke-linecap="round"/>
+      <path d="M470 186 L612 224" stroke="#c07a38" stroke-width="14" stroke-linecap="round"/>
+      <circle cx="320" cy="180" r="148" fill="#474d58"/>
+      <circle cx="320" cy="180" r="124" fill="#353a44" stroke-width="4"/>
+    </g>
+    <g class="g-contents">
+      <g fill="#fffaf0" stroke="#d9cfbf" stroke-width="1.5">
+        <ellipse cx="270" cy="140" rx="7" ry="4" transform="rotate(20 270 140)"/><ellipse cx="300" cy="120" rx="7" ry="4" transform="rotate(-30 300 120)"/><ellipse cx="350" cy="130" rx="7" ry="4" transform="rotate(40 350 130)"/><ellipse cx="380" cy="160" rx="7" ry="4"/><ellipse cx="370" cy="210" rx="7" ry="4" transform="rotate(60 370 210)"/><ellipse cx="330" cy="240" rx="7" ry="4" transform="rotate(-20 330 240)"/><ellipse cx="280" cy="230" rx="7" ry="4" transform="rotate(30 280 230)"/><ellipse cx="250" cy="190" rx="7" ry="4" transform="rotate(-50 250 190)"/><ellipse cx="300" cy="170" rx="7" ry="4"/><ellipse cx="340" cy="190" rx="7" ry="4" transform="rotate(70 340 190)"/><ellipse cx="320" cy="150" rx="7" ry="4" transform="rotate(10 320 150)"/><ellipse cx="290" cy="205" rx="7" ry="4" transform="rotate(-70 290 205)"/><ellipse cx="400" cy="190" rx="7" ry="4" transform="rotate(25 400 190)"/><ellipse cx="240" cy="160" rx="7" ry="4" transform="rotate(80 240 160)"/><ellipse cx="350" cy="100" rx="7" ry="4"/><ellipse cx="260" cy="250" rx="7" ry="4" transform="rotate(45 260 250)"/>
+      </g>
+      <g fill="#ffd34d" stroke="#3d2314" stroke-width="3.5"><path d="M276 160 c10 -12 26 -4 22 8 c-6 8 -22 6 -22 -8z"/><path d="M350 214 c10 -12 26 -4 22 8 c-6 8 -22 6 -22 -8z"/><path d="M332 118 c8 -10 22 -4 18 6 c-4 6 -18 6 -18 -6z"/></g>
+      <g fill="#ff8c2a" stroke="#3d2314" stroke-width="3"><rect x="310" y="196" width="14" height="14" rx="3"/><rect x="262" y="118" width="14" height="14" rx="3"/><rect x="384" y="134" width="14" height="14" rx="3"/><rect x="256" y="214" width="14" height="14" rx="3"/></g>
+      <g fill="#6cc957" stroke="#3d2314" stroke-width="3"><circle cx="300" cy="226" r="7"/><circle cx="390" cy="220" r="7"/><circle cx="234" cy="180" r="7"/><circle cx="364" cy="144" r="7"/><circle cx="320" cy="174" r="7"/></g>
+    </g>
+    <g class="g-arrows" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" opacity=".85">
+      <path d="M320 92 A88 88 0 0 1 406 168"/><path d="M394 160 L407 172 L418 156"/>
+      <path d="M320 268 A88 88 0 0 1 234 192"/><path d="M246 200 L233 188 L222 204"/>
+    </g>
+    <!-- spatula, follows the pointer -->
+    <g class="g-spatula"><g stroke="#3d2314" stroke-width="5" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M0 0 L58 -58" stroke-width="13"/><path d="M0 0 L58 -58" stroke="#c07a38" stroke-width="6"/>
+      <path d="M-18 -4 L4 18 L-8 30 L-30 8 Z" fill="#c8d1dc"/>
+    </g></g>
+  </svg>
+</template>
+
+<template id="tpl-game-pour">
+  <svg class="g-svg g-pour" viewBox="0 0 640 360" aria-hidden="true">
+    <defs><clipPath id="gp-jug"><path d="M262 120 H418 L408 312 H272 Z"/></clipPath></defs>
+    <rect x="-30" y="324" width="700" height="60" fill="#f7c47c" stroke="#3d2314" stroke-width="6"/>
+    <!-- the stream (shown while pouring) -->
+    <path class="g-stream" d="M280 152 C300 166 326 196 340 316" fill="none" stroke="#5b2a14" stroke-width="10" stroke-linecap="round" stroke-dasharray="16 5"/>
+    <!-- glass jug with a dashed target line -->
+    <g clip-path="url(#gp-jug)">
+      <rect class="g-liquid" x="250" y="120" width="180" height="200" fill="#7a3f1a"/>
+      <rect class="g-zone" x="250" y="0" width="180" height="0" fill="#3fb36b" opacity=".25"/>
+    </g>
+    <path d="M262 112 H418 L408 316 H272 Z" fill="#e8f6ff" fill-opacity=".35" stroke="#3d2314" stroke-width="6" stroke-linejoin="round"/>
+    <path d="M418 150 C452 150 456 216 412 222" fill="none" stroke="#3d2314" stroke-width="6" stroke-linecap="round"/>
+    <path d="M282 140 V292" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".7"/>
+    <path class="g-target" d="M250 0 H438" stroke="#ef4b3c" stroke-width="5" stroke-dasharray="12 9"/>
+    <g class="g-tick-marks" stroke="#3d2314" stroke-width="3"><path d="M396 160 h12 M396 200 h12 M396 240 h12 M396 280 h12"/></g>
+    <!-- soy sauce bottle, tilts while pouring (pivot near its base) -->
+    <g class="g-bottle" transform="translate(178 214)"><g class="g-bottle-in">
+      <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round">
+        <path d="M-34 0 V-120 C-34 -140 -14 -146 -12 -160 V-190 H12 V-160 C14 -146 34 -140 34 -120 V0 Z" fill="#3a1d0e"/>
+        <rect x="-15" y="-206" width="30" height="20" rx="5" fill="#ef4b3c"/>
+        <rect x="-28" y="-104" width="56" height="64" rx="8" fill="#fff1c7" stroke-width="4"/>
+      </g>
+      <text class="svg-label" y="-78" font-size="13" fill="#3a1d0e">SOY</text>
+      <text class="svg-label" y="-62" font-size="13" fill="#3a1d0e">SAUCE</text>
+    </g></g>
+  </svg>
+</template>
+
+<template id="tpl-game-toss">
+  <svg class="g-svg g-toss" viewBox="0 0 640 360" aria-hidden="true">
+    <!-- timing meter: generous green zone, extra-good middle -->
+    <g class="g-meter">
+      <rect x="120" y="22" width="400" height="30" rx="15" fill="#ffd0c4" stroke="#3d2314" stroke-width="5"/>
+      <rect x="220" y="25" width="200" height="24" fill="#bfe9a8"/>
+      <rect x="290" y="25" width="60" height="24" fill="#3fb36b"/>
+      <rect x="120" y="22" width="400" height="30" rx="15" fill="none" stroke="#3d2314" stroke-width="5"/>
+      <g class="g-marker"><path d="M0 14 L-12 -6 H12 Z M-3 14 V64" fill="#3d2314" stroke="#3d2314" stroke-width="4" stroke-linejoin="round"/></g>
+    </g>
+    <g class="g-flames" stroke="none">
+      <path d="M250 330 C236 300 256 280 266 262 C274 286 282 304 278 330 Z" fill="#ff9a3c"/>
+      <path d="M300 332 C286 292 310 266 322 244 C332 274 342 300 336 332 Z" fill="#ffcf48"/>
+      <path d="M360 330 C348 296 370 276 380 258 C388 284 396 304 392 330 Z" fill="#ff9a3c"/>
+    </g>
+    <!-- the wok tilts; the rice flies -->
+    <g class="g-wok"><g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <path d="M170 240 C184 290 240 300 320 300 C400 300 456 290 470 240 Z" fill="#474d58"/>
+      <ellipse cx="320" cy="240" rx="152" ry="22" fill="#2a2e36"/>
+      <path class="g-rice-pile" d="M220 238 C230 214 270 206 296 214 C310 200 350 200 362 214 C390 208 420 220 424 238 C380 248 260 248 220 238 Z" fill="#ffe8a8" stroke-width="5"/>
+      <path d="M466 234 L596 196" stroke-width="22"/><path d="M466 234 L596 196" stroke="#c07a38" stroke-width="12"/>
+    </g></g>
+    <g class="g-fly"><g stroke="#3d2314" stroke-width="5" stroke-linejoin="round">
+      <path d="M270 228 C276 206 300 200 316 208 C330 196 356 200 362 216 C350 232 290 238 270 228 Z" fill="#ffe8a8"/>
+      <g fill="#ff8c2a" stroke-width="3"><rect x="290" y="208" width="10" height="10" rx="2"/><rect x="330" y="206" width="10" height="10" rx="2"/></g>
+      <g fill="#6cc957" stroke-width="3"><circle cx="312" cy="220" r="5"/><circle cx="346" cy="218" r="5"/></g>
+    </g></g>
+  </svg>
+</template>
+
+<template id="tpl-game-result">
+  <svg class="g-svg g-result" viewBox="0 0 640 360" aria-hidden="true">
+    <g class="g-stars">
+      <path class="g-star g-star-1" d="M200 34 L212 62 L242 64 L219 83 L227 112 L200 96 L173 112 L181 83 L158 64 L188 62 Z"/>
+      <path class="g-star g-star-2" d="M320 14 L334 46 L368 49 L342 71 L351 104 L320 86 L289 104 L298 71 L272 49 L306 46 Z"/>
+      <path class="g-star g-star-3" d="M440 34 L452 62 L482 64 L459 83 L467 112 L440 96 L413 112 L421 83 L398 64 L428 62 Z"/>
+    </g>
+    <g class="fin-steam" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round">
+      <path d="M270 168 C258 152 282 142 270 122"/><path d="M370 166 C358 150 382 140 370 120"/>
+    </g>
+    <g stroke="#3d2314" stroke-width="6" stroke-linejoin="round" stroke-linecap="round">
+      <ellipse cx="320" cy="300" rx="210" ry="46" fill="#fffaf0"/>
+      <ellipse cx="320" cy="296" rx="160" ry="30" fill="#e3f0fb" stroke-width="4"/>
+      <path d="M180 292 C178 222 240 180 320 180 C400 180 462 222 460 292 C400 312 240 312 180 292 Z" fill="#ffe8a8"/>
+      <g stroke-width="3.5">
+        <rect x="236" y="230" width="16" height="16" rx="3" fill="#ff8c2a"/><rect x="340" y="214" width="16" height="16" rx="3" fill="#ff8c2a"/><rect x="390" y="254" width="16" height="16" rx="3" fill="#ff8c2a"/><rect x="290" y="262" width="16" height="16" rx="3" fill="#ff8c2a"/>
+      </g>
+      <g fill="#6cc957" stroke-width="3.5"><circle cx="280" cy="216" r="8"/><circle cx="380" cy="230" r="8"/><circle cx="220" cy="270" r="8"/><circle cx="330" cy="250" r="8"/><circle cx="420" cy="282" r="8"/></g>
+      <g fill="#ffd34d" stroke-width="3.5"><path d="M300 200 c10 -12 28 -4 24 8 c-6 8 -24 6 -24 -8z"/><path d="M250 250 c10 -12 28 -4 24 8 c-6 8 -24 6 -24 -8z"/><path d="M360 270 c10 -12 28 -4 24 8 c-6 8 -24 6 -24 -8z"/></g>
+      <path d="M220 228 C240 204 270 194 300 192" fill="none" stroke="#fff6c8" stroke-width="8"/>
+    </g>
+  </svg>
+</template>
+
+<!-- Scripts: shared site files first (content, config, helpers), then the kitchen's own. -->
+<script src="../../content.js"></script>
+<script src="../../config.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="text.js"></script>
+<script src="pages.js"></script>
+<script src="game.js"></script>
+<script src="scene.js"></script>
+</body>
+</html>

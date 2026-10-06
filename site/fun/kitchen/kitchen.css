@@ -1,0 +1,1314 @@
+/* ==========================================================================
+   fun/kitchen/kitchen.css — styles for the Kitchen version.
+
+   1. Colours and fonts            8.  Recipe card (bottom strip)
+   2. Base, buttons, helpers       9.  Overlays (shared)
+   3. Top bar and chef logo        10. Page panel and its content
+   4. The scene (and the sideways- 11. Cooking moments (close-ups)
+      scrolling box for phones)    12. Recipe book
+   5. Clickable things: glow, bob, 13. Finale
+      badges, tags, focus          14. Phones held upright; phones
+   6. Little animations in the         held sideways (short screens)
+      scene (flames, steam)        15. Motion off (html.motion-off, and
+   7. Hover label, "start here",       the "reduce motion" setting)
+      chef's speech bubble, the rice bowl, the swipe arrows and hint,
+      the window (Sydney Harbour by day or night)
+   The fried rice mini-game has its own file: game.css.
+   Most colours are the variables just below; the drawings' own colours are
+   written in the SVG in index.html (outline colour everywhere: #3d2314).
+   ========================================================================== */
+
+/* ---------- 1. Colours and fonts ---------- */
+:root {
+  --ink: #3d2314;          /* chunky outlines and playful text (dark chocolate) */
+  --ink-soft: #6b4a36;
+  --paper: #fffdf7;        /* recipe cards and panels */
+  --cream: #fffaf0;
+  --butter: #fff3cf;       /* the kitchen wall */
+  --tomato: #ef4b3c;
+  --tomato-btn: #d63a2c;   /* red behind white text: 4.7:1, readable (WCAG AA) */
+  --tomato-dark: #c2362a;
+  --egg: #ffd23f;
+  --leaf: #3fb36b;
+  --sky: #5aa9e6;
+  --focus: #1f4e8c;        /* focus rings: the classic site's blue, visible on warm colours */
+
+  --text: #2b211b;         /* body text in the page panels */
+  --muted: #6d6159;
+  --rule: #efe4d2;
+  --link: #b23a26;
+
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --round: ui-rounded, "Arial Rounded MT Bold", "Hiragino Maru Gothic ProN", "Segoe UI", system-ui, sans-serif;
+
+  --topbar-h: 68px;
+
+  /* Ingredient colours (panel headers, cooking moments). */
+  --th-chef: #ffd9a3;      --th-chef-soft: #fff0d6;
+  --th-rice: #ffd0db;      --th-rice-soft: #ffeef3;
+  --th-eggs: #ffe48a;      --th-eggs-soft: #fff7d3;
+  --th-tomatoes: #ffb8a8;  --th-tomatoes-soft: #ffe9e3;
+  --th-onions: #c8ebb0;    --th-onions-soft: #edf9e3;
+  --th-seasoning: #f1d2a8; --th-seasoning-soft: #fbefdd;
+}
+
+/* ---------- 2. Base, buttons, helpers ---------- */
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body {
+  background: var(--butter);
+  color: var(--ink);
+  font: 16px/1.5 var(--sans);
+  overflow: hidden;            /* the kitchen fills the window; overlays scroll inside */
+  -webkit-tap-highlight-color: transparent;
+}
+img { max-width: 100%; }
+button { font: inherit; color: inherit; }
+[hidden] { display: none !important; }   /* scripts hide things with the hidden attribute */
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+
+.sr-only {
+  position: absolute !important; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+.skip-link {
+  position: fixed; left: 12px; top: -60px; z-index: 100;
+  background: var(--ink); color: #fff; padding: 10px 16px; border-radius: 10px;
+  font: 700 15px var(--round); text-decoration: none;
+}
+.skip-link:focus { top: 12px; }
+.sprite { position: absolute; width: 0; height: 0; overflow: hidden; }
+.noscript {
+  position: fixed; inset: auto 16px 16px; z-index: 100; margin: 0; padding: 14px 18px;
+  background: #fff; border: 3px solid var(--ink); border-radius: 14px; font-weight: 600;
+}
+
+/* Chunky game-style buttons. */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  min-height: 46px; padding: 10px 18px;
+  border: 3px solid var(--ink); border-radius: 14px;
+  background: #fff; color: var(--ink);
+  font: 800 15px/1.2 var(--round); text-decoration: none; text-align: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s ease;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); background: #fff6d4; }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.btn--primary { background: var(--tomato-btn); color: #fff; }
+.btn--primary:hover { background: var(--tomato-dark); }
+.btn--blog { background: var(--egg); }
+.btn--blog:hover { background: #ffdc66; }
+.btn--quiet { background: transparent; border-color: transparent; box-shadow: none; text-decoration: underline; text-underline-offset: 3px; }
+.btn--quiet:hover { background: rgba(255,255,255,.5); box-shadow: none; }
+.btn .ext { font-size: .9em; }
+
+.icon-btn {
+  display: inline-grid; place-items: center;
+  width: 44px; height: 44px; flex: none;
+  border: 3px solid var(--ink); border-radius: 50%;
+  background: #fff; color: var(--ink);
+  cursor: pointer; padding: 0;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s;
+}
+.icon-btn:hover { background: #fff6d4; transform: translateY(-1px) rotate(8deg); }
+.icon-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.icon-btn svg { width: 20px; height: 20px; }
+/* Small round buttons still get a finger-sized target (44 px): an invisible ring around them. */
+.bubble-close::after, .info-close::after, .pan-hint-close::after {
+  content: ""; position: absolute; inset: -5px; border-radius: 50%;
+}
+
+.link-btn {
+  background: none; border: 0; padding: 8px 4px; min-height: 44px; cursor: pointer;
+  font: 800 15px var(--round); color: var(--ink);
+  text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 2px;
+}
+.link-btn:hover { color: var(--tomato-dark); }
+
+/* ---------- 3. Top bar and chef logo ---------- */
+.topbar {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 30;
+  height: var(--topbar-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 0 max(18px, env(safe-area-inset-right)) 0 max(14px, env(safe-area-inset-left));
+  background: var(--cream);
+  border-bottom: 4px solid var(--ink);
+}
+/* A scalloped awning (red and cream) hanging under the bar. */
+.topbar::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 15px;
+  background:
+    radial-gradient(circle at 50% 0, var(--tomato) 0 10px, var(--ink) 10.5px 13px, transparent 13.5px) 0 0 / 48px 15px repeat-x,
+    radial-gradient(circle at 50% 0, var(--cream) 0 10px, var(--ink) 10.5px 13px, transparent 13.5px) 24px 0 / 48px 15px repeat-x;
+  pointer-events: none;
+}
+
+/* The chef logo (Home). The face is big and hangs below the bar over the kitchen, and
+   it is signposted like every clickable thing in the scene: a pulsing glow, a gentle
+   bob, a yellow hint dot, and (on phones, where the name is hidden) a "Home" tag. */
+.logo {
+  --logo-size: 92px;
+  position: relative; z-index: 2;        /* over the awning and the kitchen */
+  display: flex; align-items: flex-start; gap: 14px;
+  align-self: flex-start; margin-top: 22px;
+  padding: 0 14px 0 0;
+  border-radius: 999px;
+  color: var(--ink); text-decoration: none;
+}
+.logo:focus-visible { outline: none; }
+.logo:focus-visible .logo-ring { outline: 3px solid var(--focus); outline-offset: 6px; }
+.logo-badge {
+  position: relative; display: block; flex: none;
+  width: var(--logo-size); height: var(--logo-size);
+  animation: k-bob 3.2s ease-in-out infinite; animation-delay: -1.6s;
+}
+.logo-ring {
+  position: relative; display: block; width: 100%; height: 100%;
+  border-radius: 50%; overflow: hidden;
+  border: 4px solid var(--ink); background: #fff;
+  box-shadow: 0 0 0 4px #fff, 0 0 14px 6px rgba(255, 196, 40, .85);   /* steady glow (Motion off) */
+  animation: k-logo-glow 2.4s ease-in-out infinite;
+}
+.logo-face { display: block; width: 100%; height: 100%; object-fit: cover; }
+.logo-hat {
+  position: absolute; left: -6px; top: -5px; width: 58px; height: auto;
+  transform: rotate(-24deg); transform-origin: 50% 100%;
+  pointer-events: none;
+}
+/* The hint dot (as on the things in the kitchen). */
+.logo-dot {
+  position: absolute; right: -3px; top: 2px; width: 24px; height: 24px;
+  border-radius: 50%; background: var(--egg); border: 4px solid var(--ink);
+  pointer-events: none;
+}
+.logo-dot::after {
+  content: ""; position: absolute; inset: -6px; border-radius: 50%;
+  border: 4px solid #ffae00;
+  animation: k-ring-html 1.8s ease-out infinite;
+}
+.logo-tag {
+  display: none; position: absolute; left: 50%; bottom: -13px; transform: translateX(-50%);
+  padding: 2px 10px 3px; border: 3px solid var(--ink); border-radius: 99px;
+  background: var(--paper); color: var(--ink);
+  font: 800 13px/1.15 var(--round); white-space: nowrap;
+}
+.logo-text { display: flex; flex-direction: column; line-height: 1.1; margin-top: -8px; padding: 6px 0; }
+.logo-name { font: 800 19px/1.1 var(--round); letter-spacing: .01em; white-space: nowrap; }
+.logo-sub { font: 700 12.5px/1.2 var(--sans); color: var(--ink-soft); margin-top: 3px; white-space: nowrap; }
+/* Narrower screens with the full top bar: a slightly smaller face, so the name keeps its line. */
+@media (min-width: 761px) and (max-width: 1000px) {
+  .logo { --logo-size: 78px; gap: 10px; }
+  .logo-hat { width: 50px; }
+}
+.logo-sub::after { content: " →"; }
+.logo:hover .logo-badge, .logo:focus-visible .logo-badge { animation: k-wiggle .6s ease-in-out infinite; }
+.logo:hover .logo-ring, .logo:focus-visible .logo-ring { animation: none; box-shadow: 0 0 0 4px #fff, 0 0 26px 10px rgba(255, 170, 20, 1); }
+.logo:hover .logo-hat, .logo:focus-visible .logo-hat { transform: rotate(-10deg) translateY(-4px); transition: transform .2s; }
+.logo:hover .logo-tag, .logo:focus-visible .logo-tag { background: var(--egg); }
+.logo:hover .logo-name, .logo:focus-visible .logo-name { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; }
+
+.topnav { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.pill {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px 8px 11px; min-height: 40px;
+  border: 3px solid var(--ink); border-radius: 999px;
+  background: #fff; color: var(--ink);
+  font: 800 14.5px/1 var(--round); text-decoration: none; white-space: nowrap;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .12s;
+}
+.pill svg { width: 18px; height: 18px; flex: none; }
+.pill::after { content: ""; position: absolute; inset: -4px 0; }   /* a taller target for fingers */
+.pill:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: #fff3cf; }
+.pill:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.pill--quiet { background: transparent; box-shadow: none; border-color: transparent; }
+.pill--quiet:hover { background: rgba(255,255,255,.7); box-shadow: none; border-color: var(--ink); }
+.pill-small { font-size: .82em; opacity: .75; }
+.pill--motion { cursor: pointer; }
+.pill--motion .motion-slash { display: none; }
+.motion-off .pill--motion { color: var(--ink-soft); }
+.motion-off .pill--motion .motion-slash { display: inline; }
+
+/* ---------- 4. The scene ---------- */
+.stage {
+  position: fixed; left: 0; right: 0; bottom: 0; top: var(--topbar-h);
+  overflow: hidden;
+}
+/* Exactly the visible height, also while a phone browser's toolbars come and go. */
+@supports (height: 100dvh) {
+  .stage { bottom: auto; height: calc(100dvh - var(--topbar-h)); }
+}
+/* The box around the kitchen drawing. Phones held upright (html.is-pan): the drawing is
+   wider than the screen (scene.js sets its width) and this box scrolls sideways. */
+.pan { position: absolute; inset: 0; overflow: hidden; }
+.is-pan .pan {
+  overflow-x: auto; overflow-y: hidden;
+  overscroll-behavior-x: contain;      /* swiping past the end doesn't go "back" a page */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;               /* the arrows and the hint show the way instead */
+}
+.is-pan .pan::-webkit-scrollbar { display: none; }
+.scene { display: block; width: 100%; height: 100%; overflow: visible; }
+.svg-label { font-family: var(--round); font-weight: 800; text-anchor: middle; stroke: none; }
+
+/* ---------- 5. Clickable things ----------
+   Like the Pudding's kimchi piece: everything you can click glows and moves a
+   little; hovering (or tabbing to it) makes it glow harder, wiggle, and shows a
+   label. The yellow dot with a ring is a "hint bubble"; it turns into a green
+   tick once that ingredient is done. */
+.hot { cursor: pointer; outline: none; }
+.hot .hit { fill: transparent; stroke: none; }
+
+.hot .halo {
+  fill: url(#g-halo); opacity: .7;
+  transform-box: fill-box; transform-origin: center;
+  animation: k-halo 2.4s ease-in-out infinite; animation-delay: var(--delay, 0s);
+  pointer-events: none;
+}
+.hot .bob {
+  transform-box: fill-box; transform-origin: 50% 100%;
+  animation: k-bob 3.2s ease-in-out infinite; animation-delay: var(--delay, 0s);
+}
+.hot .art {
+  filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 8px rgba(255, 196, 40, .9));
+  animation: k-glow 2.4s ease-in-out infinite; animation-delay: var(--delay, 0s);
+}
+/* The next suggested step hops (like kimchi's bouncing items). */
+.hot.is-next .bob { animation: k-hop 2.6s ease-in-out infinite; }
+
+/* Hover and keyboard focus: brighter, warmer, wiggling. */
+.hot:hover .bob, .hot:focus-visible .bob { animation: k-wiggle .55s ease-in-out infinite; }
+.hot:hover .art, .hot:focus-visible .art {
+  animation: none;
+  filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 3px #fff) drop-shadow(0 0 16px #ffae00) brightness(1.05);
+}
+.hot:hover .halo, .hot:focus-visible .halo { fill: url(#g-halo-hot); opacity: 1; animation: none; transform: scale(1.08); }
+.hot:focus-visible .hit { stroke: var(--focus); stroke-width: 5px; stroke-dasharray: 16 11; stroke-linecap: round; }
+
+/* Hint bubble / done tick. (scene.js makes them bigger when the kitchen is drawn small.) */
+.badge { pointer-events: none; }
+.badge-in { transform: scale(var(--badge-scale, 1)); }
+.badge-dot { fill: var(--egg); stroke: var(--ink); stroke-width: 4px; }
+.badge-ring {
+  fill: none; stroke: #ffae00; stroke-width: 5px;
+  transform-box: fill-box; transform-origin: center;
+  animation: k-ring 1.8s ease-out infinite;
+}
+.badge-tick { fill: none; stroke: #fff; stroke-width: 4px; stroke-linecap: round; stroke-linejoin: round; opacity: 0; }
+.hot.is-done .badge-dot { fill: var(--leaf); }
+.hot.is-done .badge-tick { opacity: 1; }
+.hot.is-done .badge-ring { display: none; }
+
+/* Done ingredients stay clickable (to re-read the page) but calm down a bit. */
+.hot.is-done .art { animation: none; filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 6px rgba(255, 196, 40, .75)); }
+.hot.is-done .halo { animation-duration: 4s; opacity: .5; }
+.hot.is-done .bob { animation-duration: 5s; }
+.hot .done-art { display: none; }
+.hot.is-done .done-art { display: inline; }
+.hot.is-done .todo-art { display: none; }
+
+/* The wok: food appears once all five ingredients are ready, and it glows hot. */
+.hot--wok .wok-food { display: none; }
+.hot--wok.is-ready .wok-food, .hot--wok.is-served .wok-food { display: inline; }
+.hot--wok.is-ready .halo { fill: url(#g-halo-hot); opacity: .95; }
+.hot--wok.is-ready .badge-dot { fill: var(--tomato); }
+.hot--wok.is-ready .bob { animation: k-hop 2s ease-in-out infinite; }
+.hot--wok.is-served .badge-dot { fill: var(--leaf); }
+.hot--wok.is-served .badge-tick { opacity: 1; }
+.hot--wok.is-served .badge-ring { display: none; }
+
+/* Tags: the page name under each thing, always visible. When the kitchen is drawn small
+   (phones held sideways, tablets), scene.js sets a bigger --tag-font, in drawing units. */
+.tag { pointer-events: none; }
+.tag-bg { fill: var(--paper); stroke: var(--ink); stroke-width: 4px; }
+.tag-text { font-family: var(--round); font-weight: 800; font-size: var(--tag-font, 21px); fill: var(--ink); text-anchor: middle; }
+.hot:hover .tag-bg, .hot:focus-visible .tag-bg { fill: var(--egg); }
+.hot.is-done .tag-bg { fill: #dff5e4; }
+.hot.is-done:hover .tag-bg, .hot.is-done:focus-visible .tag-bg { fill: var(--egg); }
+
+/* ---------- 6. Little animations in the scene ---------- */
+.flame { transform-box: fill-box; transform-origin: 50% 100%; animation: k-flicker .45s ease-in-out infinite alternate; }
+.flame:nth-child(2n) { animation-duration: .38s; animation-delay: -.2s; }
+.flame:nth-child(3n) { animation-duration: .52s; animation-delay: -.1s; }
+.steam path, .steam circle { transform-box: fill-box; transform-origin: 50% 100%; animation: k-steam 2.8s ease-in-out infinite; }
+.steam .steam-2, .steam circle:nth-child(2) { animation-delay: -.9s; }
+.steam .steam-3, .steam circle:nth-child(3) { animation-delay: -1.8s; }
+.sparkles path { transform-box: fill-box; transform-origin: center; animation: k-twinkle 1.6s ease-in-out infinite; }
+.sparkles path:nth-child(2) { animation-delay: -.8s; }
+
+/* ---------- 7. Hover label, "start here", the chef's bubble ---------- */
+.hover-label {
+  position: fixed; z-index: 29; left: 0; top: 0;
+  transform: translateX(-50%);
+  pointer-events: none;
+  padding: 8px 14px 9px; border-radius: 14px;
+  background: var(--ink); color: #fff;
+  font: 800 16px/1.2 var(--round); text-align: center; white-space: nowrap;
+  box-shadow: 0 8px 22px rgba(61, 35, 20, .3);
+  animation: k-label-in .16s ease-out;
+}
+.hover-label::after {
+  content: ""; position: absolute; left: 50%; top: 100%;
+  border: 9px solid transparent; border-top-color: var(--ink); transform: translateX(-50%);
+}
+.hover-label.is-below::after { top: auto; bottom: 100%; border-top-color: transparent; border-bottom-color: var(--ink); }
+.hover-label .hl-arrow { color: var(--egg); margin: 0 5px; }
+.hover-label .hl-hint { display: block; margin-top: 3px; font: 600 12.5px/1.3 var(--sans); color: #ffe6b3; }
+
+.start-here {
+  position: fixed; z-index: 16; left: 0; top: 0;
+  transform: translateX(-50%);
+  padding-bottom: 12px;     /* room for the arrow */
+  pointer-events: none;
+}
+.start-here span {
+  position: relative; display: block;
+  padding: 7px 13px; border: 3px solid var(--ink); border-radius: 14px;
+  background: var(--tomato-btn); color: #fff;
+  font: 800 15px/1 var(--round); white-space: nowrap;
+  box-shadow: 0 4px 0 var(--ink);
+  animation: k-point 1.3s ease-in-out infinite;
+}
+.start-here span::after {
+  content: ""; position: absolute; left: 50%; top: 100%; transform: translate(-50%, 2px);
+  border: 10px solid transparent; border-top-color: var(--ink);
+}
+
+.bubble {
+  position: fixed; z-index: 28;
+  left: 16px; top: calc(var(--topbar-h) + 68px);   /* under the hanging chef logo */
+  width: min(400px, calc(100vw - 32px));
+  display: grid; grid-template-columns: 52px 1fr; gap: 12px; align-items: start;
+  padding: 14px 16px 16px;
+  background: #fff; border: 3px solid var(--ink); border-radius: 22px;
+  box-shadow: 0 6px 0 rgba(61, 35, 20, .28), 0 18px 40px rgba(61, 35, 20, .18);
+  animation: k-pop .45s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.bubble::before {   /* speech tail pointing up at the chef logo */
+  content: ""; position: absolute; left: 30px; top: -19px;
+  width: 30px; height: 30px; background: #fff;
+  border-left: 3px solid var(--ink); border-top: 3px solid var(--ink);
+  transform: skewY(-28deg) rotate(28deg);
+  border-top-left-radius: 4px;
+}
+.bubble-face { width: 52px; height: 52px; border-radius: 50%; border: 3px solid var(--ink); object-fit: cover; }
+.bubble-body { min-width: 0; padding-right: 22px; }
+.bubble-title { margin: 2px 0 5px; font: 800 18.5px/1.2 var(--round); }
+.bubble-text { font: 14.5px/1.45 var(--sans); color: var(--text); }
+.bubble-text p { margin: 0 0 4px; }
+.bubble-actions { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; margin-top: 10px; }
+.bubble-actions .btn { min-height: 44px; padding: 7px 14px; font-size: 14.5px; }
+.bubble-actions .btn--quiet { padding: 7px 6px; font-size: 13.5px; }
+.bubble-actions a:not(.btn) { color: var(--ink); font: 700 14px var(--sans); }
+.bubble-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; box-shadow: none; border-width: 2.5px; }
+.bubble-close svg { width: 16px; height: 16px; }
+
+/* The little blue-and-white rice bowl (bottom right) and its "About this kitchen" popup.
+   scene.js sets --info-bottom (beside the recipe card when there is room, else just above it)
+   and --info-pop-bottom (the popup clears both the bowl and the card). */
+.info-btn {
+  position: fixed; z-index: 14;
+  right: max(12px, env(safe-area-inset-right)); bottom: var(--info-bottom, 150px);
+  width: 64px; height: 64px; padding: 0;
+  border: 0; border-radius: 50%; background: transparent; cursor: pointer;
+  filter: drop-shadow(0 3px 0 rgba(61, 35, 20, .35));
+  transition: transform .15s ease, filter .15s ease;
+}
+.info-btn svg { display: block; width: 100%; height: 100%; overflow: visible; }
+.info-btn:hover, .info-btn[aria-expanded="true"] {
+  transform: translateY(-2px) rotate(-6deg);
+  filter: drop-shadow(0 3px 0 rgba(61, 35, 20, .35)) drop-shadow(0 0 10px rgba(255, 196, 40, .95));
+}
+.info-btn:active { transform: translateY(1px); }
+.info-btn:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.info-pop {
+  position: fixed; z-index: 27;
+  right: max(12px, env(safe-area-inset-right)); bottom: var(--info-pop-bottom, 230px);
+  width: min(340px, calc(100vw - 24px));
+  padding: 16px 18px 16px;
+  background: #fff; color: var(--text);
+  border: 3px solid var(--ink); border-radius: 18px;
+  box-shadow: 0 6px 0 rgba(61, 35, 20, .28), 0 18px 40px rgba(61, 35, 20, .2);
+  animation: k-pop .3s cubic-bezier(.2, 1.4, .4, 1) both;
+  transform-origin: 90% 100%;
+}
+.info-pop:focus { outline: none; }
+.info-pop:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.info-pop::after {   /* tail pointing down at the bowl */
+  content: ""; position: absolute; right: 22px; bottom: -13px;
+  width: 22px; height: 22px; background: #fff;
+  border-right: 3px solid var(--ink); border-bottom: 3px solid var(--ink);
+  transform: rotate(45deg);
+}
+.info-title { margin: 0 34px 6px 0; font: 800 18px/1.25 var(--round); color: var(--ink); }
+.info-body { margin: 0 0 8px; font: 15px/1.5 var(--sans); }
+.info-small { margin: 0; font: 13px/1.45 var(--sans); color: var(--muted); }
+.info-close { position: absolute; top: 10px; right: 10px; width: 34px; height: 34px; box-shadow: none; border-width: 2.5px; }
+.info-close svg { width: 16px; height: 16px; }
+
+/* Phones held upright: the arrows at the edges (halfway up the kitchen; scene.js sets
+   --pan-mid) and the one-time "swipe" hint just above the recipe card (the rice bowl
+   steps aside until the hint is closed). */
+.pan-arrow {
+  position: absolute; z-index: 13; top: var(--pan-mid, 40%);
+  width: 44px; height: 44px; margin-top: -22px; padding: 0;
+  display: grid; place-items: center;
+  border: 3px solid var(--ink); border-radius: 50%;
+  background: rgba(255, 253, 247, .94); color: var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+  cursor: pointer;
+}
+.pan-arrow svg { width: 22px; height: 22px; }
+.pan-arrow--prev { left: max(8px, env(safe-area-inset-left)); }
+.pan-arrow--next { right: max(8px, env(safe-area-inset-right)); }
+.pan-arrow:hover { background: var(--egg); }
+.pan-arrow:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.pan-arrow--next svg { animation: k-nudge 1.6s ease-in-out infinite; }
+.pan-arrow--prev svg { animation: k-nudge-back 1.6s ease-in-out infinite; }
+
+.pan-hint {
+  position: absolute; z-index: 13;
+  left: max(10px, env(safe-area-inset-left)); right: max(10px, env(safe-area-inset-right));
+  bottom: var(--above-card, 110px);
+  max-width: 440px; margin: 0 auto;
+  display: grid; grid-template-columns: 38px minmax(0, 1fr) 34px; align-items: center; gap: 8px;
+  padding: 8px 8px 8px 10px;
+  background: #fff; border: 3px solid var(--ink); border-radius: 16px;
+  box-shadow: 0 5px 0 rgba(61, 35, 20, .28), 0 14px 30px rgba(61, 35, 20, .2);
+  animation: k-pop .45s .3s cubic-bezier(.2, 1.4, .4, 1) both;
+}
+.pan-hint-on .info-btn { visibility: hidden; }
+.pan-hint-icon { width: 38px; height: auto; overflow: visible; }
+.pan-hint-hand { animation: k-swipe 1.8s ease-in-out infinite; }
+.pan-hint-body { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; min-width: 0; }
+.pan-hint-text { flex: 1 1 170px; margin: 0; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pan-hint-text strong { font: 800 14px/1.2 var(--round); color: var(--ink); }
+.pan-hint-text span { font: 12.5px/1.3 var(--sans); color: var(--muted); }
+.pan-hint-full { min-height: 44px; padding: 4px 12px; font-size: 13.5px; box-shadow: 0 3px 0 var(--ink); }
+.pan-hint-close { position: relative; align-self: start; width: 34px; height: 34px; box-shadow: none; border-width: 2.5px; }
+.pan-hint-close svg { width: 16px; height: 16px; }
+
+/* The window: Sydney Harbour by day or by night (scene.js sets is-day / is-night
+   from the visitor's own clock; ?sky=day or ?sky=night forces one for reviews).
+   At night the bridge is lit: lights along the arch and the deck, a floodlit pylon. */
+.win .night-only { display: none; }
+.win.is-night .night-only { display: inline; }
+.win.is-night .day-only { display: none; }
+.win .h-sky   { fill: url(#g-sky); }
+.win .h-water { fill: url(#g-harbour); }
+.win .h-shore { fill: #6fb35f; }
+.win .h-city  { fill: #b9cde2; }
+.win .h-steel { stroke: #9aa6b4; }
+.win .h-truss { stroke: #3d2314; }
+.win .h-pylon { fill: #e3cfa6; }
+.win .h-deck  { fill: #a9b4c1; }
+.win .h-sail  { fill: #fffaf0; }
+.win.is-night .h-truss { stroke: #7d8cab; }
+.win.is-night .h-deck  { fill: #3b4558; }
+.win.is-night .h-sky   { fill: url(#g-sky-night); }
+.win.is-night .h-water { fill: url(#g-harbour-night); }
+.win.is-night .h-shore { fill: #1b2a40; }
+.win.is-night .h-city  { fill: #26355a; }
+.win.is-night .h-steel { stroke: #5f6d88; }
+.win.is-night .h-pylon { fill: #a99070; }
+.win.is-night .h-sail  { fill: #fff1cf; }
+.win .h-star { transform-box: fill-box; transform-origin: center; animation: k-twinkle 2.4s ease-in-out infinite; }
+.win .h-star:nth-child(3n) { animation-delay: -.8s; }
+.win .h-star:nth-child(3n+1) { animation-delay: -1.6s; }
+
+/* The wall clock's second hand ticks only while animations are on. */
+.motion-off .clock-s { display: none; }
+
+/* ---------- 8. Recipe card (bottom strip) ---------- */
+.recipe {
+  position: absolute; z-index: 12;
+  left: 50%; bottom: max(14px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  width: min(1280px, calc(100% - 28px));
+  display: grid; grid-template-columns: minmax(190px, 228px) minmax(0, 1fr); gap: 16px; align-items: center;
+  padding: 12px 14px 12px 20px;
+  background:
+    linear-gradient(90deg, transparent 10px, rgba(239, 75, 60, .28) 10px 12px, transparent 12px),
+    repeating-linear-gradient(180deg, transparent 0 25px, rgba(90, 169, 230, .16) 25px 27px),
+    var(--paper);
+  border: 3px solid var(--ink); border-radius: 20px;
+  box-shadow: 0 6px 0 rgba(61, 35, 20, .3), 0 14px 30px rgba(61, 35, 20, .2);
+  outline: none;
+}
+/* Two pieces of tape holding the card down. */
+.recipe::before, .recipe::after {
+  content: ""; position: absolute; top: -17px; width: 74px; height: 22px;
+  background: rgba(255, 226, 120, .82); border: 2px solid rgba(61, 35, 20, .25);
+  pointer-events: none;
+}
+.recipe::before { left: 120px; transform: rotate(-5deg); }
+.recipe::after { right: 34px; transform: rotate(4deg); }
+
+.recipe-head { min-width: 0; }
+.recipe-kicker { margin: 0; font: 800 11.5px/1.2 var(--round); letter-spacing: .1em; text-transform: uppercase; color: var(--tomato-dark); }
+.recipe-title { margin: 3px 0 8px; font: 800 19px/1.15 var(--round); }
+.recipe-served { display: block; margin-top: 2px; font: 700 13.5px/1.2 var(--sans); color: var(--muted); }
+.recipe-progress { display: flex; flex-direction: column; gap: 4px; }
+.recipe-bar { display: block; height: 12px; border: 2.5px solid var(--ink); border-radius: 99px; background: #fff; overflow: hidden; }
+.recipe-bar-fill { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #3fb36b, #8bd86a); transition: width .6s cubic-bezier(.3, 1.3, .5, 1); }
+.recipe-count { font: 700 12.5px/1.2 var(--sans); color: var(--muted); }
+
+.recipe-steps {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; gap: 8px;
+  /* step 3 ("chop the spring onions and garlic") gets a little more room */
+  grid-template-columns: repeat(2, minmax(0, 1fr)) minmax(0, 1.4fr) repeat(3, minmax(0, 1fr));
+}
+.recipe-steps li { display: flex; min-width: 0; }
+.step {
+  position: relative; width: 100%;
+  display: grid; grid-template-columns: 40px minmax(0, 1fr); align-items: center; column-gap: 9px;
+  padding: 9px 10px 9px 9px; min-height: 64px;
+  border: 2.5px solid var(--ink); border-radius: 14px;
+  background: #fff; color: var(--ink); text-align: left; cursor: pointer;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform .12s ease, box-shadow .12s ease, background-color .15s;
+}
+.step:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: #fff6d4; }
+.step:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.step-icon { position: relative; width: 40px; height: 40px; }
+.step-icon svg { width: 40px; height: 40px; display: block; }
+.step-num {
+  position: absolute; left: -7px; top: -7px;
+  width: 21px; height: 21px; border-radius: 50%;
+  background: var(--egg); border: 2.5px solid var(--ink);
+  font: 800 11px/16px var(--round); text-align: center; color: var(--ink);
+}
+.step-text { display: flex; flex-direction: column; min-width: 0; }
+.step-action { font: 800 13.5px/1.18 var(--round); }
+.step-page { margin-top: 3px; font: 700 12px/1.2 var(--sans); color: var(--ink-soft); }
+.step-page::before { content: "→ "; color: var(--tomato); }
+.step.is-done { background: #eaf8ed; }
+.step.is-done .step-num { background: var(--leaf); color: #fff; font-size: 0; }
+.step.is-done .step-num::after { content: "✓"; font-size: 12px; line-height: 16px; }
+.step.is-next { animation: k-step-glow 1.8s ease-in-out infinite; }
+.step--serve { background: #fff3e6; }
+.step--serve.is-ready { background: #ffe9a6; animation: k-step-glow 1.2s ease-in-out infinite; }
+.step--serve.is-done { background: #eaf8ed; }
+
+/* ---------- 9. Overlays (shared) ---------- */
+.overlay {
+  position: fixed; inset: 0; z-index: 50;
+  display: grid;
+  padding: 24px;
+  background: rgba(61, 35, 20, .5);
+  overflow-y: auto;
+  animation: k-fade .2s ease-out;
+}
+@supports (backdrop-filter: blur(2px)) { .overlay { backdrop-filter: blur(3px); } }
+.overlay[hidden] { display: none; }
+/* The cards: centred by auto margins (so a card taller than the screen scrolls
+   instead of being clipped), and they pop in. */
+.panel, .station, .book, .game, .finale {
+  margin: auto;
+  animation: k-card-in .32s cubic-bezier(.2, 1.3, .4, 1) both;
+}
+
+/* ---------- 10. Page panel and its content ---------- */
+.panel {
+  position: relative;
+  width: min(880px, 100%); max-height: calc(100vh - 48px); max-height: calc(100dvh - 48px);
+  display: flex; flex-direction: column;
+  background: var(--paper);
+  border: 3px solid var(--ink); border-radius: 24px;
+  box-shadow: 0 8px 0 rgba(61, 35, 20, .35), 0 30px 70px rgba(30, 15, 5, .35);
+  overflow: hidden;
+  --theme: var(--th-chef);
+}
+.panel-head {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 18px 16px 20px;
+  background: var(--theme);
+  background-image: radial-gradient(circle, rgba(255, 255, 255, .45) 0 3px, transparent 3.5px);
+  background-size: 22px 22px;
+  border-bottom: 3px solid var(--ink);
+}
+.panel-icon {
+  display: grid; place-items: center; flex: none;
+  width: 60px; height: 60px; border-radius: 50%;
+  background: #fff; border: 3px solid var(--ink);
+  box-shadow: 0 3px 0 var(--ink);
+}
+.panel-icon svg { width: 40px; height: 40px; }
+.panel-heading { min-width: 0; flex: 1; }
+.panel-kicker { margin: 0; font: 800 12.5px/1.25 var(--round); letter-spacing: .07em; text-transform: uppercase; color: var(--ink-soft); }
+.panel-title { margin: 2px 0 0; font: 700 clamp(26px, 3.4vw, 34px)/1.1 var(--serif); color: var(--ink); outline: none; }
+.panel-body { flex: 1; overflow-y: auto; padding: 26px clamp(20px, 4.5vw, 46px) 30px; overscroll-behavior: contain; }
+.panel-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  padding: 12px 16px;
+  background: var(--cream);
+  border-top: 2px dashed #e6d3b6;
+}
+.nav-btn {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 42px;
+  padding: 8px 14px; border-radius: 12px;
+  border: 2.5px solid var(--ink); background: #fff; color: var(--ink);
+  font: 800 14px/1.2 var(--round); text-decoration: none;
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform .12s, box-shadow .12s, background-color .12s;
+}
+.nav-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: #fff6d4; }
+.nav-btn .nav-dir { display: block; font: 700 11px/1.2 var(--sans); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.nav-btn--prev { text-align: left; }
+.nav-btn--next { text-align: right; flex-direction: row-reverse; }
+.nav-btn--kitchen { border-color: transparent; box-shadow: none; background: transparent; text-decoration: underline; text-underline-offset: 3px; }
+.nav-btn--kitchen:hover { box-shadow: none; background: rgba(255, 210, 63, .25); }
+.nav-btn svg { width: 28px; height: 28px; flex: none; }
+
+/* Panel themes, one per ingredient. */
+.panel[data-theme="chef"]      { --theme: var(--th-chef); }
+.panel[data-theme="rice"]      { --theme: var(--th-rice); }
+.panel[data-theme="eggs"]      { --theme: var(--th-eggs); }
+.panel[data-theme="tomatoes"]  { --theme: var(--th-tomatoes); }
+.panel[data-theme="onions"]    { --theme: var(--th-onions); }
+.panel[data-theme="seasoning"] { --theme: var(--th-seasoning); }
+
+/* Readable, professional content typography. */
+.content { color: var(--text); font: 16.5px/1.65 var(--sans); }
+.content > :first-child { margin-top: 0; }
+.content h2 {
+  margin: 30px 0 12px; padding-bottom: 6px;
+  font: 700 21px/1.3 var(--serif); color: var(--ink);
+  border-bottom: 2px solid var(--rule);
+}
+.content h3 { margin: 0 0 3px; font: 700 18px/1.35 var(--serif); color: var(--text); }
+.content p { margin: 0 0 12px; }
+.content ul { margin: 6px 0 0; padding-left: 20px; }
+.content li { margin: 0 0 5px; }
+.content li::marker { color: #c9a77f; }
+.content a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 2.5px; }
+.content a:hover { color: #7c2216; }
+/* Links inside running text (class "text-link", from content.js's [text](url)): underlined,
+   otherwise exactly like the words around them (Lehan, 2026-10-02). */
+a.text-link, .content a.text-link {
+  color: inherit; font: inherit; letter-spacing: inherit;
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2.5px;
+}
+a.text-link:hover, .content a.text-link:hover { color: inherit; text-decoration-thickness: 2px; }
+.content .btn, .content .btn:hover { color: var(--ink); text-decoration: none; }
+.content .btn--primary, .content .btn--primary:hover { color: #fff; }
+.content .meta { color: var(--muted); font-size: 15px; }
+.content .lead { font-size: 18px; line-height: 1.6; }
+
+/* Lists with their own layout (more specific than ".content ul"). */
+.content .chips, .content .talk-list, .content .course-list, .content .award-list { list-style: none; padding: 0; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0 0 6px; }
+.chips li { margin: 0; padding: 5px 13px; border-radius: 99px; background: #fff3cf; border: 2px solid #f1d58c; font: 600 15px/1.3 var(--sans); }
+/* Research: "Research interests" and "Methods", one line each, label then chips. */
+.research-lines { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 10px 16px; align-items: center; margin: 0 0 8px; }
+.research-lines dt { font: 700 16px/1.3 var(--serif); color: var(--ink); }
+.research-lines dd { margin: 0; }
+.research-lines .chips { margin: 0; }
+.research-lines .is-methods .chips li { background: #e8f4fd; border-color: #b9dbf3; }
+
+.entry { padding: 14px 0 15px; border-bottom: 1px solid var(--rule); }
+.entry:last-child { border-bottom: 0; }
+.entry-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 2px 18px; }
+.entry-dates { color: var(--muted); font-size: 14.5px; white-space: nowrap; }
+.entry-sub { margin: 1px 0 0; color: var(--ink-soft); font-weight: 600; }
+.entry ul { margin-top: 8px; }
+.entry .links { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 8px; font-weight: 600; font-size: 15px; }
+
+.content .paper-with { margin: 3px 0 0; color: var(--text); }
+.content .paper-meta { margin: 4px 0 0; font-size: 15px; font-weight: 600; }
+.paper-status { color: var(--muted); font-weight: 400; }
+.paper-meta .dot { color: #c9a77f; margin: 0 4px; }
+.content .entry-sub { margin: 2px 0 0; }
+.content .entry > p:not(.entry-sub):not(.paper-with):not(.paper-meta) { margin: 8px 0 0; }
+
+.talk-year { display: grid; grid-template-columns: 78px minmax(0, 1fr); gap: 4px 18px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.talk-year:last-child { border-bottom: 0; }
+.talk-year h2 { margin: 0; padding: 0; border: 0; font: 700 26px/1.1 var(--serif); color: var(--tomato-dark); }
+.talk-list { list-style: none; margin: 0; padding: 0; }
+.talk-list li { margin: 0 0 9px; }
+.talk-event { font-weight: 650; }
+.talk-detail { color: var(--muted); }
+.talk-note { color: var(--muted); font-style: italic; }
+.upcoming {
+  display: inline-block; margin-left: 8px; padding: 2px 9px; vertical-align: 2px;
+  border-radius: 99px; background: var(--tomato-dark); color: #fff;
+  font: 800 11px/1.5 var(--round); letter-spacing: .06em; text-transform: uppercase;
+}
+.talk-list li.is-upcoming { padding: 6px 10px; margin-left: -10px; border-radius: 10px; background: #fff1e8; }
+
+.home-grid { display: grid; grid-template-columns: 210px minmax(0, 1fr); gap: 30px; align-items: start; }
+.polaroid {
+  margin: 4px 0 0; padding: 10px 10px 34px; background: #fff;
+  border: 2px solid var(--ink); border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(61, 35, 20, .18);
+  transform: rotate(-2.5deg);
+  position: relative;
+}
+.polaroid::before {   /* tape */
+  content: ""; position: absolute; top: -12px; left: 50%; width: 70px; height: 22px; margin-left: -35px;
+  background: rgba(255, 226, 120, .85); transform: rotate(3deg);
+}
+.polaroid img { display: block; width: 100%; height: auto; border: 1px solid #ddd; }
+.polaroid figcaption { position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font: 700 13px var(--round); color: var(--muted); }
+.home-name { margin: 0 0 14px; font: 700 clamp(30px, 4vw, 40px)/1.1 var(--serif); color: var(--ink); }
+.quick-links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+.quick-links .btn { min-height: 44px; padding: 8px 14px; font-size: 14px; }
+
+.cv-actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 4px 0 6px; }
+
+.art-cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-top: 6px; }
+.art-card { padding: 16px 18px; border: 2.5px solid var(--ink); border-radius: 16px; background: #fff; box-shadow: 0 4px 0 rgba(61, 35, 20, .2); }
+.art-card h3 { margin-bottom: 6px; }
+.art-card p { font-size: 15.5px; }
+
+.course-list { list-style: none; padding: 0; margin: 6px 0 0; }
+.course-list li { display: flex; justify-content: space-between; gap: 6px 18px; flex-wrap: wrap; padding: 4px 0; border-bottom: 1px dotted var(--rule); }
+.course-list li:last-child { border-bottom: 0; }
+.course-years { color: var(--muted); font-size: 15px; }
+.award-list { list-style: none; padding: 0; margin: 0; }
+.award-list li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 18px; padding: 8px 0; border-bottom: 1px solid var(--rule); }
+.award-list li:last-child { border-bottom: 0; }
+.award-years { color: var(--muted); font-size: 14.5px; white-space: nowrap; }
+.skills dt { font-weight: 700; margin-top: 8px; }
+.skills dd { margin: 2px 0 0; }
+
+/* ---------- 11. Cooking moments (close-ups) ---------- */
+.station {
+  /* as wide as fits, but short enough for the whole card to fit on the screen */
+  position: relative; width: min(660px, 100%, calc((100vh - 210px) * 5 / 3));
+  width: min(660px, 100%, calc((100dvh - 210px) * 5 / 3));
+  min-width: min(300px, 100%);
+  background: var(--paper);
+  border: 3px solid var(--ink); border-radius: 26px;
+  box-shadow: 0 8px 0 rgba(61, 35, 20, .35), 0 30px 70px rgba(30, 15, 5, .35);
+  overflow: hidden;
+  --theme: var(--th-rice); --theme-soft: var(--th-rice-soft);
+}
+.station[data-theme="eggs"]      { --theme: var(--th-eggs);      --theme-soft: var(--th-eggs-soft); }
+.station[data-theme="tomatoes"]  { --theme: var(--th-tomatoes);  --theme-soft: var(--th-tomatoes-soft); }
+.station[data-theme="onions"]    { --theme: var(--th-onions);    --theme-soft: var(--th-onions-soft); }
+.station[data-theme="seasoning"] { --theme: var(--th-seasoning); --theme-soft: var(--th-seasoning-soft); }
+.station:focus { outline: none; }
+.station-head {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px;
+  padding: 14px 16px 14px 22px;
+  background: var(--theme); border-bottom: 3px solid var(--ink);
+}
+.station-step { grid-column: 1; margin: 0; font: 800 12px/1.2 var(--round); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); }
+.station-title { grid-column: 1; margin: 2px 0 0; font: 800 clamp(21px, 3vw, 27px)/1.15 var(--round); }
+.station-close { grid-column: 2; grid-row: 1 / span 2; }
+.station-stage {
+  position: relative; aspect-ratio: 600 / 360;
+  background:
+    radial-gradient(circle, rgba(255, 255, 255, .7) 0 5px, transparent 5.5px) 0 0 / 34px 34px,
+    var(--theme-soft);
+  border-bottom: 3px solid var(--ink);
+}
+.station-art, .station-art svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+.station-hit {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  border: 0; padding: 0; background: transparent; cursor: pointer;
+  touch-action: manipulation;
+}
+.station-hit:focus-visible { outline: 4px dashed var(--focus); outline-offset: -10px; }
+.station-hit[disabled] { cursor: default; }
+.station-instruction { margin: 0; padding: 14px 22px 4px; font: 800 18px/1.35 var(--round); text-align: center; min-height: 1.35em; }
+.station-instruction strong { color: var(--tomato-dark); }
+.station-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 6px 18px 12px; }
+
+.pips { display: flex; gap: 7px; list-style: none; margin: 0; padding: 0; }
+.pips li { width: 14px; height: 14px; border-radius: 50%; border: 2.5px solid var(--ink); background: #fff; }
+.pips li.is-on { background: var(--leaf); }
+.pips li.is-now { background: var(--egg); }
+
+/* The big cheer ("Perfect!") over a close-up. */
+.cheer {
+  position: absolute; left: 50%; top: 44%; z-index: 2;
+  transform: translate(-50%, -50%) rotate(-5deg);
+  font: 900 clamp(34px, 7vw, 58px)/1 var(--round); color: #fff; white-space: nowrap;
+  text-shadow:
+    3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 3px 0 var(--ink), 0 -3px 0 var(--ink),
+    2px 2px 0 var(--ink), -2px -2px 0 var(--ink), 2px -2px 0 var(--ink), -2px 2px 0 var(--ink),
+    0 7px 0 var(--ink);
+  pointer-events: none;
+  animation: k-cheer .6s cubic-bezier(.2, 1.6, .4, 1) both;
+}
+.cheer .cheer-sub { display: block; margin-top: 10px; font-size: .36em; text-shadow: 2px 0 0 var(--ink), -2px 0 0 var(--ink), 0 2px 0 var(--ink), 0 -2px 0 var(--ink), 0 4px 0 var(--ink); }
+
+/* Close-up states: scene.js / game.js add .s1, .s2 and .done to the <svg>. */
+.st-ring { transform-box: fill-box; transform-origin: center; animation: k-target 1.3s ease-in-out infinite; }
+
+/* Rice: press COOK, the bar fills, the lid pops open. */
+.st-rice .st-cookbtn { transform-box: fill-box; transform-origin: center; transition: transform .15s; }
+.st-rice.s1 .st-cookbtn { transform: scale(.9); }
+.st-rice.s1 .st-ring { display: none; }
+.st-rice .st-bar { transform-box: fill-box; transform-origin: 0 50%; transform: scaleX(.03); }
+.st-rice.s1 .st-bar { transform: scaleX(1); transition: transform 1.4s linear; }
+.st-rice .st-steam { opacity: 0; }
+.st-rice.s1 .st-steam { opacity: 1; }
+.st-rice.s1 .puff { transform-box: fill-box; transform-origin: center; animation: k-puff 1.1s ease-out infinite; }
+.st-rice.s1 .p2 { animation-delay: -.35s; }
+.st-rice.s1 .p3 { animation-delay: -.7s; }
+/* The lid is hinged at the back right (478, 144): turning clockwise lifts its front-left edge. */
+.st-rice .st-lid { transform-origin: 478px 144px; transition: transform .55s cubic-bezier(.3, 1.5, .5, 1); }
+.st-rice.done .st-lid { transform: translate(6px, -14px) rotate(24deg); }
+.st-rice.done .st-lamp-warm { fill: var(--egg); }
+.st-rice .st-ding { opacity: 0; }
+.st-rice.done .st-ding { opacity: 1; transform-box: fill-box; transform-origin: center; animation: k-pop .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+
+/* Eggs: tap, crack, split (shared with the fried rice game's egg). */
+.st-eggs .st-egg-top, .st-eggs .st-egg-bottom { opacity: 0; transform-box: fill-box; transform-origin: center; }
+.st-eggs .st-crack { stroke-dasharray: 90; stroke-dashoffset: 90; }
+.st-eggs .st-yolk { opacity: 0; transform-box: fill-box; transform-origin: 50% 100%; }
+.st-eggs .st-egg { transform-box: fill-box; transform-origin: 50% 100%; }
+.st-eggs.s1 .st-egg { animation: k-egg-tap .45s ease-in-out; }
+.st-eggs.s1 .st-crack { stroke-dashoffset: 0; transition: stroke-dashoffset .25s .2s; }
+.st-eggs.s2 .st-egg-whole, .st-eggs.s2 .st-ring { display: none; }
+.st-eggs.s2 .st-egg-top { opacity: 1; animation: k-shell-l .7s ease-out forwards; }
+.st-eggs.s2 .st-egg-bottom { opacity: 1; animation: k-shell-r .7s ease-out forwards; }
+.st-eggs.s2 .st-yolk { opacity: 1; animation: k-yolk .55s .12s cubic-bezier(.3, 1.5, .5, 1) both; }
+
+/* Tomatoes: the knife chops on the dashed lines, the slices come apart. */
+.st-tomatoes .st-knife { transform: translate(500px, 300px) rotate(8deg); }
+.st-tomatoes.s1 .st-knife { animation: k-knife-1 .65s ease-in-out forwards; }
+.st-tomatoes.s2 .st-knife { animation: k-knife-2 .65s ease-in-out forwards; }
+.st-tomatoes .st-part { transition: transform .35s cubic-bezier(.3, 1.4, .5, 1) .2s; }
+.st-tomatoes.s1 .st-part-l { transform: translateX(-20px); }
+.st-tomatoes.s2 .st-part-r { transform: translateX(20px); }
+.st-tomatoes .st-flesh path { opacity: 0; transition: opacity .1s .25s, transform .35s .2s; }
+.st-tomatoes.s1 .st-flesh-1 { opacity: 1; transform: translateX(-10px); }
+.st-tomatoes.s2 .st-flesh-2 { opacity: 1; transform: translateX(10px); }
+.st-tomatoes.s1 .st-cut-1, .st-tomatoes.s2 .st-cut-2 { opacity: 0; transition: opacity .1s .25s; }
+.st-tomatoes .st-cut { animation: k-dash 1s linear infinite; }
+.st-tomatoes .st-juice { opacity: 0; }
+.st-tomatoes.s2 .st-juice { animation: k-juice .7s .25s ease-out both; }
+
+/* Spring onion and garlic: chop-chop, then smash. */
+.st-onions .st-cleaver { transform: translate(250px, 170px); }
+.st-onions.s1 .st-cleaver { animation: k-cleaver-chop .95s ease-in-out forwards; }
+.st-onions.s2 .st-cleaver { animation: k-cleaver-smash .6s ease-in-out forwards; }
+.st-onions .st-onion-chopped, .st-onions .st-garlic-smashed { opacity: 0; }
+.st-onions.s1 .st-onion-whole { opacity: 0; transition: opacity .1s .55s; }
+.st-onions.s1 .st-onion-chopped { opacity: 1; transition: opacity .1s .55s; }
+.st-onions.s2 .st-garlic { opacity: 0; transition: opacity .05s .3s; }
+.st-onions.s2 .st-garlic-smashed { opacity: 1; transition: opacity .05s .3s; }
+
+/* Seasoning: five bottles take turns. */
+.st-seasoning .st-bottle-in { transform-box: fill-box; transform-origin: 50% 100%; }
+.st-seasoning .st-drops, .st-seasoning .st-pop { opacity: 0; }
+.st-seasoning.s1 .st-bottle-in { animation: k-tilt .62s ease-in-out both; animation-delay: calc(var(--i) * .32s); }
+.st-seasoning.s1 .st-drops { animation: k-drops .5s ease-in both; animation-delay: calc(var(--i) * .32s + .24s); }
+.st-seasoning.s1 .st-pop { animation: k-pop-up 1.1s ease-out both; animation-delay: calc(var(--i) * .32s + .2s); }
+.st-seasoning .st-sauce { transform-box: fill-box; transform-origin: center; transform: scale(.35, .5); opacity: .4; transition: transform 1.8s ease, opacity 1.8s; }
+.st-seasoning.s1 .st-sauce { transform: none; opacity: 1; }
+
+/* ---------- 12. Recipe book ---------- */
+.book {
+  position: relative;
+  width: min(940px, 100%);
+  display: grid; grid-template-columns: minmax(0, 1fr) 26px minmax(0, 1fr);
+  padding: 16px 16px 20px;
+  background: #c0352c;
+  border: 3px solid var(--ink); border-radius: 20px;
+  box-shadow: 0 8px 0 rgba(61, 35, 20, .4), 0 30px 70px rgba(30, 15, 5, .35);
+}
+.book-page {
+  position: relative; display: flex; flex-direction: column; align-items: flex-start;
+  padding: 26px clamp(18px, 3vw, 34px) 28px;
+  background: repeating-linear-gradient(180deg, transparent 0 30px, rgba(90, 169, 230, .14) 30px 32px), var(--paper);
+  border: 3px solid var(--ink);
+}
+.book-page--left { border-radius: 10px 3px 3px 10px; border-right-width: 1px; }
+.book-page--right { border-radius: 3px 10px 10px 3px; border-left-width: 1px; align-items: center; text-align: center; justify-content: center; }
+.book-spine { background: linear-gradient(90deg, rgba(0, 0, 0, .28), rgba(255, 255, 255, .12) 50%, rgba(0, 0, 0, .28)), var(--paper); border-top: 3px solid var(--ink); border-bottom: 3px solid var(--ink); }
+.book-kicker { margin: 0; font: 800 12px/1.2 var(--round); letter-spacing: .1em; text-transform: uppercase; color: var(--tomato-dark); }
+.book-heading { margin: 4px 0 8px; font: 800 30px/1.1 var(--round); }
+.book-dish { width: 190px; height: auto; margin: 2px 0 8px; }
+.book-blurb { margin: 0 0 8px; font: 600 16px/1.45 var(--sans); color: var(--text); }
+.book-steps { margin: 0 0 6px; padding-left: 22px; font: 600 15px/1.5 var(--sans); color: var(--text); }
+.book-meta { margin: 4px 0 16px; font: 700 13.5px/1.3 var(--sans); color: var(--muted); }
+.book-line { margin: 10px 0 0; font: 800 clamp(24px, 3vw, 30px)/1.2 var(--round); color: var(--ink); max-width: 12em; }
+.book-arrow { width: 110px; height: 55px; margin: 6px 0 4px 40px; }
+.book-url { margin: 12px 0 0; font: 600 13.5px/1.3 var(--sans); color: var(--muted); word-break: break-word; }
+.book-close { position: absolute; top: -16px; right: -14px; z-index: 2; }
+
+/* ---------- 13. Finale ---------- */
+.overlay--finale { background: radial-gradient(circle at 50% 42%, #fff7cf 0, #ffd773 48%, #ff9b5f 100%); }
+.finale {
+  position: relative; width: min(820px, 100%);
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding: 10px 10px 18px;
+}
+/* No backdrop blur here: it would make the overlay the containing block of the
+   "fixed" sunburst, whose 220vmax size would then make the finale scroll. */
+.overlay--finale { overflow-x: hidden; backdrop-filter: none !important; }
+.finale-rays {
+  position: fixed; left: 50%; top: 42%; width: 220vmax; height: 220vmax; margin: -110vmax 0 0 -110vmax;
+  background: repeating-conic-gradient(rgba(255, 255, 255, .34) 0 9deg, transparent 9deg 18deg);
+  animation: k-spin 60s linear infinite;
+  pointer-events: none; z-index: -1;
+}
+.finale-close { position: absolute; top: 4px; right: 4px; z-index: 3; }
+.finale-art { width: min(600px, 100%, max(240px, calc((100vh - 360px) * 600 / 340))); aspect-ratio: 600 / 340; }
+@supports (height: 100dvh) { .finale-art { width: min(600px, 100%, max(240px, calc((100dvh - 360px) * 600 / 340))); } }
+.finale-art svg { width: 100%; height: 100%; display: block; overflow: visible; }
+.fin-served { display: none; }
+.finale.is-served .fin-wok { display: none; }
+.finale.is-served .fin-served { display: inline; }
+.finale.is-served .finale-art { animation: k-plate-in .7s cubic-bezier(.2, 1.4, .4, 1) both; }
+.fin-toss { transform-box: fill-box; transform-origin: center; animation: k-toss .7s ease-in-out infinite; }
+.fin-wok { transform-box: fill-box; transform-origin: 50% 80%; animation: k-wok-shake .35s ease-in-out infinite alternate; }
+.fin-flames path { transform-box: fill-box; transform-origin: 50% 100%; animation: k-flicker .3s ease-in-out infinite alternate; }
+.fin-steam > * { transform-box: fill-box; transform-origin: 50% 100%; animation: k-steam 2.6s ease-in-out infinite; }
+.fin-steam > :nth-child(2) { animation-delay: -.9s; }
+.fin-steam > :nth-child(3) { animation-delay: -1.7s; }
+.finale-cooking { margin: 0; font: 800 28px var(--round); color: var(--ink); }
+.finale.is-served .finale-cooking { display: none; }
+.finale-text { visibility: hidden; }
+.finale.is-served .finale-text { visibility: visible; animation: k-rise .6s .25s ease-out both; }
+.finale-stars { margin: 0; font-size: 40px; line-height: 1; letter-spacing: 6px; color: var(--egg); text-shadow: 0 0 0 var(--ink), 2px 2px 0 var(--ink), -2px 2px 0 var(--ink), 2px -2px 0 var(--ink), -2px -2px 0 var(--ink); }
+.finale-stars span { display: inline-block; animation: k-star .5s cubic-bezier(.2, 1.6, .4, 1) both; }
+.finale-stars span:nth-child(1) { animation-delay: .5s; }
+.finale-stars span:nth-child(2) { animation-delay: .65s; }
+.finale-stars span:nth-child(3) { animation-delay: .8s; }
+.finale-title {
+  margin: 6px 0 4px; outline: none;
+  font: 900 clamp(36px, 6vw, 58px)/1.05 var(--round); color: #fff;
+  text-shadow:
+    3px 0 0 var(--ink), -3px 0 0 var(--ink), 0 3px 0 var(--ink), 0 -3px 0 var(--ink),
+    2px 2px 0 var(--ink), -2px -2px 0 var(--ink), 2px -2px 0 var(--ink), -2px 2px 0 var(--ink),
+    0 7px 0 var(--ink);
+}
+.finale-dish { margin: 8px 0 4px; font: 800 20px/1.3 var(--round); color: var(--ink); }
+.finale-body { margin: 0 auto 18px; max-width: 34em; font: 600 16px/1.5 var(--sans); color: var(--text); }
+.finale-actions { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; }
+.finale-versions { margin: 18px auto 0; max-width: 36em; font: 700 15.5px/1.5 var(--sans); color: var(--ink); }
+
+.confetti { position: fixed; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+.confetti i {
+  position: absolute; top: -20px; width: 10px; height: 16px; border-radius: 2px;
+  border: 2px solid var(--ink);
+  animation: k-confetti linear forwards;
+}
+
+/* ---------- 14. Phones and short screens ---------- */
+@media (max-width: 1100px) {
+  .recipe { grid-template-columns: minmax(0, 1fr); gap: 8px; padding: 10px 12px; }
+  .recipe-head { display: flex; align-items: center; gap: 14px; }
+  .recipe-kicker { display: none; }
+  .recipe-title { margin: 0; font-size: 16px; }
+  .recipe-served { display: inline; margin-left: 4px; font-size: 13px; }
+  .recipe-progress { flex-direction: row; align-items: center; margin-left: auto; gap: 8px; }
+  .recipe-bar { width: 110px; }
+}
+
+/* Tablets in portrait: the six steps in two rows of three. (Not on short
+   screens such as phones held sideways: they keep one slim row.) */
+@media (min-width: 761px) and (max-width: 960px) and (min-height: 561px) {
+  .recipe-steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .step { min-height: 56px; }
+}
+
+/* Phones held upright (and other narrow windows). The kitchen itself keeps its shape and
+   scrolls sideways (scene.js decides; html.is-pan); the popups fill the screen. */
+@media (max-width: 760px) {
+  :root { --topbar-h: 58px; }
+  .topbar { padding: 0 max(10px, env(safe-area-inset-right)) 0 max(8px, env(safe-area-inset-left)); gap: 6px; }
+  .logo { --logo-size: 62px; padding: 0; gap: 8px; margin-top: 11px; }
+  .logo-ring { border-width: 3px; }
+  .logo-hat { width: 42px; left: -5px; top: -4px; }
+  .logo-dot { width: 18px; height: 18px; border-width: 3px; right: -5px; top: -1px; }
+  .logo-dot::after { inset: -5px; border-width: 3px; }
+  .logo-tag { display: block; }
+  .logo-text { display: none; }
+  .topnav { gap: 5px; }
+  .pill { padding: 6px 10px 6px 8px; min-height: 38px; font-size: 13px; border-width: 2.5px; }
+  .pill svg { width: 16px; height: 16px; }
+  .pill-small { display: none; }
+  .pill--quiet { padding: 6px 7px; min-width: 44px; justify-content: center; }
+  .pill--quiet .pill-label { display: none; }   /* Motion and Start become icons */
+
+  .recipe { bottom: max(8px, env(safe-area-inset-bottom)); width: calc(100% - 16px); padding: 8px; border-radius: 16px; }
+  .recipe::before, .recipe::after { display: none; }
+  .recipe-head { gap: 8px; padding: 0 4px; }
+  .recipe-title { font-size: 13.5px; white-space: nowrap; }
+  .recipe-served { display: none; }
+  .recipe-bar { display: none; }
+  .recipe-count { font-size: 11.5px; text-align: right; }
+  .recipe-steps { gap: 5px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .step {
+    grid-template-columns: 1fr; justify-items: center; text-align: center;
+    min-height: 0; padding: 7px 1px 6px; border-radius: 12px; row-gap: 3px;
+  }
+  .step-icon, .step-icon svg { width: 30px; height: 30px; }
+  .step-num { width: 18px; height: 18px; font-size: 10px; line-height: 13px; left: -8px; top: -6px; }
+  .step-action { display: none; }
+  .step-page { margin: 0; font: 800 10px/1.15 var(--round); letter-spacing: -.01em; color: var(--ink); }
+  .step-page::before { content: none; }
+
+  .bubble { left: 10px; right: 10px; width: auto; top: calc(var(--topbar-h) + 46px); grid-template-columns: 46px 1fr; gap: 10px; padding: 14px; }
+  .bubble::before { left: 22px; }
+  .info-btn { width: 56px; height: 56px; }
+  .bubble-face { width: 46px; height: 46px; }
+  .bubble-title { font-size: 17px; }
+  .bubble-text { font-size: 14.5px; }
+
+  .overlay { padding: 0; place-items: stretch; }
+  .panel, .station, .book, .game, .finale { animation-name: k-sheet-in; }
+  .panel { width: 100%; max-height: none; height: 100%; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  .panel-head { padding: 12px 12px 12px 14px; gap: 12px; }
+  .panel-icon { width: 46px; height: 46px; }
+  .panel-icon svg { width: 32px; height: 32px; }
+  .panel-title { font-size: 25px; }
+  .panel-body { padding: 20px 18px 26px; }
+  .panel-foot { padding: 8px 10px max(8px, env(safe-area-inset-bottom)); gap: 6px; }
+  .nav-btn { padding: 6px 10px; font-size: 13px; min-height: 44px; }
+  .nav-btn--kitchen { display: none; }
+  .content { font-size: 16px; }
+  .home-grid { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+  .polaroid { max-width: 150px; margin: 8px auto 0; padding: 8px 8px 28px; }
+  .talk-year { grid-template-columns: minmax(0, 1fr); }
+  .research-lines { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .research-lines dd + dt { margin-top: 8px; }
+  .art-cards { grid-template-columns: minmax(0, 1fr); }
+  .award-list li { grid-template-columns: minmax(0, 1fr); }
+
+  .station {
+    width: 100%; min-height: 100%; min-height: 100dvh; border-radius: 0; border: 0; box-shadow: none;
+    display: flex; flex-direction: column;
+    background: radial-gradient(circle, rgba(255, 255, 255, .55) 0 4px, transparent 4.5px) 0 0 / 28px 28px, var(--theme-soft);
+  }
+  .station-head { position: sticky; top: 0; z-index: 3; }
+  /* A squarer close-up (the drawing is zoomed to fill it, sides trimmed),
+     centred between the header and the footer. */
+  .station-stage { aspect-ratio: 4 / 3; margin-top: auto; border-top: 3px solid var(--ink); }
+  .station-instruction { font-size: 19px; padding: 16px 18px 6px; }
+  .station-foot { margin-top: auto; padding-bottom: max(14px, env(safe-area-inset-bottom)); }
+
+  /* The recipe book is one long page here: its close button stays at the top while it scrolls. */
+  .book { width: 100%; min-height: 100%; grid-template-columns: minmax(0, 1fr); border-radius: 0; border: 0; padding: 0 12px 16px; gap: 12px; }
+  .book-spine { display: none; }
+  .book-page--left, .book-page--right { border-radius: 10px; border-width: 3px; }
+  .book-close { position: sticky; top: 10px; justify-self: end; margin-top: 10px; }
+  .book-heading { font-size: 26px; }
+
+  .finale { padding: 8px 14px 24px; }
+  .finale-close { position: sticky; top: 8px; align-self: flex-end; margin-bottom: 6px; }
+  .finale-actions .btn { flex: 1 1 40%; }
+}
+
+/* Short screens: phones held sideways (and small browser windows). A slim top bar and a
+   one-line recipe card, so the whole kitchen gets as much room as possible; the popups
+   fill the screen and are laid out side by side where that saves height.
+   (After the rules above, so these win where both apply, e.g. a phone 667 x 375.) */
+@media (max-height: 560px) and (orientation: landscape) {
+  :root { --topbar-h: 54px; }
+  .topbar { padding: 0 max(14px, env(safe-area-inset-right)) 0 max(10px, env(safe-area-inset-left)); }
+  .logo { --logo-size: 56px; margin-top: 8px; gap: 10px; }
+  .logo-hat { width: 38px; left: -5px; top: -3px; }
+  .logo-dot { width: 18px; height: 18px; border-width: 3px; }
+  .logo-sub { display: none; }
+  .logo-text { margin-top: 0; padding: 6px 0 0; }
+  .pill { min-height: 36px; padding: 6px 12px 6px 9px; }
+  .pill--quiet { padding: 6px 7px; }
+
+  .recipe {
+    grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding: 6px 8px 6px 14px; border-radius: 14px;
+    bottom: max(6px, env(safe-area-inset-bottom));
+    width: calc(100% - 2 * max(10px, env(safe-area-inset-left), env(safe-area-inset-right)));
+  }
+  .recipe::before, .recipe::after { display: none; }
+  .recipe-head { display: block; padding: 0; }
+  .recipe-kicker, .recipe-served, .recipe-bar { display: none; }
+  .recipe-title { margin: 0 0 2px; font-size: 14px; white-space: nowrap; }
+  .recipe-progress { margin: 0; }
+  .recipe-count { font-size: 11.5px; text-align: left; }
+  .recipe-steps { gap: 6px; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .step {
+    grid-template-columns: 26px minmax(0, 1fr); justify-items: stretch; text-align: left;
+    column-gap: 6px; row-gap: 0; min-height: 44px; padding: 4px 7px; border-radius: 11px;
+  }
+  .step-icon, .step-icon svg { width: 26px; height: 26px; }
+  .step-num { width: 17px; height: 17px; font-size: 9.5px; line-height: 12px; left: -7px; top: -6px; }
+  .step-action { display: none; }
+  .step-page { margin: 0; font: 800 12px/1.15 var(--round); color: var(--ink); }
+  .step-page::before { content: none; }
+
+  .bubble { top: calc(var(--topbar-h) + 30px); right: auto; width: min(430px, calc(100vw - 20px)); }
+  .info-btn { width: 52px; height: 52px; }
+
+  /* Popups fill the screen. */
+  .overlay { padding: 0; place-items: stretch; }
+  .panel, .station, .book, .game, .finale { animation-name: k-sheet-in; }
+  .panel { width: 100%; max-height: none; height: 100%; height: 100dvh; border-radius: 0; border: 0; box-shadow: none; }
+  .panel-head { padding: 6px max(12px, env(safe-area-inset-right)) 6px max(16px, env(safe-area-inset-left)); gap: 12px; }
+  .panel-icon { width: 40px; height: 40px; }
+  .panel-icon svg { width: 26px; height: 26px; }
+  .panel-kicker { font-size: 11px; }
+  .panel-title { font-size: 22px; }
+  /* Lines no longer than on a computer: wide screens get wide margins. */
+  .panel-body { padding: 14px max(20px, env(safe-area-inset-right), calc((100% - 760px) / 2)) 18px max(20px, env(safe-area-inset-left), calc((100% - 760px) / 2)); }
+  .panel-foot { padding: 4px max(12px, env(safe-area-inset-right)) max(4px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
+  .nav-btn { min-height: 44px; padding: 4px 12px; font-size: 13.5px; }
+  .nav-btn svg { width: 24px; height: 24px; }
+
+  /* Cooking moments: header, then the close-up as big as the height allows, then the words. */
+  .station {
+    width: 100%; min-height: 100%; min-height: 100dvh; border-radius: 0; border: 0; box-shadow: none;
+    display: flex; flex-direction: column;
+    background: radial-gradient(circle, rgba(255, 255, 255, .55) 0 4px, transparent 4.5px) 0 0 / 28px 28px, var(--theme-soft);
+  }
+  .station-head { position: sticky; top: 0; z-index: 3; padding: 6px 12px 6px max(18px, env(safe-area-inset-left)); }
+  .station-step { font-size: 11px; }
+  .station-title { font-size: 20px; }
+  .station-stage {
+    aspect-ratio: 600 / 360; width: min(100%, calc((100vh - 150px) * 5 / 3)); width: min(100%, calc((100dvh - 150px) * 5 / 3));
+    margin: 0 auto; border: 3px solid var(--ink); border-top: 0; border-radius: 0 0 16px 16px; overflow: hidden;
+  }
+  .station-instruction { font-size: 16px; padding: 6px 16px 0; }
+  .station-foot { margin-top: auto; padding: 0 16px max(4px, env(safe-area-inset-bottom)); }
+
+  /* The recipe book: both pages side by side, without the pictures. */
+  .book {
+    width: 100%; min-height: 100%; min-height: 100dvh; border-radius: 0; border: 0;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0 10px; padding: 0 12px 10px;
+    align-content: start;
+  }
+  .book-spine, .book-dish, .book-arrow { display: none; }
+  .book-close { position: sticky; top: 6px; grid-column: 1 / -1; justify-self: end; margin: 6px 0 4px; }
+  .book-page { padding: 12px 18px 14px; }
+  .book-page--left, .book-page--right { border-radius: 10px; border-width: 3px; }
+  .book-heading { font-size: 24px; margin: 2px 0 6px; }
+  .book-blurb { font-size: 15px; margin-bottom: 6px; }
+  .book-steps { columns: 2; column-gap: 28px; font-size: 14px; margin-bottom: 4px; }
+  .book-meta { margin: 2px 0 10px; }
+  .book-line { font-size: 22px; margin-top: 0; }
+  .book-url { margin-top: 8px; }
+  .btn--blog { margin-top: 14px; }
+
+  /* The finale: the plate on the left, the words and buttons on the right. */
+  .finale {
+    width: min(920px, 100%); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    align-items: center; column-gap: 20px;
+    padding: 10px max(56px, env(safe-area-inset-right)) 10px max(16px, env(safe-area-inset-left));
+  }
+  .finale-close { position: absolute; top: 6px; right: max(6px, env(safe-area-inset-right)); margin: 0; }
+  .finale-art { grid-column: 1; grid-row: 1 / span 2; width: 100%; }
+  .finale-cooking, .finale-text { grid-column: 2; grid-row: 1; }
+  .finale-stars { font-size: 28px; }
+  .finale-title { font-size: 34px; margin: 4px 0 2px; }
+  .finale-dish { font-size: 17px; margin: 4px 0 2px; }
+  .finale-body { font-size: 14.5px; margin-bottom: 10px; }
+  .finale-actions { gap: 8px; }
+  .finale-actions .btn { flex: 1 1 40%; min-height: 44px; padding: 6px 10px; font-size: 14px; }
+  .finale-versions { margin-top: 10px; font-size: 14px; }
+}
+
+/* Phones held sideways that are also narrow (e.g. 667 x 375): the steps need the whole width. */
+@media (max-height: 560px) and (orientation: landscape) and (max-width: 760px) {
+  .recipe { grid-template-columns: minmax(0, 1fr); padding: 6px 8px; }
+  .recipe-head { display: none; }
+  .logo-text { display: none; }
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes k-bob    { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+@keyframes k-hop    { 0%, 55%, 100% { transform: translateY(0); } 8% { transform: translateY(-16px); } 16% { transform: translateY(0); } 24% { transform: translateY(-9px); } 32% { transform: translateY(0); } }
+@keyframes k-wiggle { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(-3.5deg); } 75% { transform: rotate(3.5deg); } }
+@keyframes k-glow {
+  0%, 100% { filter: drop-shadow(0 0 2px #fff) drop-shadow(0 0 5px rgba(255, 196, 40, .75)); }
+  50%      { filter: drop-shadow(0 0 3px #fff) drop-shadow(0 0 15px rgba(255, 186, 20, 1)); }
+}
+@keyframes k-halo   { 0%, 100% { opacity: .55; transform: scale(.94); } 50% { opacity: .95; transform: scale(1.04); } }
+@keyframes k-ring   { 0% { transform: scale(1); opacity: .9; } 100% { transform: scale(2.7); opacity: 0; } }
+@keyframes k-logo-glow {
+  0%, 100% { box-shadow: 0 0 0 4px #fff, 0 0 10px 4px rgba(255, 196, 40, .75); }
+  50%      { box-shadow: 0 0 0 4px #fff, 0 0 24px 10px rgba(255, 186, 20, 1); }
+}
+@keyframes k-ring-html { 0% { transform: scale(.8); opacity: .9; } 100% { transform: scale(1.9); opacity: 0; } }
+@keyframes k-flicker { from { transform: scaleY(.85) scaleX(1.05); } to { transform: scaleY(1.12) scaleX(.95); } }
+@keyframes k-steam  { 0% { transform: translateY(8px) scale(.9); opacity: 0; } 30% { opacity: .95; } 100% { transform: translateY(-22px) scale(1.1); opacity: 0; } }
+@keyframes k-twinkle { 0%, 100% { transform: scale(.6) rotate(0); opacity: .4; } 50% { transform: scale(1.1) rotate(20deg); opacity: 1; } }
+@keyframes k-label-in { from { opacity: 0; transform: translate(-50%, 6px); } }
+@keyframes k-point  { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes k-pop    { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+@keyframes k-fade   { from { opacity: 0; } }
+@keyframes k-card-in { from { transform: translateY(18px) scale(.97); opacity: 0; } }
+@keyframes k-sheet-in { from { transform: translateY(30px); opacity: 0; } }
+@keyframes k-step-glow { 0%, 100% { box-shadow: 0 3px 0 var(--ink), 0 0 0 0 rgba(255, 196, 40, 0); } 50% { box-shadow: 0 3px 0 var(--ink), 0 0 0 5px rgba(255, 196, 40, .75); } }
+@keyframes k-target { 0%, 100% { transform: scale(.94); opacity: .65; } 50% { transform: scale(1.06); opacity: 1; } }
+@keyframes k-cheer  { from { transform: translate(-50%, -50%) rotate(-5deg) scale(.3); opacity: 0; } }
+@keyframes k-puff   { 0% { transform: translateY(14px) scale(.6); opacity: 0; } 35% { opacity: 1; } 100% { transform: translateY(-26px) scale(1.15); opacity: 0; } }
+@keyframes k-egg-tap { 0%, 100% { transform: translateY(0); } 45% { transform: translateY(58px) rotate(-5deg); } }
+@keyframes k-shell-l { from { transform: none; opacity: 1; } to { transform: translate(-96px, -26px) rotate(-42deg); opacity: 0; } }
+@keyframes k-shell-r { from { transform: none; opacity: 1; } to { transform: translate(96px, -6px) rotate(42deg); opacity: 0; } }
+@keyframes k-yolk   { from { transform: translateY(-120px) scale(.5); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes k-knife-1 { 0% { transform: translate(500px, 300px) rotate(8deg); } 30% { transform: translate(270px, 210px); } 48%, 62% { transform: translate(270px, 304px); } 100% { transform: translate(500px, 300px) rotate(8deg); } }
+@keyframes k-knife-2 { 0% { transform: translate(500px, 300px) rotate(8deg); } 30% { transform: translate(346px, 210px); } 48%, 62% { transform: translate(346px, 304px); } 100% { transform: translate(520px, 300px) rotate(14deg); } }
+@keyframes k-dash   { to { stroke-dashoffset: -44; } }
+@keyframes k-juice  { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-30px); opacity: 0; } }
+@keyframes k-cleaver-chop {
+  0% { transform: translate(250px, 170px); }
+  12% { transform: translate(180px, 262px); } 22% { transform: translate(200px, 190px); }
+  34% { transform: translate(250px, 262px); } 44% { transform: translate(270px, 190px); }
+  56% { transform: translate(320px, 262px); } 70% { transform: translate(340px, 180px); }
+  100% { transform: translate(470px, 150px) rotate(-6deg); }
+}
+@keyframes k-cleaver-smash {
+  0% { transform: translate(470px, 150px) rotate(-6deg); }
+  35% { transform: translate(500px, 120px) rotate(-90deg); }
+  55%, 70% { transform: translate(500px, 262px) rotate(-90deg); }
+  100% { transform: translate(560px, 200px) rotate(-70deg); }
+}
+@keyframes k-tilt   { 0% { transform: none; } 35%, 72% { transform: translateY(-30px) rotate(var(--tilt, 120deg)); } 100% { transform: none; } }
+@keyframes k-drops  { 0% { opacity: 0; transform: translateY(-10px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translateY(26px); } }
+@keyframes k-pop-up { 0% { opacity: 0; transform: translateY(8px); } 20%, 70% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-14px); } }
+@keyframes k-spin   { to { transform: rotate(360deg); } }
+@keyframes k-toss   { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-60px) rotate(8deg); } }
+@keyframes k-wok-shake { from { transform: rotate(-2deg); } to { transform: rotate(2.5deg) translateX(6px); } }
+@keyframes k-plate-in { from { transform: scale(.6) translateY(30px); opacity: 0; } }
+@keyframes k-rise   { from { transform: translateY(20px); opacity: 0; } }
+@keyframes k-star   { from { transform: scale(0) rotate(-40deg); } }
+@keyframes k-confetti { to { transform: translate3d(var(--drift, 0), 112vh, 0) rotate(var(--spin, 720deg)); } }
+@keyframes k-nudge  { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(3px); } }
+@keyframes k-nudge-back { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(-3px); } }
+@keyframes k-swipe  { 0%, 100% { transform: translateX(-6px); } 50% { transform: translateX(6px); } }
+
+/* ---------- 15. Motion off: no bobbing, wiggling, pulsing or confetti.
+   <html class="motion-off"> is set in index.html's <head> from the system's
+   "reduce motion" setting, or from the Motion switch in the top bar.
+   Clickable things keep their steady glow, so they still look clickable. ---------- */
+.motion-off *, .motion-off *::before, .motion-off *::after {
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+  animation-delay: 0s !important;
+  transition-duration: .001ms !important;
+  transition-delay: 0s !important;
+}
+.motion-off .badge-ring, .motion-off .confetti, .motion-off .finale-rays,
+.motion-off .steam, .motion-off .fin-steam, .motion-off .logo-dot::after { display: none; }
+/* Messages that normally pop in and fade out simply stay put. */
+.motion-off .st-seasoning.s1 .st-pop, .motion-off .game-pop.is-on { animation: none; opacity: 1; }
+
+/* The same straight from the computer's "reduce motion" setting, in case the script in
+   index.html's <head> did not run. "Motion on" (html.motion-on: the Motion switch, or
+   ?motion=on) overrides it, as everywhere on the site. */
+@media (prefers-reduced-motion: reduce) {
+  html:not(.motion-on) *, html:not(.motion-on) *::before, html:not(.motion-on) *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0s !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0s !important;
+  }
+  html:not(.motion-on) .badge-ring, html:not(.motion-on) .confetti, html:not(.motion-on) .finale-rays,
+  html:not(.motion-on) .steam, html:not(.motion-on) .fin-steam, html:not(.motion-on) .logo-dot::after,
+  html:not(.motion-on) .clock-s { display: none; }
+}
