@@ -24,6 +24,10 @@
 }
 
 html, body.xp { margin: 0; height: 100%; overflow: hidden; }
+/* Phones must not enlarge text on their own (iOS Safari held sideways, Chrome's text scaling):
+   the slides in PowerPoint and Overleaf are scaled to the screen, and enlarged text spills out of them.
+   Pinch-zoom still works. */
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body.xp {
   font: 11px/1.35 var(--xp-font);
   color: #000;

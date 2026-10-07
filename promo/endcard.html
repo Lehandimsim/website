@@ -1,0 +1,143 @@
+﻿<!doctype html>
+<html lang="en" data-root="../site/">
+<head>
+<meta charset="utf-8">
+<title>End card</title>
+<!-- The trailers' end card (promo only, never published). Rendered by promo/lib/endcard.py at the video's
+     own size: ?fmt=x (1920x1080) or story (1080x1920), &lit=<version id>|ms, &line=<text>.
+     The doors are drawn the way the start page draws them, from the site's own content and config. -->
+<style>
+  @font-face { font-family: "Inter"; font-weight: 500; src: url("fonts/Inter-Medium.ttf"); }
+  @font-face { font-family: "Inter"; font-weight: 600; src: url("fonts/Inter-SemiBold.ttf"); }
+  @font-face { font-family: "Inter"; font-weight: 700; src: url("fonts/Inter-Bold.ttf"); }
+  :root { --paper: #f7f4ee; --ink: #1d1d1f; --muted: #5f5b55; --rule: #e2ddd3; --classic: #1f4e8c; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: var(--paper); color: var(--ink); font-family: "Inter", sans-serif; overflow: hidden; }
+
+  .card { position: absolute; inset: 0; display: grid; }
+  .who { display: flex; flex-direction: column; }
+  .avatar { border-radius: 50%; object-fit: cover; border: 5px solid #fff; box-shadow: 0 4px 18px rgba(0,0,0,.14); }
+  .url { font-weight: 700; letter-spacing: -0.02em; line-height: 1.02; margin: 0; }
+  .line { font-weight: 500; color: var(--muted); margin: 0; line-height: 1.3; }
+  .line span { display: block; }
+  .line .door-line { color: var(--lit, var(--ink)); font-weight: 600; }
+  a { text-decoration: none; }
+
+  .eyebrow { font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0; }
+  .door { display: grid; align-items: center; background: #fff; border: 2px solid var(--rule); color: var(--ink);
+          box-shadow: 0 1px 2px rgba(0,0,0,.04); transition: transform .18s ease, box-shadow .18s ease, opacity .3s, filter .3s; }
+  .door-icon { display: grid; place-items: center; background: #eaf0f8; color: var(--classic); }
+  .door-title { display: block; font-weight: 600; }
+  .door-sub { display: block; color: var(--muted); }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; }
+  .tile { position: relative; display: flex; flex-direction: column; color: #fff;
+          background: linear-gradient(135deg, var(--a), var(--b));
+          box-shadow: 0 8px 22px color-mix(in srgb, var(--a) 30%, transparent);
+          transition: transform .18s ease, box-shadow .18s ease, opacity .3s, filter .3s; }
+  .tile-head { display: flex; align-items: center; }
+  .tile-icon { flex: none; display: grid; place-items: center; background: rgba(255,255,255,.22); }
+  .tile-title { font-weight: 600; }
+  .tile-go { margin-left: auto; font-weight: 600; transition: transform .18s ease; }
+  .tile-blurb { opacity: .96; }
+  svg { width: 100%; height: 100%; }
+
+  /* Lit: this video's door glows; the others step back. */
+  .dim { opacity: .38; filter: saturate(.35); }
+  .lit { box-shadow: 0 0 0 5px #fff, 0 0 0 11px var(--a), 0 18px 40px color-mix(in srgb, var(--a) 45%, transparent); animation: glow 1.6s ease-in-out infinite; }
+  @keyframes glow { 50% { box-shadow: 0 0 0 5px #fff, 0 0 0 15px color-mix(in srgb, var(--a) 70%, transparent), 0 18px 40px color-mix(in srgb, var(--a) 45%, transparent); } }
+  .tile:hover { transform: translateY(-5px) scale(1.02); }
+  .tile:hover .tile-go { transform: translateX(5px); }
+  .tile:active { transform: translateY(-1px) scale(.985); }
+
+  /* ---- 16:9, 1920 x 1080 ---- */
+  .x .card { grid-template-columns: 820px 820px; column-gap: 110px; justify-content: center; align-content: center; }
+  .x .who { gap: 30px; justify-content: center; }
+  .x .avatar { width: 132px; height: 132px; }
+  .x .url { font-size: 104px; }
+  .x .line { font-size: 40px; max-width: 760px; }
+  .x .doors { display: flex; flex-direction: column; gap: 18px; }
+  .x .eyebrow { font-size: 19px; }
+  .x .door { grid-template-columns: 76px 1fr; gap: 22px; padding: 20px 28px; border-radius: 22px; }
+  .x .door-icon { width: 76px; height: 76px; border-radius: 19px; padding: 17px; }
+  .x .door-title { font-size: 30px; }
+  .x .door-sub { font-size: 21px; margin-top: 4px; }
+  .x .grid { gap: 18px; }
+  .x .tile { gap: 10px; padding: 20px 22px 22px; border-radius: 22px; min-height: 180px; }
+  .x .tile-head { gap: 14px; }
+  .x .tile-icon { width: 54px; height: 54px; border-radius: 15px; padding: 10px; }
+  .x .tile-title { font-size: 28px; }
+  .x .tile-go { font-size: 27px; }
+  .x .tile-blurb { font-size: 19px; line-height: 1.4; }
+
+  /* ---- 9:16, 1080 x 1920: room at the bottom for Instagram's link sticker ---- */
+  .story .card { grid-template-rows: auto auto; align-content: start; justify-items: center; padding: 300px 80px 0; row-gap: 70px; }
+  .story .who { align-items: center; text-align: center; gap: 26px; }
+  .story .avatar { width: 150px; height: 150px; }
+  .story .url { font-size: 106px; }
+  .story .line { font-size: 42px; max-width: 900px; }
+  .story .doors { width: 920px; display: flex; flex-direction: column; gap: 18px; }
+  .story .eyebrow { font-size: 20px; }
+  .story .door { grid-template-columns: 76px 1fr; gap: 22px; padding: 20px 28px; border-radius: 22px; }
+  .story .door-icon { width: 76px; height: 76px; border-radius: 19px; padding: 17px; }
+  .story .door-title { font-size: 31px; }
+  .story .door-sub { font-size: 22px; margin-top: 4px; }
+  .story .grid { gap: 18px; }
+  .story .tile { gap: 10px; padding: 20px 22px; border-radius: 22px; min-height: 170px; }
+  .story .tile-head { gap: 14px; }
+  .story .tile-icon { width: 54px; height: 54px; border-radius: 15px; padding: 10px; }
+  .story .tile-title { font-size: 30px; }
+  .story .tile-go { font-size: 28px; }
+  .story .tile-blurb { font-size: 20px; line-height: 1.4; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="who">
+    <img class="avatar" id="avatar" alt="">
+    <p class="url">lehanzhang.com</p>
+    <p class="line" id="line"></p>
+  </div>
+  <div class="doors">
+    <p class="eyebrow">Choose your way in</p>
+    <div class="door" id="classic">
+      <span class="door-icon" id="classic-icon"></span>
+      <span><span class="door-title">Classic website</span><span class="door-sub">Standard, academic website. No frills.</span></span>
+    </div>
+    <p class="eyebrow" style="margin-top:8px">Or view one of four fun versions</p>
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+<script src="../site/content.js"></script>
+<script src="../site/config.js"></script>
+<script src="../site/shared/site.js"></script>
+<script>
+(function () {
+  var U = SiteUtil, q = new URLSearchParams(location.search);
+  var fmt = q.get("fmt") === "story" ? "story" : "x", lit = q.get("lit") || "";
+  document.body.className = fmt;
+  // "quip · behind the blue door": the quip, then the door on its own line in that door's colour.
+  var parts = (q.get("line") || "").split(" · ");
+  document.getElementById("line").innerHTML = parts.map(function (p, i) {
+    return "<span" + (i === parts.length - 1 && parts.length > 1 ? ' class="door-line"' : "") + ">" + U.esc(p) + "</span>";
+  }).join("");
+  if (lit && lit !== "ms" && U.versionColours(lit)) document.body.style.setProperty("--lit", U.versionColours(lit)[0]);
+  document.getElementById("avatar").src = U.url(SITE.person.photo.headshot);
+  document.getElementById("classic-icon").innerHTML = U.versionIcon("classic");
+  var versions = SITE_CONFIG.funVersions.slice().sort(function (a, b) {
+    return (b.id === SITE_CONFIG.defaultFun) - (a.id === SITE_CONFIG.defaultFun);
+  });
+  // "ms": Minesweeper lives on the three XP desktops, so those three doors light up.
+  var litSet = lit === "ms" ? ["paint", "powerpoint", "overleaf"] : [lit];
+  document.getElementById("grid").innerHTML = versions.map(function (v) {
+    var c = U.versionColours(v.id), on = litSet.indexOf(v.id) >= 0;
+    return '<a class="tile ' + (lit ? (on ? "lit" : "dim") : "") + '" id="tile-' + v.id + '" href="#" style="--a:' + c[0] + ";--b:" + c[1] + '">' +
+      '<span class="tile-head"><span class="tile-icon">' + U.versionIcon(v.id) + '</span><span class="tile-title">' + U.esc(v.label) +
+      '</span><span class="tile-go">&rarr;</span></span><span class="tile-blurb">' + U.esc(v.blurb) + ".</span></a>";
+  }).join("");
+  if (lit && lit !== "classic") document.getElementById("classic").classList.add("dim");
+  document.addEventListener("click", function (e) { e.preventDefault(); });
+})();
+</script>
+</body>
+</html>

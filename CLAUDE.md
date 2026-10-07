@@ -182,6 +182,7 @@ LIFE/website/                      <- project root, in Dropbox. Git repo (.git e
 ├── GO_LIVE.md                     <- Lehan's go-live checklist: backend, PostHog, Netlify, Google, renewals
 ├── UPDATING.md                    <- Lehan's guide to changing the live site: where things live, check, commit, push, roll back
 ├── netlify.toml                   <- for Git deploys: publish only site/, no build command
+├── promo/                         <- NOT published. Launch trailers made by script (README.md); POSTS.md = posting copy; out/ (git-ignored) = the MP4s
 ├── backend/                       <- NOT published. apps-script/Code.gs (receives Paint drawings) + README.md (set-up)
 ├── tools/
 │   ├── screenshot.py              <- headless-Edge screenshots + JS error check (§6 Verification)
@@ -421,6 +422,9 @@ overrule.
 | 2026-10-06 | SEO: `tools/prerender.py` saves a static copy of the JS-drawn text in the start page and classic pages (the one generated piece; §5); each classic page has its own description; every page in the sitemap has link-preview tags with the social card; sitemap `lastmod` updated; the "needs JavaScript" notices on those pages removed (they work without it now). | Lehan (SEO review A, B, C, F). Without the copy, crawlers that don't run JavaScript saw empty classic pages. |
 | 2026-10-06 | Git remote: the private GitHub repo https://github.com/Lehandimsim/website; the whole project (not only `site/`) is pushed to `main`; Netlify publishes only `site/` (`netlify.toml`). | Lehan made the repo and asked to push. It is private (checked: GitHub's public API cannot see it), so the private notes may live there (§5 Privacy). |
 | 2026-10-06 | Paint sends drawings for real: Lehan's Apps Script URL in `config.js` `endpoints.drawings`. | Lehan deployed the backend. |
+| 2026-10-06 | Launch trailers: direction D + B + A ("my website, but…" labels, in-world captions, slow virtual camera); X 16:9 1920x1080 and Stories 9:16 1080x1920, website always in its desktop layout; works muted, sound effects only, no music; texts in Lehan's blog voice, each approved by Lehan before any video is made; thread in the quest-list tone (memos 2026-10-06_launch_trailers_phase1 and _texts). | Lehan. |
+| 2026-10-07 | PowerPoint trailers: no captions naming the effects; the show plays Home, Research, Talks, then the end screen. | Lehan. |
+| 2026-10-07 | `text-size-adjust: 100%` in the XP shell (`xp.css`), so phones do not enlarge the scaled slide text in Overleaf and PowerPoint. | Lehan reported slide text overflowing on a phone; enlarged text was the cause found (memo 2026-10-07_overleaf_phone_text_and_search). |
 | 2026-10-05 (round 3 follow-up) | Dvořák performance: "Slavonic Dances, Op. 46" (Lehan wrote Op. 42). On the classic site Scholar stays on the home page only; read as not affecting the start page and fun versions (to confirm). | Lehan. |
 
 ---
@@ -435,6 +439,7 @@ Needed before going live (details: memo 2026-10-02_go_live_and_round_2 §10, `GO
 2. **Round 3 follow-ups** (memo 2026-10-05_round_3_followup §3): does "Scholar only on the classic
    home page" also mean removing it from the start page footer and the fun versions? And is the
    performances' layout OK (memo 2026-10-05_round_3_edits §2)?
+2a. **Google still shows the Wix photography entry** for lehanzhang.com (stale, from the old redirect; both sites are clean, checked 2026-10-07). Search Console › Request indexing (`GO_LIVE.md`); DNS TXT at Wix, or send the HTML-tag code for Claude to add. Also: check the Overleaf slides on the phone after the next upload.
 3. **Analytics:** key set (2026-10-06). Lehan to switch on **Discard client IP data** in PostHog's
    project settings (the privacy page promises it). Mode: `memory` (keeps country/city; set) or
    `cookieless` (daily unique visitors, no location)?
@@ -447,10 +452,15 @@ Needed before going live (details: memo 2026-10-02_go_live_and_round_2 §10, `GO
 7. **Profiles** for the structured data and backlinks: Google Scholar is in (2026-10-05); ORCID,
    LinkedIn, X/Bluesky, CEPR author page still to come (only ones Lehan confirms).
 8. **Link the GitHub repo in Netlify** (`GO_LIVE.md` step 3b): the private repo exists and `main` is
-   pushed (2026-10-06).
+   pushed (2026-10-06). Not linked yet: the push of `4e4f257` (19:17) had not reached the live site
+   after 5 minutes; Lehan has been uploading `site/` by hand.
 8a. **SEO proposals D and E** (memo 2026-10-06_seo_review §3; A, B, C, F done 2026-10-06): photo and
    institutions in the JSON-LD; redirect the Netlify address and self-canonicals on the fun
    versions. Do them?
+8b. **Launch trailers** (memo 2026-10-06_launch_trailers_production): watch the 12 files in
+   `promo/out/`; approve the Instagram Stories texts in `promo/POSTS.md` (new; the X thread is approved).
+   PowerPoint pair remade 2026-10-07 (no effect captions, show ends after Talks): keep its end-card line
+   and the POSTS.md "every transition" wording? (memo 2026-10-07_powerpoint_trailer_edit)
 9. **Wording** written by Claude and the builders (memo 2026-10-02_go_live_and_round_2 §8; earlier:
    memo 2026-10-02_review_round_1 §5).
 
@@ -494,7 +504,8 @@ start page and classic site. Next: Lehan's look, answers to §8, then `GO_LIVE.m
 | Round 4: headshot everywhere, sans headings (start page, classic, All versions, privacy, 404), no Overleaf edit logs | Done 2026-10-06 (memos 2026-10-06_headshot_and_heading_font, _backend_analytics_fonts); awaiting Lehan's review |
 | Minesweeper (V2-V4 desktops) | All four themes kept; the game is "Minesweeper", default theme Specification Search with spiky mines (2026-10-05) |
 | Backend for Paint drawings | Deployed by Lehan 2026-10-06; URL in `config.js`; answers its health check. A real drawing still to test (§8.5) |
-| Git | Committed and pushed to the private GitHub repo Lehandimsim/website (`main`) 2026-10-06; Netlify link pending (§8.8) |
+| Git | Pushed to the private GitHub repo Lehandimsim/website (`main`) 2026-10-06; the 2026-10-07 changes (trailers, memos, phone-text fix) pushed 2026-10-07. Netlify is not linked; the live site is a hand upload (§8.8) |
 | Analytics (PostHog) | Key set 2026-10-06 (EU project 296254); runs once live; IP setting and mode to Lehan (§8.3) |
 | SEO, privacy page, 404, favicons, social card | Done 2026-10-02 |
 | Hosting and domain | Recommendation: existing Netlify project, no DNS change (`GO_LIVE.md`); Lehan confirms (§8.6) |
+| Launch trailers (X + Instagram Stories) and X thread | Rendered 2026-10-06: six videos × two formats in `promo/out/`, posting copy `promo/POSTS.md` (memo 2026-10-06_launch_trailers_production); awaiting Lehan's look (§8.8b). Phase 2 will live in a new `promo/` folder, never in `site/` |

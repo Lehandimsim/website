@@ -16,3 +16,6 @@ __pycache__/
 # Local scratch
 _scratch/
 *.tmp
+
+# Rendered trailers (large; re-made by promo/render.py)
+promo/out/
