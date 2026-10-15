@@ -49,7 +49,10 @@
   // A paper's status, year and links as one mini-markdown line: "*Working Paper* 2026 · [PDF](...)".
   function paperMeta(p) {
     var meta = [];
-    if (p.status) meta.push("*" + p.status + "*" + (p.year ? " " + p.year : ""));
+    if (p.status) {
+      var st = "*" + p.status + "*" + (p.year ? " " + p.year : "");
+      meta.push(p.statusUrl ? "[" + st + "](" + p.statusUrl + ")" : st);
+    }
     (p.links || []).forEach(function (l) { meta.push("[" + l.label + "](" + l.url + ")"); });
     return meta.join(" · ");
   }

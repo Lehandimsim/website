@@ -50,3 +50,12 @@ diff of the prerendered pages shows only the abstract, the lab link and the two 
 
 - Upload `site/` to Netlify (Deploys → drag the folder), since Netlify is not linked to the repo.
 - On your PC: `git fetch` then `git reset origin/main` (keeps your files, which Dropbox already updated).
+
+## 4. Status line links to CEPR (later the same day)
+
+New optional field `statusUrl` on a paper in `content.js`; Adding Fuel's is
+https://cepr.org/publications/dp19896. Wherever the status line appears ("CEPR Discussion Paper, 2026"
+on the classic site, Kitchen and Paint; "CEPR Discussion Paper 2026" on the PowerPoint and Overleaf
+slides), it links there. The PDF button and the title still open the site's own PDF. Code:
+`classic/classic.js`, `fun/kitchen/pages.js`, `fun/paint/pages.js`, `shared/slides/deck.js`.
+Checked in a browser: all five versions link correctly, no script errors; prerendered copies updated.

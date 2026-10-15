@@ -76,12 +76,14 @@ window.SITE = {
       "Federico Masera": "https://sites.google.com/site/fgmasera/home",
       "Alexander Hoyle": "https://alexanderhoyle.com/"
     },
+    // statusUrl (optional): the status line, e.g. "CEPR Discussion Paper, 2026", links to it; links[] stay as buttons.
     // abstract: verbatim from the paper's PDF (only line-break hyphens rejoined). Papers without a PDF have none.
     papers: [
       {
         title: "Adding Fuel to the (Gun)Fire: How Politicians Polarize the Public Debate",
         coauthors: ["Gabriele Gratton", "Pauline Grosjean", "Hasin Yousaf"],
         status: "CEPR Discussion Paper",   // CEPR's series name (Lehan, 2026-10-05)
+        statusUrl: "https://cepr.org/publications/dp19896",   // the status line links here (Lehan, 2026-10-15)
         year: 2026,
         links: [{ label: "PDF", url: "research/adding-fuel/AddingFuel.pdf" }],   // latest v4 from Overleaf (Lehan, 2026-10-15)
         // From the PDF dated October 15, 2026.

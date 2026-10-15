@@ -1925,3 +1925,7 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-15 18:40 | session d0158148
 
 > update the abstracts on the website to reflect the new abstract from the overleaf please  
+
+### 2026-10-15 18:50 | session d0158148 (Euler; logged by hand)
+
+> can you link the CEPR discussion paper url as a hyperlink for "CEPR Discussion Paper, 2026" in the research tabs whenever it appears? but keep the pdf button as a link to my own versionof the paper  

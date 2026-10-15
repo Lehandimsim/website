@@ -365,6 +365,7 @@
       html += h2(TEXT.papers) + '<ol class="pt-papers">';
       R.papers.forEach(function (p, i) {
         var meta = [p.status, p.year].filter(function (v) { return v != null && v !== ""; }).join(", ");
+        if (meta && p.statusUrl) meta = "[" + meta + "](" + p.statusUrl + ")";
         var with_ = U.withCoauthorsMd(p);
         // Papers with an abstract get an "Abstract" button next to their PDF button (opens a popup; app.js).
         var absBtn = p.abstract ?

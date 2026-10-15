@@ -86,6 +86,7 @@
     html += "<h2>" + esc(H.papers) + "</h2>";
     html += R.papers.map(function (p) {
       var status = [p.status, p.year].filter(function (x) { return x != null && x !== ""; }).join(", ");
+      if (status && p.statusUrl) status = "[" + status + "](" + p.statusUrl + ")";
       var withLine = U.withCoauthorsMd(p);   // "with [Name](homepage), ...": names link to their homepages
       // One line under the coauthors: "CEPR Discussion Paper, 2026 · PDF"
       var meta = [];
