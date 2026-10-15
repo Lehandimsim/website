@@ -4,7 +4,7 @@
    The classic site and all four fun versions (kitchen, paint, powerpoint,
    overleaf) read from here, so editing a line below changes it everywhere.
 
-   Source: References/CV_lehanzhang_oct26.pdf, with its typos fixed
+   Source: References/CV_lehanzhang_oct2026.pdf, with its typos fixed
    (list: Memos/2026-10-01_project_setup_and_build_plan.md §4.2).
    The home text is verbatim from the brief.
 
@@ -31,7 +31,7 @@ window.SITE = {
     face: { src: "assets/img/lehan-face.jpg", alt: "Lehan Zhang" },
     links: {
       scholar: "https://scholar.google.com/citations?user=JYuPwdgAAAAJ&hl=en",   // Lehan, 2026-10-05
-      cv: "assets/cv/CV_lehanzhang_oct26.pdf",
+      cv: "assets/cv/CV_lehanzhang_oct2026.pdf",
       photography: "https://lehanzzhang.wixsite.com/photography",
       blog: "https://congeecosmicbinchicken.wordpress.com/"
     }
@@ -81,11 +81,11 @@ window.SITE = {
       {
         title: "Adding Fuel to the (Gun)Fire: How Politicians Polarize the Public Debate",
         coauthors: ["Gabriele Gratton", "Pauline Grosjean", "Hasin Yousaf"],
-        status: "CEPR Discussion Paper",   // CEPR's series name (Lehan, 2026-10-05; the CV says "Working Paper")
+        status: "CEPR Discussion Paper",   // CEPR's series name (Lehan, 2026-10-05)
         year: 2026,
-        links: [{ label: "PDF", url: "https://gratton.org/papers/AddingFuel.pdf" }],
-        // From the PDF dated October 22, 2025.
-        abstract: "We document how politicians politicize public debates. Analyzing 4.75 million tweets related to 57 mass shooting events, two-way fixed effects and event studies results show that the partisan and issue-polarized content of tweets systematically increases after a politician first tweets about an event. Analysis of the timing of interventions suggests that politicians do not intervene in response to specific characteristics of the event, nor to immediate changes in the debate. Interventions by non-politicians focal influencers do not have similar effects. We show how the rhetorical supply of politicians explains the polarizing effect of their interventions."
+        links: [{ label: "PDF", url: "research/adding-fuel/AddingFuel.pdf" }],   // latest v4 from Overleaf (Lehan, 2026-10-15)
+        // From the PDF dated October 15, 2026.
+        abstract: "Do politicians polarize public debates? We collect 4.75 million tweets debating 57 U.S. mass shootings. We exploit variation in the timing of politicians’ first interventions into each debate and show that partisan and issue-polarized language increases after a politician first tweets about the event. These changes are not preceded by trends in polarization or debate activity, and the timing of political interventions is unrelated to event characteristics or the timing or content of tweets from other celebrities or news organizations. Comparable interventions by non-political celebrities generate no such effects. Politicians’ interventions are themselves unusually partisan, and interventions supplying partisan language produce larger subsequent shifts in both partisan and issue-polarized language. Our findings suggest that politicians supply partisan frames that shape subsequent public discourse and point to elite communication as a supply-side source of polarization on social media."
       },
       {
         title: "The Joe Rogan Effect: Politicized Podcasts and the Youth Gender Voting Gap",
@@ -158,7 +158,7 @@ window.SITE = {
       degree: "PhD in Economics and Data Science",
       dates: "Aug. 2024 – present",
       details: [
-        "Chair of Law, Data Science, and Economics (Ash Group) at the Center for Law & Economics, D-GESS",
+        "Chair of Law, Data Science, and Economics (Ash Group) at the [AI & Economics Lab](https://ai-econ-lab.org/), D-GESS",
         "Advisor: Prof. Elliott Ash. Secondary advisor: Prof. Karsten Donnay (UZH)",
         "Coursework and summer schools: [Swiss Program for Beginning Doctoral Students in Economics](https://www.szgerzensee.ch/programs/beginning-doctoral-program) (Study Center Gerzensee), AI & Economics Summer Institute (Chicago Booth), Zurich Summer School in AI & Applied Economics (ETHZ), Language Models for Law and Social Science (Elliott Ash, ETHZ), Causal Inference (Alberto Abadie, Gerzensee Advanced Courses in Economics), Labor Economics (David Dorn, UZH), Social Norms and Development (Eliana La Ferrara, Gerzensee Advanced Courses in Economics), Economic History: Migration, Networks, Religion (Sascha Becker, ISEG Summer School)"
       ]
@@ -181,7 +181,7 @@ window.SITE = {
   ],
 
   cv: {
-    pdf: "assets/cv/CV_lehanzhang_oct26.pdf",
+    pdf: "assets/cv/CV_lehanzhang_oct2026.pdf",
     downloadLabel: "Download CV (PDF)"
   },
 

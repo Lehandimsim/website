@@ -1913,3 +1913,15 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-07 10:40 | session 9de29618
 
 > i allow git commands for this project  
+
+### 2026-10-15 18:13 | session d0158148 (Euler, AddingFuelGunfire project; logged by hand, the hook runs only on Lehan's PC)
+
+> i want people to cite the latest version of the paper, which i want to auto update from overleaf (v4) straight to the link on my website. can you check that this pipeline works? also, this is the cepr link with a revision, not sure if its same as the old cepr link https://cepr.org/publications/dp19896 also, this is the link to the overleaf for updating my cv: https://www.overleaf.com/project/655bf53f13c1fd4d9e259812/share#ba04454b722fc9485ba8ccff2ed80b781367252a183d06ed can you make a new .tex file that is a copy of 2026_LZ_july.tex but make all the updates that are consistent with my website currently then replace the embedded cv and all cv download links with this new version of the cv that is hosted as a pdf on my website? before you make any cv changes though, list them out for me line by line here so i can approve them  
+
+### 2026-10-15 18:25 | session d0158148
+
+> 1) i only want to do the publishing once now. if i make changes to the paper in future you can run it again. tell me exactly what i need to do to make this live right now. 2) in my cv make sure to add "Ai and economics lab" to replace center for law & economics 3) for the website when people download the cv the file name should have the year and month that the cv was last updated and also say CV_lehanzhang eg. CV_lehanzhang_oct2026 4) add google scolar link and change art section. 5) then you can commit, push, and upload to netlify. but the interactive website is not live right? this is still not ready  
+
+### 2026-10-15 18:40 | session d0158148
+
+> update the abstracts on the website to reflect the new abstract from the overleaf please  

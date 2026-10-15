@@ -37,7 +37,7 @@ The full brief is `References/brief_2026-10-01.md` (verbatim). This file is the 
 | Name | Lehan Zhang |
 | Email shown on the site | lehan.zhang@gess.ethz.ch. The CV also lists lehan.zhang@hotmail.com, which is **not** shown unless Lehan says so. |
 | Home page text | Verbatim as in §2.1 (the brief's text as amended by Lehan on 2026-10-02). Do not paraphrase. |
-| All other content | From `References/CV_lehanzhang_oct26.pdf` only, **with the CV's typos fixed** (memo 2026-10-01 §4.2), plus what Lehan has added since (the prompt log and memos: e.g. the Methods line, the abstracts from the papers' PDFs, coauthors' homepages, the Genderbility link). **Never invent** papers, talks, dates, roles, links, quotes or photos. Missing content gets a clearly marked placeholder. |
+| All other content | From `References/CV_lehanzhang_oct2026.pdf` only, **with the CV's typos fixed** (memo 2026-10-01 §4.2), plus what Lehan has added since (the prompt log and memos: e.g. the Methods line, the abstracts from the papers' PDFs, coauthors' homepages, the Genderbility link). **Never invent** papers, talks, dates, roles, links, quotes or photos. Missing content gets a clearly marked placeholder. |
 | Pages (every version), in this order | Home, Research, Talks, Other Experience (teaching and service first, then work experience, awards and extracurriculars), CV, Art (Lehan, 2026-10-02) |
 | Lab links | "AI & Economics Lab" links to https://ai-econ-lab.org/ and "Resilient Democracy Lab" to https://resilientdemocracylab.org/ **wherever they appear**. Links inside running text are underlined but otherwise look like the text around them. |
 | Photography (external) | https://lehanzzhang.wixsite.com/photography (note the double "z" in `lehanzzhang`) |
@@ -170,7 +170,7 @@ LIFE/website/                      <- project root, in Dropbox. Git repo (.git e
 │   └── YYYY-MM-DD_<topic>.md      <- progress and decision memos
 ├── References/                    <- inputs; read-only
 │   ├── brief_2026-10-01.md        <- the original brief, verbatim (design of record)
-│   ├── CV_lehanzhang_oct26.pdf    <- the content source
+│   ├── CV_lehanzhang_oct2026.pdf  <- the content source (Overleaf CV project: 2026_LZ_oct.tex)
 │   ├── paint_landing.png          <- framing reference for V2-V4 (XP Paint on the XP wallpaper)
 │   ├── msPaintmock.png            <- V2 first-canvas reference (screenshot of Windows 11 Paint)
 │   ├── lehanzhang_canvas.png      <- that canvas itself, 1152x720: photo + handwritten "hi! i'm Lehan..."
@@ -224,7 +224,7 @@ screenshots.
    supersede the brief where they conflict.
 2. `References/brief_2026-10-01.md`, the design of record. It is not final. **When building reveals a
    conflict or a better option, say so and let Lehan decide.** Do not quietly re-plan around it.
-3. `References/CV_lehanzhang_oct26.pdf`, for content.
+3. `References/CV_lehanzhang_oct2026.pdf`, for content.
 4. The mockup images, for visual intent. They are not pixel specifications.
 
 ---
