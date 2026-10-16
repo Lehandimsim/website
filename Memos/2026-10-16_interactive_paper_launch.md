@@ -58,3 +58,9 @@ The Uvalde clock and dots also follow the scroll under reduced motion now, so th
 That copy (commit a8bd288) briefly brought back the pre-launch head (`noindex`, no social card) from
 `AddingFuelGunfire/interactive/website_dev/`; fixed in the next commit, before any Netlify upload. The
 working copy there now has the launch head too, so later copies keep it.
+
+## 7. Follow-up (16:05): serial commas on the interactive page
+
+The interactive page now uses the serial comma, like the rest of the site ("grieve, ask questions, and
+argue"; author lists in the text and in the source notes). Not changed: the quoted tweets and cited
+titles (verbatim), and the nested "the shooter’s identity, age or race" inside a longer list.

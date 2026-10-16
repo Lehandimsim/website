@@ -1941,3 +1941,11 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-16 15:55 | session 2322ae91 (Euler; logged by hand)
 
 > yes make uvalde move smoothly. also change "Short on time? The key findings in 3 minutes" to "Short on time? The key findings in 2 minutes"
+
+### 2026-10-16 16:00 | session 2322ae91 (Euler; logged by hand)
+
+> in the opening sentence, is there a "," missing? "After a mass shooting, people go online to grieve, ask questions and argue."
+
+### 2026-10-16 16:05 | session 2322ae91 (Euler; logged by hand)
+
+> yes add it through the interactive page and push it to git

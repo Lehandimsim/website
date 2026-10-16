@@ -283,8 +283,8 @@
       el(svg, "text", { x: W - 14, y: pt - 8, "text-anchor": "end", class: "t-ink" }, "oldest shooting at top");
       note = "Median first political intervention: " + fmtHM(median(order.map(function (e) { return e.pol; }))) + " after the first tweet. A › marks one later than 12 hours.";
     }
-    svg.setAttribute("aria-label", "Timing of the first news tweet, first political intervention and first celebrity tweet in each of 52 debates, sorted by " + { date: "date", school: "school or not", len: "length of the shooting", size: "size of the debate" }[key] + ". " + note);
-    $("#strip-note").firstChild.textContent = note + " The paper tests 20 traits of the shooting, the conversation and the politician. The kind of shooting does not predict when the first political intervention comes. ";
+    svg.setAttribute("aria-label", "Timing of the first news tweet, first political intervention, and first celebrity tweet in each of 52 debates, sorted by " + { date: "date", school: "school or not", len: "length of the shooting", size: "size of the debate" }[key] + ". " + note);
+    $("#strip-note").firstChild.textContent = note + " The paper tests 20 traits of the shooting, the conversation, and the politician. The kind of shooting does not predict when the first political intervention comes. ";
   }
   $$("#sbx-timing .tg").forEach(function (b) {
     b.addEventListener("click", function () { STRIP.sort = b.dataset.sort; $$("#sbx-timing .tg").forEach(function (x) { x.setAttribute("aria-pressed", x === b); }); drawStrip(); track("sandbox", { test: "sort", by: STRIP.sort }); });
