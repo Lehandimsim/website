@@ -42,3 +42,10 @@ reduced motion.
 - Lehan uploads `site/` to Netlify (not linked to the repo), then checks the live page and the button.
 - On a phone, Paint's pink button wraps to two lines ("Interactive / Version"); fine, or shorten?
 - Optional: link the interactive page from the CV.
+
+## 5. Follow-up (15:45): the line-up slides again
+
+Lehan: the "52 debates, one moment" rows jumped straight to the aligned view. Cause: a reduced-motion rule
+from the review round earlier on 16 Oct made scroll-driven charts snap between step cards, and Lehan's PC
+has Windows "Animation effects" off. The line-up now follows the scroll for everyone again
+(`scrollValue(..., true)` in `app.js`); the Uvalde clock still snaps under reduced motion.

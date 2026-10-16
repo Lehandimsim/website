@@ -50,14 +50,14 @@
 
   /* Continuous value from scroll position: interpolates data-<key> between consecutive step cards
      as their centres pass a line 60% down the viewport. */
-  function scrollValue(steps, key) {
+  function scrollValue(steps, key, smooth) {   // smooth: move with the scroll even under reduced motion
     var ref = innerHeight * (innerWidth < 820 ? 0.8 : 0.6), mids = steps.map(function (s) { var r = s.getBoundingClientRect(); return r.top + r.height / 2; });
     var vals = steps.map(function (s) { return parseFloat(s.dataset[key]); });
     if (ref <= mids[0]) return { i: 0, v: vals[0] };
     for (var i = 0; i < steps.length - 1; i++) {
       if (ref < mids[i + 1]) {
         var f = (ref - mids[i]) / (mids[i + 1] - mids[i]);
-        if (reduced()) f = f < 0.5 ? 0 : 1;
+        if (reduced() && !smooth) f = f < 0.5 ? 0 : 1;
         return { i: i, v: vals[i] + (vals[i + 1] - vals[i]) * f, f: f };
       }
     }
@@ -169,7 +169,7 @@
   var rowsLU = D.lineup.slice().sort(function (a, b) { return a.pol - b.pol; });
   function drawLineup() {
     if (!luCv.offsetParent) return;
-    var a = clamp(scrollValue(luSteps, "a").v, 0, 1);
+    var a = clamp(scrollValue(luSteps, "a", true).v, 0, 1);   // the rows slide as you scroll (Lehan, 2026-10-16)
     var cx = canvasCtx(luCv), g = cx.g, W = cx.w, H = cx.h, n = rowsLU.length;
     var d0 = -300 * a, X = lin(d0, d0 + 720, 4, W - 4), rh = (H - 10) / n;
     rowsLU.forEach(function (r, i) {
