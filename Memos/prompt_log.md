@@ -1949,3 +1949,11 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-16 16:05 | session 2322ae91 (Euler; logged by hand)
 
 > yes add it through the interactive page and push it to git
+
+### 2026-10-16 16:15 | session 2322ae91 (Euler; logged by hand)
+
+> how many credits am i using each time i update and it gets pushed to netlify? i have reached 50% of my monthly allowance apparently
+
+### 2026-10-16 16:25 | session 2322ae91 (Euler; logged by hand)
+
+> in the about this page section at the bottom, can you also add to the "The paper also covers results this page leaves out: " section something about multiple politician entry effects. also point out anything else that should be added here. let me review on the claude preview. do not upload to netlify. can you start a running checklist of any updates i make between today and whenever i next want to push to netlify, so that i can make all the changes at once instead of everytime i make a change?
