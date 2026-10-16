@@ -1957,3 +1957,7 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-16 16:25 | session 2322ae91 (Euler; logged by hand)
 
 > in the about this page section at the bottom, can you also add to the "The paper also covers results this page leaves out: " section something about multiple politician entry effects. also point out anything else that should be added here. let me review on the claude preview. do not upload to netlify. can you start a running checklist of any updates i make between today and whenever i next want to push to netlify, so that i can make all the changes at once instead of everytime i make a change?
+
+### 2026-10-16 16:35 | session 2322ae91 (Euler; logged by hand)
+
+> change the whole paragraph to "The paper also covers results this page leaves out: what happens as more politicians join the debate, what happens to topics in the debate, and more descriptive evidence about politicians who join debates."

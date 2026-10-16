@@ -11,7 +11,7 @@ lehanzhang.com on 16 Oct; Netlify's shorter link addresses are the only differen
 
 | # | Asked | Change | Where | Status |
 |---|---|---|---|---|
-| 1 | 16 Oct | "About this page": the list of results the page leaves out now names what happens as more politicians join the debate (each further intervention adds less; no clear extra effect after about the 7th for partisan phrases and the 19th for issue-polarized words; paper Table 4 and its appendix figure). Replaces "the effect of later political tweets". | Interactive page (`research/adding-fuel/index.html`) | In the preview; waiting for Lehan's OK |
+| 1 | 16 Oct | "About this page": the paragraph on results the page leaves out now reads "The paper also covers results this page leaves out: what happens as more politicians join the debate, what happens to topics in the debate, and more descriptive evidence about politicians who join debates." (Lehan's wording) | Interactive page (`research/adding-fuel/index.html`) | In the preview; waiting for Lehan's OK |
 
 ## When Lehan says "push to Netlify"
 
