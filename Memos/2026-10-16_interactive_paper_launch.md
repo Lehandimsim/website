@@ -48,4 +48,10 @@ reduced motion.
 Lehan: the "52 debates, one moment" rows jumped straight to the aligned view. Cause: a reduced-motion rule
 from the review round earlier on 16 Oct made scroll-driven charts snap between step cards, and Lehan's PC
 has Windows "Animation effects" off. The line-up now follows the scroll for everyone again
-(`scrollValue(..., true)` in `app.js`); the Uvalde clock still snaps under reduced motion.
+(`scrollValue()` in `app.js`); the Uvalde clock followed in §6.
+
+## 6. Follow-up (15:55): Uvalde smooth too; "2 minutes"
+
+The Uvalde clock and dots also follow the scroll under reduced motion now, so the snap is gone from
+`scrollValue()` altogether. The key-findings drop-down reads "Short on time? The key findings in 2 minutes"
+(Lehan).

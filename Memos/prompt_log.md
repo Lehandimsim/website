@@ -1937,3 +1937,7 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-16 15:45 | session 2322ae91 (Euler; logged by hand)
 
 > the 52 debates, one moment graph movement now goes straight from the 52 liens into the aligned version. before they would come closer together as you scrolled down. can you change it back to that version?
+
+### 2026-10-16 15:55 | session 2322ae91 (Euler; logged by hand)
+
+> yes make uvalde move smoothly. also change "Short on time? The key findings in 3 minutes" to "Short on time? The key findings in 2 minutes"
