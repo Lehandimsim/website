@@ -55,3 +55,6 @@ has Windows "Animation effects" off. The line-up now follows the scroll for ever
 The Uvalde clock and dots also follow the scroll under reduced motion now, so the snap is gone from
 `scrollValue()` altogether. The key-findings drop-down reads "Short on time? The key findings in 2 minutes"
 (Lehan).
+That copy (commit a8bd288) briefly brought back the pre-launch head (`noindex`, no social card) from
+`AddingFuelGunfire/interactive/website_dev/`; fixed in the next commit, before any Netlify upload. The
+working copy there now has the launch head too, so later copies keep it.
