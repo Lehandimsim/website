@@ -26,6 +26,7 @@
     startAria: "Start: open Lehan's website",
     startHeading: "Welcome to Lehan Zhang's website",   // not shown: read out by screen readers only
     clickMe: "click me!",
+    newWord: "new",
     helloAlt: "Handwritten: hi! i'm Lehan. welcome to my website",
     enterAria: "Enter: continue to the next page of the website",
     enterNote: "press Enter to look around",
@@ -208,6 +209,7 @@
 
   // Small crisp icons used inside buttons.
   var MINI = {
+    chart: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 14.5h13" stroke="#000" stroke-width="1.6"/><rect x="3" y="8" width="2.6" height="6" fill="#000"/><rect x="7" y="4.5" width="2.6" height="9.5" fill="#ff0000"/><rect x="11" y="2" width="2.6" height="12" fill="#000"/></svg>',
     pdf: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 1h7l3 3v11H3z" fill="#fff" stroke="#000"/><path d="M10 1v3h3" fill="none" stroke="#000"/><rect x="1.5" y="8" width="10" height="5" fill="#ff0000"/><path d="M3 9.5h2M3 11.5h1.5M7 9.5v3M9 9.5h1.5" stroke="#fff"/></svg>',
     out: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M7 3H2v11h11V9" fill="none" stroke="#000" stroke-width="1.6"/><path d="M9 2h5v5M14 2 7 9" fill="none" stroke="#000" stroke-width="1.6"/></svg>',
     down: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1v9M4 6l4 4 4-4" fill="none" stroke="#000" stroke-width="1.8"/><path d="M2 11v3h12v-3" fill="none" stroke="#000" stroke-width="1.6"/></svg>',
@@ -216,6 +218,7 @@
     text: '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 1h9v14H2z" fill="#fff" stroke="#000"/><path d="M4 4h5M4 6.5h5M4 9h3" stroke="#000"/><circle cx="10.5" cy="10" r="3" fill="#ffff80" stroke="#000" stroke-width="1.3"/><path d="m12.6 12.1 2.6 2.6" stroke="#000" stroke-width="2" stroke-linecap="round"/></svg>'
   };
   function linkIcon(link) {
+    if (link.isNew) return MINI.chart;
     if (/\.pdf($|[?#])/i.test(link.url) || /pdf/i.test(link.label)) return MINI.pdf;
     if (/youtube|video/i.test(link.url + link.label)) return MINI.play;
     return MINI.out;
@@ -252,11 +255,26 @@
       '<a href="#' + to + '">' + esc(text) + arrow + "</a></nav>";
   }
 
+  // Links marked isNew in content.js (the interactive paper) come last, pink, with a hand-drawn
+  // "new" and an arrow pointing at them; they jiggle on hover (paint.css).
   function linkButtons(links, extra) {
     if ((!links || !links.length) && !extra) return "";
-    return '<p class="pt-btns">' + (links || []).map(function (l) {
-      return '<a class="pt-btn" ' + U.linkAttrs(l.url) + ">" + linkIcon(l) + esc(l.label) + "</a>";
-    }).join("") + (extra || "") + "</p>";
+    links = links || [];
+    var btn = function (l) {
+      return '<a class="pt-btn' + (l.isNew ? " pt-btn--new" : "") + '" ' + U.linkAttrs(l.url) + ">" + linkIcon(l) + esc(l.label) + "</a>";
+    };
+    return '<p class="pt-btns">' + links.filter(function (l) { return !l.isNew; }).map(btn).join("") + (extra || "") +
+      links.filter(function (l) { return l.isNew; }).map(function (l) { return '<span class="pt-new">' + btn(l) + newNote() + "</span>"; }).join("") +
+      "</p>";
+  }
+
+  // Handwritten "new" in red, with a scribbled arrow pointing left at the button before it.
+  function newNote() {
+    var t = D.text(TEXT.newWord, { size: 0.3, seed: 5 });
+    return '<svg class="pt-new-note" viewBox="0 0 120 48" aria-hidden="true" focusable="false">' +
+      '<path d="' + D.arrow([[54, 30], [34, 32], [8, 26]], { seed: 13, head: 9, wobble: 1.2 }) + '" ' + stroke(2.6, "#e00000") + "/>" +
+      '<g transform="translate(' + (88 - t.width / 2).toFixed(1) + ' 36)"><path d="' + t.d + '" ' + stroke(3, "#e00000") + "/></g>" +
+      "</svg>";
   }
 
   // The paper's PDF link (for the Abstract popup): the first link that is a PDF.

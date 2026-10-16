@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en" data-root="../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adding Fuel to the (Gun)Fire · Lehan Zhang</title>
+<meta name="description" content="An interactive version of the paper: after mass shootings, the online debate turns more partisan once a politician with more than a million followers tweets about it.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Lehan Zhang">
+<meta property="og:title" content="Adding Fuel to the (Gun)Fire: how the debate after mass shootings shifts once politicians tweet">
+<meta property="og:description" content="Watch one debate unfold, then see what happens across 52 shootings when a politician tweets.">
+<meta property="og:url" content="https://www.lehanzhang.com/research/adding-fuel/">
+<meta property="og:image" content="https://www.lehanzhang.com/assets/img/social-card.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Lehan Zhang: economist and data scientist, PhD Candidate, AI &amp; Economics Lab, ETH Zurich">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../favicon.ico" sizes="48x48">
+<link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+<link rel="canonical" href="https://www.lehanzhang.com/research/adding-fuel/">
+<link rel="stylesheet" href="style.css">
+<noscript><style>.sticky, .chart-box, .toggle, .pair, .split, .trait-chips, .type-legend, .grid57, .picked, .trait-read, .legend, .select-row, .measure-link { display: none !important; } .steps { padding: 0 !important; } .step { margin-bottom: 16px !important; } .scrolly-body { display: block !important; max-width: 760px; }</style></noscript>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header">
+  <div class="wrap"><a class="site-title" href="../../index.html">Lehan Zhang</a>
+  <nav class="site-nav" aria-label="Main"><a href="../../classic/research.html">Research</a><a href="../../classic/index.html">Home</a></nav></div>
+</header>
+<div class="chapnav-wrap"><div class="wrap chapnav-in"><nav class="chapnav" aria-label="Chapters"><a href="#guess">Findings</a><a href="#uvalde">1 Minute zero</a><a href="#guess">2 What happens next</a><a href="#lenses">3 Lenses</a><a href="#fame">4 Fame</a><a href="#bring">5 What politicians bring</a><a href="#who">6 Who changes</a><a href="#checks">7 How we know</a><a href="#shootings">8 The shootings</a><a href="#measure" data-open-measure>Methods</a></nav></div><div class="chapnav-bar"><i id="readbar"></i></div></div>
+
+<main id="main">
+
+<!-- ============ 0 · Opening ============ -->
+<section class="opening wrap" id="top">
+  <p class="kicker">Interactive version of a research paper</p>
+  <h1>Adding Fuel to the (Gun)Fire</h1>
+  <p class="dek">After a mass shooting, people go online to grieve, ask questions and argue. We followed 4.75 million tweets about 57 shootings in the United States. Once a politician with more than a million followers tweets about the shooting, the conversation shifts. Within two hours, partisan phrases appear in about 2.0% of tweets instead of 1.1% (almost twice as often), and issue-polarized words in about 10.9% instead of 7.8% (40% more often).</p>
+  <p class="byline">By Lehan Zhang, Gabriele Gratton, Pauline Grosjean and Hasin Yousaf · <a href="AddingFuel.pdf">Read the paper (PDF)</a></p>
+  <div class="note" role="note">
+    <p><b>Content note.</b> This story is about how people talked online after mass shootings. It names the shootings and where they happened, but shows no images and no details about victims. Every tweet on this page is real and quoted word for word, but shown as a text recreation, not a screenshot; times are local. We do not name the private person who posted the first one, in chapter 1. <a href="#shootings">How we chose the 57 shootings</a>.</p>
+  </div>
+  <noscript><p class="note">The charts on this page need JavaScript, so they are hidden. The story and its numbers are all in the text. The charts come from the <a href="AddingFuel.pdf">paper</a>: the main result is Figure 3, tweet volume Figure 4, celebrities Appendix Figure A.14, news activity Appendix Figure A.10, dropping one shooting Appendix Figure A.9, and the timing of political interventions Table 1.</p></noscript>
+  <details class="kf"><summary>Short on time? The key findings in 3 minutes</summary>
+<p><b>1. After a politician with more than a million followers first tweets about a shooting, more tweets use partisan and issue-polarized language.</b> Partisan phrases go from 1.08% of tweets to about 2.0% two hours later (+0.96 percentage points); issue-polarized words from 7.75% to about 10.9% (+3.1 points).</p>
+<div class="pair"><figure><figcaption><i class="sw sw-p"></i>Partisan phrases, change per 1,000 tweets</figcaption><svg class="es-svg" data-es="p" data-scale="10" role="img" aria-label="Estimated change in partisan phrases per 1,000 tweets after the first political intervention"></svg></figure>
+<figure><figcaption><i class="sw sw-ip"></i>Issue-polarized words, change per 1,000 tweets</figcaption><svg class="es-svg" data-es="ip" data-scale="10" role="img" aria-label="Estimated change in issue-polarized words per 1,000 tweets after the first political intervention"></svg></figure></div>
+<p><b>2. We find no comparable shift after celebrities tweet, and no statistically clear rise in hostile language or in the number of tweets.</b></p>
+<div class="pair"><figure><figcaption><i class="sw sw-p"></i>Partisan phrases, after a celebrity tweets</figcaption><svg class="es-svg" data-es="celeb_p" data-scale="10" role="img" aria-label="Change in partisan phrases after a celebrity tweets: no clear change"></svg></figure>
+<figure><figcaption><i class="sw sw-ip"></i>Issue-polarized words, after a celebrity tweets</figcaption><svg class="es-svg" data-es="celeb_ip" data-scale="10" role="img" aria-label="Change in issue-polarized words after a celebrity tweets: no clear change"></svg></figure></div>
+<p><b>3. The rise is larger when the politician’s own tweet contains a partisan phrase</b>, which fits the paper’s explanation that politicians supply the language. The rise comes from users posting about the shooting for the first time after the politician’s tweet.</p>
+<p class="aside">Limits: 57 nationally covered U.S. shootings on Twitter, 2016–2022. We measure words in tweets, not beliefs, and we do not see who read the politician’s tweet. Shaded bands: 95% confidence intervals.</p>
+<p><a href="#uvalde">Read the full story (about 10 minutes)</a></p></details>
+  <p class="howto">About 10 minutes. Scroll to move through the story. <button type="button" class="measure-link" data-open-measure>How we measure</button> explains how we count partisan and issue-polarized language.</p>
+</section>
+
+<!-- ============ 1 · Minute Zero (Uvalde) ============ -->
+<section class="scrolly" id="uvalde" aria-labelledby="uvalde-h">
+  <div class="wrap chapter-head">
+    <p class="kicker">1 · Minute zero</p>
+    <h2 id="uvalde-h">One debate, minute by minute</h2>
+    <p class="lede">On May 24, 2022, a gunman attacked Robb Elementary School in Uvalde, Texas. Scroll to move the clock through the first five hours of the conversation on Twitter.</p>
+  </div>
+  <div class="scrolly-body">
+    <figure class="sticky" id="uv-fig" aria-label="Timeline of the Uvalde debate. Each dot stands for 20 tweets.">
+      <div class="clock" aria-live="off"><span id="uv-local">12:08 p.m.</span><span class="clock-sub"><span id="uv-elapsed">0 h 00 min</span> since the first tweet</span></div>
+      <div class="uv-stage" id="uv-stage">
+        <canvas id="uv-canvas" aria-hidden="true"></canvas>
+      </div>
+      <p class="sr-only">An animated timeline of the first five hours of tweets about the Uvalde shooting, one dot for every 20 tweets, from the first tweet at 12:08 p.m. Central time. It marks the first news tweet (50 minutes in), the first political intervention (2 hours 51 minutes), the first celebrity tweet (3 hours 36 minutes) and the second political intervention (4 hours). The step cards describe each moment, and the table in the last card gives the numbers.</p>
+      <div class="legend" id="uv-legend" hidden>
+        <span><i class="sw sw-p"></i>uses a partisan phrase</span><span><i class="sw sw-ip"></i>uses an issue-polarized word but no partisan phrase</span><span><i class="sw sw-0"></i>neither</span><span class="legend-unit">One dot = 20 tweets</span>
+      </div>
+    </figure>
+    <div class="steps" id="uv-steps">
+      <div class="step" data-t="0"><p><b>12:08 p.m.</b> The first tweet about the shooting appears, 40 minutes after the attack began.<button type="button" class="fn" aria-expanded="false" aria-label="Show note">i</button><span class="fn-pop" role="note" hidden>Across all 57 shootings, the first tweet typically comes about 20 minutes after the attack begins.</span> It reads:</p>
+        <figure class="tw"><div class="tw-top"><span class="tw-av" aria-hidden="true"></span><span class="tw-id"><b>A Twitter user</b><span>private account, name withheld</span></span></div><p class="tw-text">Prayers for Uvalde😞<br><br>Literally sick to my stomach.</p><div class="tw-time">12:08 PM CDT · May 24, 2022</div><div class="tw-acts" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><path d="M7 7h11v5M18 17H7v-5M15 4l3 3-3 3M10 20l-3-3 3-3"/></svg><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 14v6h14v-6"/></svg></div></figure></div>
+      <div class="step" data-t="50"><p><b>50 minutes in</b>, NBC News posts:<button type="button" class="fn" aria-expanded="false" aria-label="Show note">i</button><span class="fn-pop" role="note" hidden>NBC News is the first news organization with more than a million followers to tweet about the shooting. In the typical debate, the first news tweet comes about 35 minutes after the first tweet, and about 90 minutes before the first political intervention.</span></p>
+        <figure class="tw news"><div class="tw-top"><span class="tw-av"><img src="av-nbcnews.png" alt="" width="40" height="40"></span><span class="tw-id"><b>NBC News</b><span>@NBCNews</span></span></div><p class="tw-text">DEVELOPING: Police are responding to an active shooter at a Texas elementary school, Uvalde Consolidated Independent School District says.</p><div class="tw-time">12:58 PM CDT · May 24, 2022</div><div class="tw-acts" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><path d="M7 7h11v5M18 17H7v-5M15 4l3 3-3 3M10 20l-3-3 3-3"/></svg><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 14v6h14v-6"/></svg></div></figure></div>
+      <div class="step" data-t="120"><p><b>Two hours in.</b> Thousands of people have tweeted. No politician with more than a million followers has posted yet.</p></div>
+      <div class="step step-key" data-t="171.2"><p><b>2 h 51 min.</b> Ted Cruz, U.S. senator for Texas, posts about the shooting.<button type="button" class="fn" aria-expanded="false" aria-label="Show note">i</button><span class="fn-pop" role="note" hidden>He is the first politician with more than a million followers to tweet about it. In the typical debate, the first political intervention comes 2 h 15 min after the first tweet.</span></p>
+        <figure class="tw pol"><div class="tw-top"><span class="tw-av"><img src="av-tedcruz.png" alt="" width="40" height="40"></span><span class="tw-id"><b>Ted Cruz</b><span>@tedcruz</span></span></div><p class="tw-text">Heidi &amp; I are fervently lifting up in prayer the children and families in the horrific shooting in Uvalde.<br><br>We are in close contact with local officials, but the precise details are still unfolding.<br><br>Thank you to heroic law enforcement &amp; first responders for acting so swiftly.</p><div class="tw-time">2:59 PM CDT · May 24, 2022</div><div class="tw-acts" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><path d="M7 7h11v5M18 17H7v-5M15 4l3 3-3 3M10 20l-3-3 3-3"/></svg><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 14v6h14v-6"/></svg></div></figure>
+        <p>The paper calls this the <b>first political intervention</b>: the first tweet about a shooting by a politician with more than a million followers. The rest of the story is about what happens after it.</p></div>
+      <div class="step" data-t="171.2" data-color="1"><p>Now the dots take the colour of the language in the tweets they stand for.<button type="button" class="fn" aria-expanded="false" aria-label="Show note">i</button><span class="fn-pop" role="note" hidden>Each dot stands for 20 tweets. Amber dots stand for tweets with a partisan phrase, including those that also have an issue-polarized word; teal dots for tweets with an issue-polarized word and no partisan phrase. So the teal dots alone undercount issue-polarized tweets; the table at the end gives both shares in full.</span></p>
+        <p><i class="sw sw-p"></i><b>Partisan phrases</b> are phrases that one party in Congress uses far more than the other, such as “gun violence” or “tax relief”.</p>
+        <p><i class="sw sw-ip"></i><b>Issue-polarized words</b> mark a side in a policy fight, such as “gun control”, “NRA” or “leftist”.</p>
+        <p><button type="button" class="measure-link" data-open-measure>How we measure</button></p></div>
+      <div class="step" data-t="216.4"><p><b>3 h 36 min.</b> A celebrity with tens of millions of followers posts. As you will see, we find no comparable shift in language after celebrities’ tweets.</p></div>
+      <div class="step" data-t="239.5"><p><b>4 h 00 min.</b> A second politician posts. Within the next hour, eight more follow.</p></div>
+      <div class="step" data-t="291.2" data-span="400"><p><b>Two hours after the first political intervention</b>, per 1,000 tweets:</p>
+        <table class="meters" id="uv-meters">
+          <thead><tr><th></th><th>hour before</th><th>hour 1 after</th><th>hour 2 after</th></tr></thead>
+          <tbody>
+            <tr class="m-p"><th>partisan phrases</th><td>20</td><td>23</td><td>33</td></tr>
+            <tr class="m-ip"><th>issue-polarized words</th><td>162</td><td>201</td><td>245</td></tr>
+          </tbody>
+        </table>
+        <p>But this is one debate, and in Uvalde the conversation kept growing as the news got worse. Does the same happen after other shootings?</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 1b · Line-up ============ -->
+<section class="scrolly" id="lineup" aria-labelledby="lineup-h">
+  <div class="wrap chapter-head">
+    <h2 id="lineup-h">52 debates, one moment</h2>
+  </div>
+  <div class="scrolly-body">
+    <figure class="sticky" aria-label="52 rows, one per debate, showing how tweeting rose and fell over the first 12 hours relative to each debate’s own peak, with the first political intervention marked.">
+      <canvas id="lu-canvas" aria-hidden="true"></canvas>
+      <p class="sr-only">52 rows, one per debate with a political intervention, each showing how tweeting rose and fell in the first 12 hours. The first political intervention comes between half an hour and almost a day after the first tweet, after 2 hours 15 minutes in the typical debate. As you scroll, the rows slide so that every first political intervention sits on one vertical line.</p>
+      <div class="lu-axis" id="lu-axis"></div>
+    </figure>
+    <div class="steps" id="lu-steps">
+      <div class="step" data-a="0"><p>Each row is one debate, from its first tweet to 12 hours later. Its shape shows how tweeting rose and fell, relative to that debate’s own peak, so rows do not compare the size of debates. The <i class="tick"></i> marks the first political intervention.</p><p>In 52 of the 57 shootings, a politician with more than a million followers tweeted. When varies a lot: from half an hour to almost a day after the first tweet, 2 hours 15 minutes in the typical debate. One debate (Townville, South Carolina) has its first political intervention about 23.6 hours in, beyond this 12-hour view; a › at the right edge marks it.</p></div>
+      <div class="step" data-a="1"><p>Now slide each row so that its first political intervention sits on the same line.</p></div>
+      <div class="step" data-a="1"><p>Left of the line is before the politician posted; right of the line is after.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 2 · What happens next ============ -->
+<section class="chapter wrap" id="guess" aria-labelledby="guess-h">
+  <p class="kicker">2 · What happens next</p>
+  <h2 id="guess-h">A politician with over a million followers just tweeted about the shooting. What happens next?</h2>
+  <div class="pair"><figure><figcaption><i class="sw sw-ip"></i>Issue-polarized words: estimated change, tweets per 1,000</figcaption><svg class="es-svg" data-es="ip" data-scale="10" role="img" aria-label="Estimated effect on issue-polarized words per 1,000 tweets"></svg></figure>
+  <figure><figcaption><i class="sw sw-p"></i>Partisan phrases: estimated change, tweets per 1,000</figcaption><svg class="es-svg" data-es="p" data-scale="10" role="img" aria-label="Estimated effect on partisan phrases per 1,000 tweets"></svg></figure></div>
+  <p class="aside">Zero is the 10 minutes before the tweet. The shaded band is a pointwise 95% confidence interval for each 10-minute window, measured against that reference window. A smooth line is not by itself evidence of an effect.</p>
+  <details class="lvl" id="lvl"><summary>Show on the baseline level (estimated effect + average before politicians tweet)</summary>
+  <div class="toggle" role="group" aria-label="Measure to show">
+    <button type="button" class="tg tg-ip" aria-pressed="true" data-m="ip">Issue-polarized words</button>
+    <button type="button" class="tg tg-p" aria-pressed="false" data-m="p">Partisan phrases</button>
+  </div>
+  <div class="chart-box"><svg id="draw-svg" role="img" aria-label="Tweets per 1,000 with issue-polarized or partisan language, from two hours before to four hours after the first political intervention: flat before, rising after."></svg></div>
+  <p class="aside chart-note">The line shows the paper’s estimate of how much more common this language is in each 10-minute window than in the 10 minutes before the tweet (Figure 3), drawn on top of the average share before politicians tweet (Table 2) to give a sense of scale. It is an estimate, not a raw average of the debates.</p>
+  </details>
+  <details class="note how"><summary><b>How the comparison works</b></summary>
+    <p>We compare tweets within the same debate before and after its first political intervention, and debates at the same stage, measured from their first tweet: some already past their politician’s tweet, some not yet, and five that never get one. Fixed effects for each shooting absorb what stays the same within a debate; fixed effects for each 30 minutes since the debate began absorb the usual rise and fall of a debate. The key assumption: without the politician’s tweet, a debate’s language would have kept evolving like that of debates at the same stage that had not yet been treated.</p>
+  </details>
+  <div class="result" id="guess-result">
+    <div class="result-grid">
+      <div><p class="r-head r-ip">Issue-polarized words</p><p class="r-num"><b>+17%</b> in the first hour, <b>+40%</b> by the second</p><p>From 78 to 91, then 109 tweets in 1,000. They start more slowly. Beyond the 4 hours charted here, hourly estimates (the paper’s Appendix Figure A.12) keep climbing for about 10 hours, then stay at that level through the 15 hours the paper follows.</p></div>
+      <div><p class="r-head r-p">Partisan phrases</p><p class="r-num"><b>+43%</b> in the first hour, <b>+88%</b> by the second</p><p>From 11 to 15, then 20 tweets in 1,000. They rise within minutes and level off after about 4 hours; in the paper’s Appendix Figure A.12 they stay higher through the 15 hours it follows.</p></div>
+    </div>
+    <p>We also built a second measure of issue polarization with language models, which reads the meaning of a tweet rather than matching words. It finds the same rise, on both the left and the right. <button type="button" class="measure-link" data-open-measure="3">How we measure</button></p>
+    <p class="aside">The shaded bands show the 95% confidence range. Before the tweet we find no statistically detectable trend in either measure. That supports the design but cannot prove it: a change could start exactly when the politician posts for another reason. Chapter 7 comes back to this.</p>
+  </div>
+</section>
+
+<!-- ============ 3 · Lenses, not anger ============ -->
+<!-- Sources: Appendix Table "First political intervention, tribalism, affective polarization, and hate speech" (tab:tabletwfe_TRIBALETAL):
+     tribal language 1-2 h after +3.20 pp (significant at 1%); whole-period +1.60 (not significant); affective polarization and hate speech: no clear change. -->
+<section class="chapter wrap" id="lenses" aria-labelledby="lenses-h">
+  <p class="kicker">3 · Lenses, not anger</p>
+  <h2 id="lenses-h">Does the debate also get angrier?</h2>
+  <p class="lede">We ran the same comparison for three more kinds of language. Only one moves.</p>
+  <div class="bubbles">
+    <div class="bub up">
+      <div class="ball"><svg class="bub-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg><b>Tribal language</b><span>slow rise</span></div>
+      <div class="blk">
+        <p class="lab">What it counts</p>
+        <p>Words about loyalty and betrayal.</p>
+        <div class="words"><span>loyal</span><span>traitor</span><span>patriot</span><span>enemy</span><span>unite</span></div>
+        <p><b>It creeps upward after the politician tweets, and is clearly higher in the second hour.</b></p>
+        <p><button type="button" class="measure-link" data-open-dict="1">Where this word list comes from</button></p>
+      </div>
+    </div>
+    <div class="bub">
+      <div class="ball"><svg class="bub-ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M8 16.5c1.2-1.3 2.5-2 4-2s2.8.7 4 2M7.5 8.5l2.5 1.5M16.5 8.5 14 10"/></svg><b>Affective polarization</b><span>no change detected</span></div>
+      <div class="blk">
+        <p class="lab">What it counts</p>
+        <p>Hostile, moral-emotional words that express dislike of the other side.</p>
+        <div class="words"><span>stupid</span><span>crazy</span><span>lie</span><span>dumb</span></div>
+        <p><b>No statistically clear increase detected.</b></p>
+        <p><button type="button" class="measure-link" data-open-dict="2">Where this word list comes from</button></p>
+      </div>
+    </div>
+    <div class="bub">
+      <div class="ball"><svg class="bub-ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z"/><path d="M12 8v3.5M12 14h.01"/></svg><b>Hate speech</b><span>no change detected</span></div>
+      <div class="blk">
+        <p class="lab">What it counts</p>
+        <p>Slurs and hostile terms aimed at groups. We do not show examples.</p>
+        <p><b>No statistically clear increase detected.</b></p>
+        <p><button type="button" class="measure-link" data-open-dict="3">Where this word list comes from</button></p>
+      </div>
+    </div>
+  </div>
+  <p class="takeaway">Read together: after politicians tweet, more tweets frame the shooting in partisan and policy terms; we detect no rise in hostile language.</p>
+  <p class="aside">Each kind of language is compared before and after the first political intervention. Tribal language is clearly higher in the second hour; over the whole week the rise is smaller and not statistically clear. The paper shows the full charts in its appendix.</p>
+</section>
+
+<!-- ============ 4 · Is it just fame? ============ -->
+<section class="chapter wrap" id="fame" aria-labelledby="fame-h">
+  <p class="kicker">4 · Is it just fame?</p>
+  <h2 id="fame-h">No comparable shift after celebrities tweet</h2>
+  <p class="lede">Maybe any famous account would have the same effect. We ran the same comparison for 61 celebrities with more than 25 million followers each, such as athletes, artists and business figures. When one of them tweets about a shooting, we detect no statistically clear change in either measure. Celebrities differ from politicians in audience, timing and role, so this comparison is suggestive rather than a clean test of fame.</p>
+  <div class="pair">
+    <figure><figcaption><i class="sw sw-p"></i>Partisan phrases, after a celebrity tweets</figcaption><svg class="es-svg" data-es="celeb_p" data-scale="10" role="img" aria-label="Change in partisan phrases per 1,000 tweets after a celebrity tweets: no clear change."></svg></figure>
+    <figure><figcaption><i class="sw sw-ip"></i>Issue-polarized words, after a celebrity tweets</figcaption><svg class="es-svg" data-es="celeb_ip" data-scale="10" role="img" aria-label="Change in issue-polarized words per 1,000 tweets after a celebrity tweets: no clear change."></svg></figure>
+  </div>
+  <p class="aside">Each chart shows the change from the 10 minutes before the tweet, with a 95% confidence band, over the same time window as the paper’s figure.</p>
+</section>
+
+<section class="chapter wrap" id="crowd" aria-labelledby="crowd-h">
+  <h3 id="crowd-h">Do politicians draw more people in?</h3>
+  <p class="lede">Do politicians simply draw more people into the conversation? We detect no statistically clear change in the volume of tweets after the first political intervention. The shift is in the language of the debate, not in how many tweets are posted.</p>
+  <div class="pair single">
+    <figure><figcaption>Volume of tweets, after the first political intervention</figcaption><svg class="es-svg" data-es="volume" data-scale="1" data-unit="estimated change in tweet volume (paper’s Figure 4)" data-nonum="1" role="img" aria-label="Change in the volume of tweets after the first political intervention: no clear change."></svg></figure>
+  </div>
+  <p class="aside">Each chart shows the change from the 10 minutes before the tweet, with a 95% confidence band, over the same time window as the paper’s figure.</p>
+</section>
+
+<!-- ============ 5 · What politicians bring ============ -->
+<section class="chapter wrap" id="bring" aria-labelledby="bring-h">
+  <p class="kicker">5 · What politicians bring</p>
+  <h2 id="bring-h">Politicians use the words that become more common</h2>
+  <figure class="tw pol big"><div class="tw-top"><span class="tw-av"><img src="av-pelosi.jpg" alt="" width="40" height="40" style="object-position:50% 8%"></span><span class="tw-id"><b>Nancy Pelosi</b><span>@SpeakerPelosi</span></span><span class="tw-tag">real tweet</span></div><p class="tw-text">Our hearts break for the victims of today’s shooting in Aberdeen, MD. The daily scourge of <mark class="mk-p">gun violence</mark> is tearing apart families, and yet <mark class="mk-ip">Republicans</mark> in Congress refuse to take action to end the suffering. Enough is enough. It’s time for real action.</p><div class="tw-time">Sep 20, 2018</div><div class="tw-acts" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><path d="M7 7h11v5M18 17H7v-5M15 4l3 3-3 3M10 20l-3-3 3-3"/></svg><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 14v6h14v-6"/></svg></div></figure>
+  <p class="lede">The highlights show one partisan phrase and one issue-polarized word. Tweets like this are common among politicians and rare among everyone else.</p>
+  <div class="bars" aria-label="Share of tweets with a partisan phrase">
+    <p class="bars-title">Tweets that contain a partisan phrase</p>
+    <div class="bar"><span class="bar-label">Politicians’ first tweets about a shooting</span><span class="bar-track"><span class="bar-fill fill-p" style="width:95%"></span></span><b>19%</b></div>
+    <div class="bar"><span class="bar-label">Everyone else, before any politician tweets</span><span class="bar-track"><span class="bar-fill fill-0" style="width:6%"></span></span><b>1.2%</b></div>
+  </div>
+  <p>That is about 16 times as often. Across all their tweets, politicians are about 17 percentage points more likely than celebrities or news outlets to use partisan phrases, and 19 points more likely to use issue-polarized words.</p>
+  <h3>Partisan tweets move both measures</h3>
+  <p>When the first political intervention contains a partisan phrase, the debate that follows becomes more partisan <i>and</i> more issue-polarized than when it does not. Issue-polarized words in the politician’s tweet make no such difference.</p>
+  <div class="bars bars-grouped" aria-label="Rise after the first political intervention, per 1,000 tweets, by whether that tweet had a partisan phrase">
+    <p class="bars-title">Rise afterwards, tweets per 1,000 (Table 5)</p>
+    <div class="bar"><span class="bar-label"><i class="sw sw-p"></i>Partisan phrases · tweet had one</span><span class="bar-track"><span class="bar-fill fill-p" style="width:26.9%"></span></span><b>+14.6</b></div>
+    <div class="bar"><span class="bar-label">· tweet had none</span><span class="bar-track"><span class="bar-fill fill-p hollow" style="width:11%"></span></span><b>+6.0</b></div>
+    <div class="bar"><span class="bar-label"><i class="sw sw-ip"></i>Issue-polarized words · tweet had one</span><span class="bar-track"><span class="bar-fill fill-ip" style="width:100%"></span></span><b>+54.3</b></div>
+    <div class="bar"><span class="bar-label">· tweet had none</span><span class="bar-track"><span class="bar-fill fill-ip hollow" style="width:37%"></span></span><b>+20.1</b></div>
+  </div>
+</section>
+
+<!-- ============ 6 · Who changes ============ -->
+<!-- Sources: Appendix Table "Responses to political interventions by returning vs. new users and politicized vs. non politicized users"
+     (AppTab:Mobiz, TABLES/TABLEX_demand_SPEC1_nov5.tex); shares of tweets: footnote in Section 6.3; volume and share of politicized
+     users: Appendix Figures ApFif:ES_volume_users and fig:userPolit_volume. The visual is chosen from the mock-ups (15 Oct 2026). -->
+<section class="chapter wrap" id="who" aria-labelledby="who-h">
+  <p class="kicker">6 · Who changes</p>
+  <h2 id="who-h">The rise comes from users posting about the shooting for the first time after the politician</h2>
+  <p class="lede">We split the tweets after the first political intervention by who wrote them. People who had already tweeted about the shooting before the politician show no clear change in their language. The rise comes from users whose first tweet about that shooting comes after the politician’s.</p>
+  <p>The rise is larger among users who describe themselves in political terms in their profile, with identity words such as “Democrat”, “conservative”, “MAGA”, “progressive”, “feminist” or “Black Lives Matter”. About one tweet in nine comes from such users. Users without these words in their profile shift too, but less.</p>
+  <div class="split" id="split">
+    <div class="toggle" role="group" aria-label="Split the tweets by">
+      <button type="button" class="tg" aria-pressed="true" data-s="when">When they joined</button>
+      <button type="button" class="tg" aria-pressed="false" data-s="profile">What their profile says</button>
+    </div>
+    <div class="toggle small" role="group" aria-label="Measure">
+      <button type="button" class="tg tg-ip" aria-pressed="true" data-m="ip">Issue-polarized words</button>
+      <button type="button" class="tg tg-p" aria-pressed="false" data-m="p">Partisan phrases</button>
+    </div>
+    <div class="waffle-wrap">
+      <div><div class="waffle" id="waffle" aria-hidden="true"></div><div class="legend" id="waffle-key"></div></div>
+      <div><p id="split-text"></p><div class="est" id="split-est"></div></div>
+    </div>
+    <p class="aside">In both splits, the difference between the two groups is statistically significant at the 5% level for both measures (Appendix Table A.20).</p>
+  </div>
+</section>
+
+<!-- ============ 6 · How we know (sandbox) ============ -->
+<section class="chapter wrap" id="checks" aria-labelledby="checks-h">
+  <p class="kicker">7 · How we know</p>
+  <h2 id="checks-h">The skeptic’s sandbox</h2>
+  <blockquote class="objection">“Maybe politicians just tweet when the debate is already heating up.”</blockquote>
+  <p class="lede">If that were true, the rise would come from the debate, not from the politician. Chapter 2 showed one answer: we find no statistically detectable trend in the two hours before the tweet. Here are three more tests from the paper. Try each one.</p>
+
+  <div class="sbx" id="sbx-timing">
+    <h3><span class="sbx-n">1</span>When did they tweet?</h3>
+    <details class="ctr-d"><summary>What this check tests, and what it cannot rule out</summary><dl class="ctr"><dt>Concern</dt><dd>Maybe politicians post when a certain kind of shooting or debate is under way.</dd><dt>What we test</dt><dd>We test whether 20 traits of the shooting, the debate and the politician predict when the first political intervention comes.</dd><dt>What it cannot rule out</dt><dd>traits we do not measure, and small differences that 52 debates are too few to detect.</dd></dl><p class="ctr-sum"><b>Result:</b> Of 20 traits, only the politician’s party is clearly linked to timing: Republicans’ first tweets come earlier.</p></details>
+    <p>One row per debate. Politicians post at very different times, always after the news outlets. Sort the rows by a trait of the shooting or the debate and look for a pattern.</p>
+    <div class="toggle small" role="group" aria-label="Sort debates by">
+      <button type="button" class="tg" aria-pressed="true" data-sort="date">Date</button>
+      <button type="button" class="tg" aria-pressed="false" data-sort="school">School or not</button>
+      <button type="button" class="tg" aria-pressed="false" data-sort="len">Length of the shooting</button>
+      <button type="button" class="tg" aria-pressed="false" data-sort="size">Size of the debate</button>
+    </div>
+    <div class="chart-box"><svg id="strip-svg" role="img" aria-label="Timing of the first news tweet, first political intervention and first celebrity tweet in each of 52 debates"></svg></div>
+    <p class="legend"><span><i class="tick-news"></i>first news tweet</span><span><i class="dot-pol"></i>first political intervention</span><span><i class="dot-celeb"></i>first celebrity tweet</span></p>
+    <p class="aside" id="strip-note">The paper tests 20 traits of the shooting, the conversation and the politician. The kind of shooting does not predict when the first political intervention comes. <a href="#balance">Explore all 20 in chapter 8</a>.</p>
+  </div>
+
+
+  <div class="sbx" id="sbx-news">
+    <h3><span class="sbx-n">2</span>Did news break just before?</h3>
+    <details class="ctr-d"><summary>What this check tests, and what it cannot rule out</summary><dl class="ctr"><dt>Concern</dt><dd>Maybe a news update, not the politician, shifts the debate.</dd><dt>What we test</dt><dd>We test whether news outlets’ share of tweets rises before the political tweet, and whether their tweets just before it more often report deaths or the shooter.</dd><dt>What it cannot rule out</dt><dd>news that outlets did not tweet about, or other events at the same moment.</dd></dl><p class="ctr-sum"><b>Result:</b> No rise in news activity before the tweet.</p></details>
+    <p>Maybe politicians post right after a big news update, and the update, not the politician, changes the debate. If so, news outlets would post more just before the political tweet. We find no rise in their share of the conversation in the hour before. We also checked whether news tweets in the 30 minutes before more often report deaths, the victims, the shooter’s identity, age or race, the weapon, or the motive; they do not. These checks reduce the concern, but they cannot rule out every unobserved event at the same moment.</p>
+    <div class="chart-box"><svg class="es-svg" data-es="media" data-scale="1" data-unit="percentage points of tweets from news outlets" role="img" aria-label="Share of tweets posted by news outlets, from one hour before to one hour after the first political intervention: no rise before the tweet."></svg></div>
+    <p class="aside">Change in the share of debate tweets posted by news outlets, compared with the 10 minutes before the political tweet. The paper also finds that news tweets in the 30 minutes before the political tweet are no more likely than at random times to report deaths or details about the shooter.</p>
+  </div>
+
+  <div class="sbx" id="sbx-drop">
+    <h3><span class="sbx-n">3</span>Drop a shooting</h3>
+    <details class="ctr-d"><summary>What this check tests, and what it cannot rule out</summary><dl class="ctr"><dt>Concern</dt><dd>Maybe one famous shooting drives the result.</dd><dt>What we test</dt><dd>We test the estimate again, leaving out each of the 57 shootings in turn.</dd><dt>What it cannot rule out</dt><dd>a problem shared by many shootings at once.</dd></dl><p class="ctr-sum"><b>Result:</b> All 57 estimates stay positive and close to the estimate with every shooting.</p></details>
+    <p>Maybe one famous shooting drives everything. Leave any one out and see the estimate from the other 56.</p>
+    <label class="select-row" for="drop-select">Leave out <select id="drop-select"><option value="">nothing (all 57)</option></select></label>
+    <div class="chart-box"><svg id="drop-svg" role="img" aria-label="Estimates with one shooting left out at a time, compared with the estimate from all shootings"></svg></div>
+    <p class="aside">Each of the 57 dots is the estimate with one shooting left out; the black line is the estimate with all 57 shootings in the same model. That model is simpler than the headline one: like the paper’s Appendix Figure A.9, it leaves out the control for the hour before the tweet. So the line (+8.1 and +26.4 per 1,000) sits a little above the Table 2 estimates (+7.1 and +24.3). What matters is that no single shooting moves the estimate far from the line.</p>
+  </div>
+  <p>The <a href="AddingFuel.pdf">paper</a> has more checks: the results hold when we control for news activity, for other follower cut-offs, and under formal tests for trends before the tweet.</p>
+</section>
+
+<!-- ============ 7 · The 57 shootings ============ -->
+<section class="chapter wrap" id="shootings" aria-labelledby="shootings-h">
+  <p class="kicker">8 · The shootings</p>
+  <h2 id="shootings-h">57 shootings, 52 with one or more political interventions</h2>
+  <p class="lede">We study 57 mass shootings. After 52 of them, at least one politician with more than a million followers tweeted. After the other 5, no such politician tweeted. The main estimates use all 57 debates: the 5 without a political intervention add comparison tweets, and the timing charts show the 52 with one.</p>
+  <div class="note">
+    <p><b>How we chose them.</b> We include every mass shooting that made the front page of <i>The New York Times</i> between March 1, 2016, when Twitter introduced its algorithmic timeline, and October 27, 2022, when Elon Musk bought the company. We chose by national coverage, not by a victim count, so the sample is not representative of all mass shootings, and many less-covered shootings are excluded. For 2021–2022 we checked the list against the front pages of <i>The Washington Post</i>, the <i>Los Angeles Times</i>, <i>The Wall Street Journal</i> and <i>USA Today</i>. For each shooting we collected every original English-language tweet (no retweets) that named the event and its location, for seven days after the first one.</p>
+  </div>
+  <h3 id="balance">Does the kind of shooting decide when politicians post?</h3>
+  <p>The design works only if politicians do not time their first tweet to the kind of shooting or to the state of the conversation. Point at or tap a trait: the shootings that have it light up, and the chart below shows how much earlier or later the first political intervention came in those debates. Tap a symbol to see the shooting.</p>
+  <div class="trait-chips" id="trait-chips"></div>
+  <div class="type-legend" id="type-legend"></div>
+  <div class="grid57" id="grid57" aria-label="The 57 shootings in date order. Select one to see its details."></div>
+  <div class="picked" id="picked" aria-live="polite"><p class="pk-meta">Select a symbol to see the shooting.</p></div>
+  <p class="trait-read" id="trait-read" aria-live="polite">Point at or tap a trait above.</p>
+  <div class="chart-box"><svg id="balance-svg" role="img" aria-label="Difference in time to the first political intervention for each of 20 traits; all but one are close to zero."></svg></div>
+  <p class="aside">The grey dots are all 20 traits; the dark dot, when you select one, shows its 95% confidence range. Most sit close to zero, and only one of the 20, the politician’s party, is statistically clear: Republicans’ first tweets come earlier. With 52 debates, smaller differences could go undetected, so this shows no strong link between these traits and timing; it does not show that timing is random. From Table 1 of the paper.</p>
+</section>
+
+<footer class="end wrap">
+  <h2>About this page</h2>
+  <p>This page is an interactive companion to <a href="AddingFuel.pdf"><i>Adding Fuel to the (Gun)Fire: How Politicians Polarize the Public Debate</i></a> by Lehan Zhang, Gabriele Gratton, Pauline Grosjean and Hasin Yousaf (<a href="https://cepr.org/publications/dp19896">CEPR Discussion Paper 19896</a>; this page follows the version of October 15, 2026). The results come from the paper; the Uvalde timeline and the individual debate lines are drawn from the same data. Apart from the four example tweets, which are quoted word for word and shown as text recreations, the charts show only counts and estimates, never individual tweets or accounts.</p>
+  <p>The paper also covers results this page leaves out: differences between Democratic and Republican politicians, the effect of later political tweets, and which topics the debate shifts toward.</p>
+  <div class="cite">
+    <h3>How to cite</h3>
+    <p class="cite-text" id="cite-text">Zhang, Lehan, Gabriele Gratton, Pauline Grosjean, and Hasin Yousaf. 2025. “Adding Fuel to the (Gun)Fire: How Politicians Polarize the Public Debate.” CEPR Discussion Paper 19896 (version of October 15, 2026). https://cepr.org/publications/dp19896</p>
+    <div class="draw-actions"><a class="btn" href="AddingFuel.pdf">Read the paper (PDF)</a><button type="button" class="btn btn-ghost" data-copy="cite-text">Copy citation</button><button type="button" class="btn btn-ghost" data-copy="url">Copy link to this page</button><span class="counter" id="copy-note" aria-live="polite"></span></div>
+  </div>
+  <p class="muted">Tweets and profile pictures of @NBCNews and @tedcruz are shown as they appeared on Twitter. Profile picture of Nancy Pelosi: official House portrait by John Harrington (2019), public domain, via Wikimedia Commons.</p>
+  <p class="muted">Built by Lehan Zhang. The page stores nothing about readers beyond the anonymous visitor statistics described on the <a href="../../privacy.html">privacy page</a>.</p>
+</footer>
+</main>
+
+<!-- ============ Side quest: How we measure ============ -->
+<dialog id="measure" class="dlg" aria-labelledby="measure-h">
+  <div class="dlg-head"><h2 id="measure-h">How we measure</h2><button type="button" class="dlg-close" aria-label="Close">×</button></div>
+  <div class="dlg-tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-card="1">Word lists</button>
+    <button type="button" role="tab" aria-selected="false" data-card="2">Example</button>
+    <button type="button" role="tab" aria-selected="false" data-card="3">A second measure</button>
+    <button type="button" role="tab" aria-selected="false" data-card="4">Why no model for partisanship?</button>
+  </div>
+  <div class="card" data-card="1" role="tabpanel">
+    <h3>Two word lists</h3>
+    <p><b><i class="sw sw-p"></i>Partisan phrases.</b> Economists Matthew Gentzkow, Jesse Shapiro and Matt Taddy analysed speeches in the U.S. Congressional Record and found the two-word phrases that best reveal whether a member of Congress is a Democrat or a Republican.<sup><a href="https://doi.org/10.3982/ECTA16566" aria-label="Source 1">1</a></sup> We use the ten most Democratic and the ten most Republican phrases from each session of Congress between 2005 and 2016: 78 phrases. Examples: <mark class="mk-p">gun violence</mark> <mark class="mk-p">hate crime</mark> <mark class="mk-p">illegal immigration</mark> <mark class="mk-p">radical Islam</mark> <mark class="mk-p">tax relief</mark></p>
+    <p><b><i class="sw sw-ip"></i>Issue-polarized words.</b> Psychologists Almog Simchon, William Brady and Jay Van Bavel compiled 83 words that mark an ideological, policy-based divide.<sup><a href="https://doi.org/10.1093/pnasnexus/pgac019" aria-label="Source 2">2</a></sup> Examples: <mark class="mk-ip">gun control</mark> <mark class="mk-ip">NRA</mark> <mark class="mk-ip">leftist</mark> <mark class="mk-ip">unconstitutional</mark> <mark class="mk-ip">socialist</mark></p>
+    <p>A tweet counts toward a measure if it uses at least one entry from that list. We report the share of tweets that do.</p>
+    <ol class="sources">
+      <li>Gentzkow, Shapiro and Taddy (2019), “Measuring Group Differences in High-Dimensional Choices: Method and Application to Congressional Speech”, <i>Econometrica</i> 87(4). <a href="https://doi.org/10.3982/ECTA16566">doi.org/10.3982/ECTA16566</a></li>
+      <li>Simchon, Brady and Van Bavel (2022), “Troll and Divide: The Language of Online Polarization”, <i>PNAS Nexus</i> 1(1). <a href="https://doi.org/10.1093/pnasnexus/pgac019">doi.org/10.1093/pnasnexus/pgac019</a></li>
+    </ol>
+  </div>
+  <div class="card" data-card="2" role="tabpanel" hidden>
+    <h3>One worked example</h3>
+    <p>Here is how the two lists read one tweet, posted by Nancy Pelosi after the shooting in Aberdeen, Maryland, in 2018:</p>
+    <figure class="tw pol"><div class="tw-top"><span class="tw-av"><img src="av-pelosi.jpg" alt="" width="40" height="40" style="object-position:50% 8%"></span><span class="tw-id"><b>Nancy Pelosi</b><span>@SpeakerPelosi</span></span><span class="tw-tag">real tweet</span></div><p class="tw-text">Our hearts break for the victims of today’s shooting in Aberdeen, MD. The daily scourge of <mark class="mk-p">gun violence</mark> is tearing apart families, and yet <mark class="mk-ip">Republicans</mark> in Congress refuse to take action to end the suffering. Enough is enough. It’s time for real action.</p><div class="tw-time">Sep 20, 2018</div><div class="tw-acts" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H9l-5 4z"/></svg><svg viewBox="0 0 24 24"><path d="M7 7h11v5M18 17H7v-5M15 4l3 3-3 3M10 20l-3-3 3-3"/></svg><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.5-7 10-7 10z"/></svg><svg viewBox="0 0 24 24"><path d="M12 15V4M8 8l4-4 4 4M5 14v6h14v-6"/></svg></div></figure>
+    <p>It has one partisan phrase and one issue-polarized word, so it counts toward both measures. Across 4.75 million tweets, we report the share that do.</p>
+  </div>
+  <div class="card" data-card="3" role="tabpanel" hidden>
+    <h3>A second way to measure</h3>
+    <p>For issue polarization we also built a measure that reads meaning rather than words. We wrote a definition, had a large language model (GPT-4.1-mini) label 50,000 tweets with it, and trained a smaller model (DeBERTa)<sup><a href="https://arxiv.org/abs/2111.09543" aria-label="Source 3">3</a></sup> on those labels to read all 4.75 million tweets. We checked it against a person who coded about 150 tweets by hand: the model gave the same answer for 9 tweets in 10. Some agreement happens by chance; a statistic that discounts it, Cohen’s kappa, is 0.80 (1 means perfect agreement, 0 means no better than chance). The supplementary appendix of the paper gives the details.</p>
+    <p>Both measures tell the same story. After the first political intervention, the share of issue-polarized tweets rises by 2.4 percentage points by the word list and 2.1 by the model: little in the first hour, clearly in the second. The model can also tell sides apart, and both sides rise: left-aligned issue polarization by 19%, right-aligned by 37%.</p>
+    <ol class="sources" start="3"><li>He, Gao and Chen (2021), “DeBERTaV3: Improving DeBERTa using ELECTRA-Style Pre-Training with Gradient-Disentangled Embedding Sharing”. <a href="https://arxiv.org/abs/2111.09543">arxiv.org/abs/2111.09543</a></li></ol>
+  </div>
+  <div class="card" data-card="4" role="tabpanel" hidden>
+    <h3>Why no model for partisanship?</h3>
+    <p>Partisanship has a definition we can take from Congress itself: a phrase is partisan if hearing it tells you which party the speaker belongs to. Gentzkow, Shapiro and Taddy estimated exactly that from years of congressional speeches, so this list is already the output of a statistical model, trained on politicians’ own words.</p>
+    <p>That fits our question, which is whether politicians’ language spreads into the debate. A language model asked “is this tweet partisan?” would answer a different question, closer to “does this tweet take a side?”, and our issue-polarization measure already covers that. Taking a side is a matter of meaning, which word lists capture less well, so that is where a model adds the most.</p>
+  </div>
+</dialog>
+
+<!-- ============ Side quest: the three other word lists (chapter 3) ============ -->
+<!-- Sources: v4 Section "Additional Results" (sec:tribal and affective). -->
+<dialog id="dict" class="dlg" aria-labelledby="dict-h">
+  <div class="dlg-head"><h2 id="dict-h">Where these word lists come from</h2><button type="button" class="dlg-close" aria-label="Close">×</button></div>
+  <div class="dlg-tabs" role="tablist">
+    <button type="button" role="tab" aria-selected="true" data-card="1">Tribal language</button>
+    <button type="button" role="tab" aria-selected="false" data-card="2">Affective polarization</button>
+    <button type="button" role="tab" aria-selected="false" data-card="3">Hate speech</button>
+  </div>
+  <div class="card" data-card="1" role="tabpanel">
+    <h3>Tribal language</h3>
+    <p>Psychologists Jesse Graham, Jonathan Haidt and Brian Nosek built the Moral Foundations Dictionary, which sorts words by the moral values they appeal to.<sup><a href="https://doi.org/10.1037/a0015141" aria-label="Source 1">1</a></sup> We use its 52 words about loyalty and betrayal, which capture people’s emphasis on being loyal to their in-group, such as their family or their party. The economist Benjamin Enke used the same words to study moral values and voting.<sup><a href="https://doi.org/10.1086/708857" aria-label="Source 2">2</a></sup> They are not specific to either party.</p>
+    <ol class="sources">
+      <li>Graham, Haidt and Nosek (2009), “Liberals and Conservatives Rely on Different Sets of Moral Foundations”, <i>Journal of Personality and Social Psychology</i> 96(5). <a href="https://doi.org/10.1037/a0015141">doi.org/10.1037/a0015141</a></li>
+      <li>Enke (2020), “Moral Values and Voting”, <i>Journal of Political Economy</i> 128(10). <a href="https://doi.org/10.1086/708857">doi.org/10.1086/708857</a></li>
+    </ol>
+  </div>
+  <div class="card" data-card="2" role="tabpanel" hidden>
+    <h3>Affective polarization</h3>
+    <p>This list comes from the same paper as the issue-polarized words: psychologists Almog Simchon, William Brady and Jay Van Bavel.<sup><a href="https://doi.org/10.1093/pnasnexus/pgac019" aria-label="Source 3">3</a></sup> Its 86 words are negative and moral-emotional. Where the issue list marks a divide over policy, this one reflects the “dislike, distrust, and general animosity” partisans feel toward the other side.</p>
+    <ol class="sources" start="3">
+      <li>Simchon, Brady and Van Bavel (2022), “Troll and Divide: The Language of Online Polarization”, <i>PNAS Nexus</i> 1(1). <a href="https://doi.org/10.1093/pnasnexus/pgac019">doi.org/10.1093/pnasnexus/pgac019</a></li>
+    </ol>
+  </div>
+  <div class="card" data-card="3" role="tabpanel" hidden>
+    <h3>Hate speech</h3>
+    <p>Political scientists Alexandra Siegel, Joshua Tucker and coauthors compiled 3,828 terms to study hate speech on Twitter around the 2016 U.S. election.<sup><a href="https://doi.org/10.1561/100.00019045" aria-label="Source 4">4</a></sup> The list covers hostile expressions aimed at an outgroup, including racist, homophobic and misogynistic terms, and terms that praise or are associated with white nationalist groups. We do not show examples.</p>
+    <ol class="sources" start="4">
+      <li>Siegel et al. (2021), “Trumping Hate on Twitter? Online Hate Speech in the 2016 U.S. Election Campaign and Its Aftermath”, <i>Quarterly Journal of Political Science</i> 16(1). <a href="https://doi.org/10.1561/100.00019045">doi.org/10.1561/100.00019045</a></li>
+    </ol>
+  </div>
+</dialog>
+
+<script src="../../content.js"></script>
+<script src="../../config.js"></script>
+<script src="../../shared/site.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

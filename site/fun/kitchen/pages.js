@@ -91,7 +91,7 @@
       // One line under the coauthors: "CEPR Discussion Paper, 2026 · PDF"
       var meta = [];
       if (status) meta.push('<span class="paper-status">' + inline(status) + "</span>");
-      (p.links || []).forEach(function (l) { meta.push(link(l.label, l.url)); });
+      (p.links || []).forEach(function (l) { meta.push(l.isNew ? link(l.label, l.url, "is-new") + ' <span class="new-tag">new</span>' : link(l.label, l.url)); });
       return '<div class="entry">' +
         "<h3>" + inline(p.title) + "</h3>" +
         (withLine ? '<p class="paper-with">' + inline(withLine) + "</p>" : "") +

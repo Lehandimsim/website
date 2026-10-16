@@ -569,6 +569,12 @@
 .pt-btn--big { padding: 9px 16px; font-size: 15px; }
 .pt-btn--blue { background: #80ffff; }
 .pt-btn--blue:hover { background: #00ffff; }
+.pt-btn--new { background: #ffa0d8; }
+.pt-btn--new:hover { background: #ff7cc8; }
+.pt-btn--new:hover, .pt-btn--new:focus-visible { animation: new-jiggle .5s ease-in-out; }
+@keyframes new-jiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-5deg); } 40% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } 80% { transform: rotate(1.5deg); } }
+.pt-new { position: relative; display: inline-flex; margin-right: 118px; }
+.pt-new-note { position: absolute; left: 100%; top: 50%; width: 120px; height: 48px; margin: -26px 0 0 2px; pointer-events: none; }
 .pt-btns { display: flex; flex-wrap: wrap; gap: 12px 16px; margin: 4px 0 6px; }
 
 /* Handwritten notes (the Text tool in Comic Sans). */
@@ -878,5 +884,6 @@
   html:not(.motion-on) .pt-sheet.is-entering > .pt-page, html:not(.motion-on) .pt-sheet.is-entering > .pt-start { animation: none; }
   html:not(.motion-on) .pt-card:hover::after, html:not(.motion-on) .pt-card:focus-within::after { animation: none; }
   html:not(.motion-on) .pt-fillflash { display: none; }
+  html:not(.motion-on) .pt-btn--new { animation: none; }
   html:not(.motion-on) .pt-startbtn .pt-sb-face, html:not(.motion-on) .pt-enter img, html:not(.motion-on) .pt-hint { transition: none; }
 }

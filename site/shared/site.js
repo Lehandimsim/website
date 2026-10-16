@@ -35,6 +35,15 @@
     return isExternal(href) && !/^mailto:/i.test(href) ? a + ' target="_blank" rel="noopener"' : a;
   }
 
+  // True for a link marked isNew in content.js (a paper's links), by its content.js address or the
+  // address url() makes of it. Every version gives such links a colour, a "new" tag and a jiggle on hover.
+  function isNewLink(href) {
+    var papers = (window.SITE && window.SITE.research && window.SITE.research.papers) || [];
+    return papers.some(function (p) {
+      return (p.links || []).some(function (l) { return l.isNew && (href === l.url || href === url(l.url)); });
+    });
+  }
+
   // Mini-markdown used in content.js: **bold**, *italic*, [text](url). Returns safe HTML.
   // Links get class "text-link": inside running text they are underlined but otherwise look like
   // the words around them (Lehan, 2026-10-02). Each version's CSS styles a.text-link.
@@ -248,6 +257,7 @@
     url: url,
     isExternal: isExternal,
     linkAttrs: linkAttrs,
+    isNewLink: isNewLink,
     inline: inline,
     plain: plain,
     listJoin: listJoin,

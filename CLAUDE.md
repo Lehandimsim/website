@@ -425,6 +425,7 @@ overrule.
 | 2026-10-06 | Launch trailers: direction D + B + A ("my website, but…" labels, in-world captions, slow virtual camera); X 16:9 1920x1080 and Stories 9:16 1080x1920, website always in its desktop layout; works muted, sound effects only, no music; texts in Lehan's blog voice, each approved by Lehan before any video is made; thread in the quest-list tone (memos 2026-10-06_launch_trailers_phase1 and _texts). | Lehan. |
 | 2026-10-07 | PowerPoint trailers: no captions naming the effects; the show plays Home, Research, Talks, then the end screen. | Lehan. |
 | 2026-10-07 | `text-size-adjust: 100%` in the XP shell (`xp.css`), so phones do not enlarge the scaled slide text in Overleaf and PowerPoint. | Lehan reported slide text overflowing on a phone; enlarged text was the cause found (memo 2026-10-07_overleaf_phone_text_and_search). |
+| 2026-10-16 | The interactive Adding Fuel page is live at `research/adding-fuel/`. Each version's Research page has an "Interactive Version" link next to the paper's PDF, in the PDF link's own form, coloured, with "new" (hand-drawn with an arrow in Paint) and a jiggle on hover (`isNew` in `content.js`; memo 2026-10-16_interactive_paper_launch). | Lehan. |
 | 2026-10-05 (round 3 follow-up) | Dvořák performance: "Slavonic Dances, Op. 46" (Lehan wrote Op. 42). On the classic site Scholar stays on the home page only; read as not affecting the start page and fun versions (to confirm). | Lehan. |
 
 ---

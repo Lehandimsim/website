@@ -1929,3 +1929,7 @@ _IDE: `promo/POSTS.md` was open_
 ### 2026-10-15 18:50 | session d0158148 (Euler; logged by hand)
 
 > can you link the CEPR discussion paper url as a hyperlink for "CEPR Discussion Paper, 2026" in the research tabs whenever it appears? but keep the pdf button as a link to my own versionof the paper  
+
+### 2026-10-16 15:10 | session 2322ae91 (Euler; logged by hand)
+
+> ok, i am ready for this interactive website to go live. it should be assessible by a button that is the same size and shape as the "pdf" one in the research tab of all versions of my paper and the button should say "Interactive Version". can you make it stand out a little with color and say *new* next to it and when you hover over it, the button jiggles a little to draw attention to it. in the ms paint version, *new* should look handdrawn with an arrow pointing to it. push everything to github as well

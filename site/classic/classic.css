@@ -99,6 +99,12 @@ p { margin: 0 0 14px; }
   text-decoration: none;
 }
 .chip:hover { background: var(--accent-soft); }
+/* A link marked isNew in content.js (the interactive paper): filled, "new" beside it, jiggles on hover. */
+.chip--new { background: var(--accent); border-color: var(--accent); color: #fff; }
+.chip--new:hover { background: #163a69; }
+.chip--new:hover, .chip--new:focus-visible { animation: new-jiggle .5s ease-in-out; }
+.new-tag { margin-left: 5px; color: #c4122f; font-size: 13.5px; font-style: italic; font-weight: 700; }
+@keyframes new-jiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-5deg); } 40% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } 80% { transform: rotate(1.5deg); } }
 .abstract { margin-top: 6px; }
 .abstract summary {
   display: inline-block;
@@ -206,6 +212,7 @@ p { margin: 0 0 14px; }
 }
 @media (prefers-reduced-motion: reduce) {
   html:not(.motion-on) .abstract summary::before { transition: none; }
+  html:not(.motion-on) .chip--new { animation: none; }
 }
 @media print {
   .site-nav, .site-footer, .pdf-frame, .actions, .skip { display: none; }

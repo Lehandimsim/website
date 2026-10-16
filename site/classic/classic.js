@@ -101,7 +101,10 @@
         var title = links.length ? "<a " + U.linkAttrs(links[0].url) + ">" + esc(p.title) + "</a>" : esc(p.title);
         var status = p.status ? "<em>" + esc(p.status) + "</em>" + (p.year ? ", " + p.year : "") : "";
         if (status && p.statusUrl) status = "<a class=\"text-link\" " + U.linkAttrs(p.statusUrl) + ">" + status + "</a>";
-        var chips = links.map(function (l) { return '<a class="chip" ' + U.linkAttrs(l.url) + ">" + esc(l.label) + "</a>"; }).join("");
+        var chips = links.map(function (l) {
+          return '<a class="chip' + (l.isNew ? " chip--new" : "") + '" ' + U.linkAttrs(l.url) + ">" + esc(l.label) + "</a>" +
+            (l.isNew ? '<span class="new-tag">new</span>' : "");
+        }).join("");
         return '<article class="paper" id="paper-' + (i + 1) + '"><h2>' + title + "</h2>" +
           (p.coauthors.length ? '<p class="paper-meta">' + inline(U.withCoauthorsMd(p)) + "</p>" : "") +
           (status || chips ? '<p class="paper-meta">' + status + chips + "</p>" : "") +

@@ -1312,3 +1312,11 @@ a.text-link:hover, .content a.text-link:hover { color: inherit; text-decoration-
   html:not(.motion-on) .steam, html:not(.motion-on) .fin-steam, html:not(.motion-on) .logo-dot::after,
   html:not(.motion-on) .clock-s { display: none; }
 }
+
+/* A paper link marked isNew in content.js (the interactive paper): highlighted, "new" beside it, jiggles on hover. */
+.content .paper-meta a.is-new { display: inline-block; padding: 0 6px; border-radius: 6px; background: #c8ebb0; color: #1f5c33; }
+.content .paper-meta a.is-new:hover { background: #b0e090; color: #164526; }
+.content .paper-meta a.is-new:hover, .content .paper-meta a.is-new:focus-visible { animation: new-jiggle .5s ease-in-out; }
+.paper-meta .new-tag { color: var(--tomato-btn); font-style: italic; }
+@keyframes new-jiggle { 0%, 100% { transform: rotate(0); } 20% { transform: rotate(-5deg); } 40% { transform: rotate(4deg); } 60% { transform: rotate(-3deg); } 80% { transform: rotate(1.5deg); } }
+@media (prefers-reduced-motion: reduce) { html:not(.motion-on) .content .paper-meta a.is-new { animation: none; } }

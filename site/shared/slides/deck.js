@@ -258,6 +258,12 @@
         html = title + sub + '<div class="slide-body">' + bulletsHTML(slide.bullets) + "</div>";
     }
     el.innerHTML = html;
+    // Links marked isNew in content.js (the interactive paper): coloured, "new" beside them (slides.css).
+    Array.prototype.forEach.call(el.querySelectorAll("a[href]"), function (a) {
+      if (!U.isNewLink(a.getAttribute("href"))) return;
+      a.classList.add("is-new");
+      a.insertAdjacentHTML("afterend", ' <span class="new-tag">new</span>');
+    });
     return el;
   }
 
