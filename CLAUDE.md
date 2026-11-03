@@ -37,32 +37,34 @@ The full brief is `References/brief_2026-10-01.md` (verbatim). This file is the 
 | Name | Lehan Zhang |
 | Email shown on the site | lehan.zhang@gess.ethz.ch. The CV also lists lehan.zhang@hotmail.com, which is **not** shown unless Lehan says so. |
 | Home page text | Verbatim as in §2.1 (the brief's text as amended by Lehan on 2026-10-02). Do not paraphrase. |
-| All other content | From `References/CV_lehanzhang_oct2026.pdf` only, **with the CV's typos fixed** (memo 2026-10-01 §4.2), plus what Lehan has added since (the prompt log and memos: e.g. the Methods line, the abstracts from the papers' PDFs, coauthors' homepages, the Genderbility link). **Never invent** papers, talks, dates, roles, links, quotes or photos. Missing content gets a clearly marked placeholder. |
-| Pages (every version), in this order | Home, Research, Talks, Other Experience (teaching and service first, then work experience, awards and extracurriculars), CV, Art (Lehan, 2026-10-02) |
+| All other content | From `References/CV_lehanzhang_nov2026.pdf` (the lean CV, Overleaf `2026_LZ_nov_lean.tex`; since 2026-11-03) only, **with the CV's typos fixed** (memo 2026-10-01 §4.2), plus what Lehan has added since (the prompt log and memos: e.g. the Methods line, the abstracts from the papers' PDFs, coauthors' homepages, the Genderbility link). **Never invent** papers, talks, dates, roles, links, quotes or photos. Missing content gets a clearly marked placeholder. |
+| Pages (every version), in this order | Home, Research, Talks, Other Experience (teaching and service first, then work experience, then "Service and Awards", the CV's heading since 2026-11-03), CV, Art (Lehan, 2026-10-02) |
 | Lab links | "AI & Economics Lab" links to https://ai-econ-lab.org/ and "Resilient Democracy Lab" to https://resilientdemocracylab.org/ **wherever they appear**. Links inside running text are underlined but otherwise look like the text around them. |
 | Photography (external) | https://lehanzzhang.wixsite.com/photography (note the double "z" in `lehanzzhang`) |
 | Blog (external) | https://congeecosmicbinchicken.wordpress.com/ |
-| Google Scholar (external) | https://scholar.google.com/citations?user=JYuPwdgAAAAJ&hl=en (Lehan, 2026-10-05). Shown before every "CV (PDF)" link. |
+| Google Scholar, LinkedIn, X (external) | Scholar https://scholar.google.com/citations?user=JYuPwdgAAAAJ&hl=en (Lehan, 2026-10-05); LinkedIn https://www.linkedin.com/in/lehanzhang/ and X https://x.com/lehanzhang_ (Lehan, 2026-11-03). Shown together as **logos, not words** (`SiteUtil.profileLinks`) before every "CV (PDF)" link; on the closing slide as text links. |
 | Headshot | `References/LZ_headshots-1.jpg` (since 2026-10-06), cropped by `tools/make_photos.py` for every page, the V1 face logo (until Lehan supplies an illustrated face) and the link-preview card. The minion photo was the placeholder before. |
 | Domain | lehanzhang.com, registered with **Wix** since 2019-05-26, **expires 2027-05-26** (Wix auto-renews ~30 days before). Wix DNS already points both `@` (A 75.2.60.5) and `www` (CNAME) at Lehan's **Netlify project `regal-sunflower-00eb2f`**, which today serves a redirect to the Wix photography site (checked 2026-10-02). Wix cannot change nameservers. |
 | Hosting target | Static files. **Recommended (2026-10-02): the existing Netlify project**, with `www.lehanzhang.com` as primary domain (`GO_LIVE.md`). Lehan to confirm. |
 | Canonical address | `https://www.lehanzhang.com/`, written into the static SEO tags, `sitemap.xml` and `robots.txt`. |
 | Go-live | Lehan wants to go live once a real headshot is in (2026-10-02; it is in since 2026-10-06). Steps: `GO_LIVE.md`. The sending backend (`backend/`, Paint drawings) is deployed in Lehan's Google account and its URL is in `config.js` (2026-10-06). Analytics: PostHog key set (2026-10-06); it runs once the site is on lehanzhang.com. |
 
-### 2.1 Home page text (the brief's text, second paragraph amended by Lehan on 2026-10-02; "/tab" = paragraph break)
+### 2.1 Home page text (the brief's text, second paragraph amended by Lehan on 2026-10-02 and 2026-11-03; "/tab" = paragraph break)
 
 > **Lehan Zhang**
 >
 > I am an economist and data scientist. My research focuses on political economics, media, and culture.
 >
-> I am currently a third year PhD Candidate in the AI & Economics Lab at ETH Zurich, Switzerland.
-> Previously, I completed a B. Data Science and Decisions (Quantitative), and B. Economics (Honours Class
+> I am currently a third year PhD Candidate in the AI & Economics Lab at ETH Zurich, Switzerland and an
+> Associated Researcher at the ETH AI Center. Previously, I completed a B. Data Science and Decisions (Quantitative), and B. Economics (Honours Class
 > I) (Econometrics) from UNSW Sydney, Australia and worked as a research fellow at the Resilient
 > Democracy Lab.
 >
 > Email: lehan.zhang@gess.ethz.ch
 
-The two lab names are links (§2, "Lab links").
+The two lab names are links (§2, "Lab links"), and so is "ETH AI Center" (https://ai.ethz.ch/, Lehan
+2026-11-03; the CV page also lists "Associated Researcher at the ETH AI Center" under the PhD, as the
+November CV does).
 
 **Research interests line** (Lehan, 2026-10-02), wherever the interests appear:
 "Research interests: culture and identity, media, political economics", then on its own line
@@ -98,7 +100,7 @@ Ticked = built and checked by Claude (2026-10-01). A version is done only when L
 
 **V1 Kitchen**
 - [ ] The logo is an illustrated version of Lehan's face, swappable by replacing one image file.
-      (Built: replace `site/assets/img/face-placeholder.jpg`; the illustration itself is still to come.)
+      (Built: replace `site/assets/img/lehan-face.jpg`; the illustration itself is still to come.)
 - [x] Navigation modelled on the Pudding kimchi piece. Clickable items are obvious: illuminated and
       gently moving.
 - [x] Easy gameplay that feels like following a recipe: tomato and egg stir-fry served with rice, the
@@ -170,7 +172,8 @@ LIFE/website/                      <- project root, in Dropbox. Git repo (.git e
 │   └── YYYY-MM-DD_<topic>.md      <- progress and decision memos
 ├── References/                    <- inputs; read-only
 │   ├── brief_2026-10-01.md        <- the original brief, verbatim (design of record)
-│   ├── CV_lehanzhang_oct2026.pdf  <- the content source (Overleaf CV project: 2026_LZ_oct.tex)
+│   ├── CV_lehanzhang_nov2026.pdf  <- the content source (Overleaf CV project: 2026_LZ_nov_lean.tex; git https://git.overleaf.com/655bf53f13c1fd4d9e259812, this PC is connected)
+│   ├── CV_lehanzhang_oct2026.pdf  <- the previous CV (2026_LZ_oct.tex), kept for reference
 │   ├── paint_landing.png          <- framing reference for V2-V4 (XP Paint on the XP wallpaper)
 │   ├── msPaintmock.png            <- V2 first-canvas reference (screenshot of Windows 11 Paint)
 │   ├── lehanzhang_canvas.png      <- that canvas itself, 1152x720: photo + handwritten "hi! i'm Lehan..."
@@ -208,7 +211,8 @@ site/
 ├── fun/paint/            <- V2: app.js, pages.js (TEXT = its wording), draw.js (the paint program), doodle.js, paint.css
 ├── fun/powerpoint/       <- V3: powerpoint.js, ribbon.js (ribbon + its wording), icons.js, powerpoint.css
 ├── fun/overleaf/         <- V4: app.js, tex-generate.js, tex-parse.js, tex-editor.js, edit-log.js, madrid.js (Madrid preview), overleaf.css, fonts/ (Latin Modern Sans subsets, GUST licence)
-├── shared/site.js        <- helpers (paths, escaping, mini-markdown, coauthor links, version icons, upcoming talks, motion switch) + SiteUtil.track() and the PostHog loader
+├── _redirects            <- Netlify: the netlify.app address 301s to www.lehanzhang.com (works for drag-and-drop uploads)
+├── shared/site.js        <- helpers (paths, escaping, mini-markdown, coauthor links, version icons, profile logos, upcoming talks, motion switch) + SiteUtil.track() and the PostHog loader
 ├── shared/xp/            <- Windows XP desktop shell for V2-V4 (xp.js API: XP.init (incl. about: the tray "i"), XP.alert (modal), XP.balloon, XP.ownKeys, ...); adds the Minesweeper icon itself
 ├── shared/minesweeper/   <- the game on the XP desktops: themes.js (ALL its wording, one block per theme), art.js, minesweeper.js, minesweeper.css. Deep link ?minesweeper=1|spec|scooped|seminar|rain
 ├── shared/slides/        <- the deck shared by V3 and V4, in SITE.pages order (deck.js: Deck.fromContent(S, {abstracts}), Deck.render)
@@ -224,7 +228,7 @@ screenshots.
    supersede the brief where they conflict.
 2. `References/brief_2026-10-01.md`, the design of record. It is not final. **When building reveals a
    conflict or a better option, say so and let Lehan decide.** Do not quietly re-plan around it.
-3. `References/CV_lehanzhang_oct2026.pdf`, for content.
+3. `References/CV_lehanzhang_nov2026.pdf`, for content.
 4. The mockup images, for visual intent. They are not pixel specifications.
 
 ---
@@ -277,10 +281,14 @@ overrule.
   description and `og:`/`twitter:` preview tags (card: `assets/img/social-card.png`); keep a page's
   description true when its content changes, and its `lastmod` current.
 - **Photos:** `tools/make_photos.py <photo>` makes every crop (avatar, portrait, slide photo, Kitchen
-  face, social card) from one photo and updates `content.js`. Don't crop by hand.
+  face, social card) and the site icon (`favicon.ico/.svg`, `apple-touch-icon.png`, `icon-192.png`:
+  the photo edge to edge, no border; `--icons-only` for just these) from one photo and updates
+  `content.js`. Don't crop by hand. The headshot runs with `--focus 0.49,0.45`.
 - **Do not ship copyrighted third-party assets:** not Microsoft's "Bliss" wallpaper photograph,
   Windows/Office icons or logos, Cooking Mama artwork, or the Overleaf logo. Recreate the look with
-  CSS/SVG, or use openly licensed material.
+  CSS/SVG, or use openly licensed material. **One exception (Lehan, 2026-11-03):** the Google Scholar,
+  LinkedIn and X logos, used only as links to Lehan's own profiles (Simple Icons paths, CC0, in
+  `shared/site.js`).
 - **Professional floor:** every fun version has a visible one-click route to the classic site and to
   the CV PDF. Images have alt text, and focus states are visible. `prefers-reduced-motion` turns off
   pulsing and wiggling.
@@ -426,6 +434,11 @@ overrule.
 | 2026-10-07 | PowerPoint trailers: no captions naming the effects; the show plays Home, Research, Talks, then the end screen. | Lehan. |
 | 2026-10-07 | `text-size-adjust: 100%` in the XP shell (`xp.css`), so phones do not enlarge the scaled slide text in Overleaf and PowerPoint. | Lehan reported slide text overflowing on a phone; enlarged text was the cause found (memo 2026-10-07_overleaf_phone_text_and_search). |
 | 2026-10-16 | The interactive Adding Fuel page is live at `research/adding-fuel/`. Each version's Research page has an "Interactive Version" link next to the paper's PDF, in the PDF link's own form, coloured, with "new" (hand-drawn with an arrow in Paint) and a jiggle on hover (`isNew` in `content.js`; memo 2026-10-16_interactive_paper_launch). | Lehan. |
+| 2026-11-03 | Site icon: Lehan's photo, square, filling the whole icon, no border (option C of the mockups, without its ring). Made by `tools/make_photos.py --icons-only`. | Lehan chose it from seven mockups. |
+| 2026-11-03 | Bio adds "…and an Associated Researcher at the [ETH AI Center](https://ai.ethz.ch/)" (§2.1). The AI Center's own name for the group is "Associated Researchers". | Lehan's wording. |
+| 2026-11-03 | The site follows the lean November CV (`2026_LZ_nov_lean.tex`): Jane Zhang's name removed (tasks kept), work bullets trimmed, Quantium / NSW ADC / UNSW Founders without bullets, WPL football out, "Service and Awards" replaces "Awards and extracurriculars" everywhere, AI Center line on the CV page. The site's Art tab stays although the CV drops its Art section. | Lehan. |
+| 2026-11-03 | Google Scholar, LinkedIn and X as logos side by side wherever the Scholar link was; text links on the closing slide (beamer must compile). | Lehan asked for logos; Lehan approved text on the slide. |
+| 2026-11-03 | SEO 6a–6d (memo 2026-11-03): `_redirects` sends the netlify.app address to www; canonicals on the four fun versions; JSON-LD photo, names, ETH/UNSW URLs, AI Center, LinkedIn, X and the lab profile; Google Scholar citation tags on the Adding Fuel page. Four unused minion files deleted. | Lehan approved in one push. |
 | 2026-10-05 (round 3 follow-up) | Dvořák performance: "Slavonic Dances, Op. 46" (Lehan wrote Op. 42). On the classic site Scholar stays on the home page only; read as not affecting the start page and fun versions (to confirm). | Lehan. |
 
 ---
@@ -435,8 +448,12 @@ overrule.
 Needed before going live (details: memo 2026-10-02_go_live_and_round_2 §10, `GO_LIVE.md`):
 
 1. **Round 4 follow-ups** (memos 2026-10-06_headshot_and_heading_font §4, 2026-10-06_backend_analytics_fonts
-   §4): delete the four unused minion files in `site/assets/img/`? Is the new Overleaf wording (edits
-   stay in the browser) OK? Later: an illustrated face for the V1 logo.
+   §4): is the new Overleaf wording (edits stay in the browser) OK? Later: an illustrated face for the
+   V1 logo. (Minion files deleted 2026-11-03.)
+1a. **After the 2026-11-03 upload** (memo 2026-11-03_lean_cv_icon_profiles_seo §5): Search Console
+   (resubmit sitemap, Request indexing on the start page) and Bing Webmaster Tools (import from Search
+   Console). The Adding Fuel page's citation tags were added in this repo only: carry them into the
+   interactive page's source on Euler (`AddingFuelGunfire/interactive/`) before its next copy.
 2. **Round 3 follow-ups** (memo 2026-10-05_round_3_followup §3): does "Scholar only on the classic
    home page" also mean removing it from the start page footer and the fun versions? And is the
    performances' layout OK (memo 2026-10-05_round_3_edits §2)?
@@ -444,20 +461,18 @@ Needed before going live (details: memo 2026-10-02_go_live_and_round_2 §10, `GO
 3. **Analytics:** key set (2026-10-06). Lehan to switch on **Discard client IP data** in PostHog's
    project settings (the privacy page promises it). Mode: `memory` (keeps country/city; set) or
    `cookieless` (daily unique visitors, no location)?
-4. **Dead link:** "Digital Safety in the Metaverse" (Project Rockit) returns 404. Archived copy, new
-   link, or no link?
+4. ~~Dead link: Project Rockit~~ It answers again (200, checked 2026-11-03); link kept.
 5. **Go live with all four fun versions?** Paint's backend is deployed (2026-10-06); test one drawing
    from the live site.
 6. **Hosting:** confirm the existing Netlify project (`regal-sunflower-00eb2f`), `www` primary; check
    whether the Netlify account is on a Legacy or credit plan.
-7. **Profiles** for the structured data and backlinks: Google Scholar is in (2026-10-05); ORCID,
-   LinkedIn, X/Bluesky, CEPR author page still to come (only ones Lehan confirms).
+7. **Profiles** for the structured data and backlinks: Google Scholar (2026-10-05), LinkedIn and X
+   (2026-11-03) are in; ORCID, Bluesky, CEPR author page if Lehan has them. Lehan to put lehanzhang.com
+   in the Scholar "Homepage" field and on LinkedIn and X.
 8. **Link the GitHub repo in Netlify** (`GO_LIVE.md` step 3b): the private repo exists and `main` is
    pushed (2026-10-06). Not linked yet: the push of `4e4f257` (19:17) had not reached the live site
    after 5 minutes; Lehan has been uploading `site/` by hand.
-8a. **SEO proposals D and E** (memo 2026-10-06_seo_review §3; A, B, C, F done 2026-10-06): photo and
-   institutions in the JSON-LD; redirect the Netlify address and self-canonicals on the fun
-   versions. Do them?
+8a. ~~SEO proposals D and E~~ Done 2026-11-03 (with Scholar citation tags on the Adding Fuel page).
 8b. **Launch trailers** (memo 2026-10-06_launch_trailers_production): watch the 12 files in
    `promo/out/`; approve the Instagram Stories texts in `promo/POSTS.md` (new; the X thread is approved).
    PowerPoint pair remade 2026-10-07 (no effect captions, show ends after Talks): keep its end-card line
@@ -488,7 +503,10 @@ Later / still open from earlier rounds:
 **Phase: Lehan's third round of edits (2026-10-05: Art tab, Google Scholar, classic home, Minesweeper)
 built and checked by Claude, on top of round 2 (2026-10-02: Minesweeper, go-live groundwork,
 accessibility audit). Round 4 (2026-10-06): the real headshot everywhere, and one sans font on the
-start page and classic site. Next: Lehan's look, answers to §8, then `GO_LIVE.md`.**
+start page and classic site. 2026-11-03: the lean November CV (Jane Zhang's name out, trimmed work
+experience, "Service and Awards"), the ETH AI Center in the bio, the photo as site icon, Scholar /
+LinkedIn / X logos, SEO fixes; pushed to GitHub, waiting for Lehan's one Netlify drag
+(`PENDING_UPLOAD.md`). Next: the drag, then Search Console and Bing (§8.1a).**
 
 | Deliverable | Status |
 |---|---|
@@ -505,8 +523,8 @@ start page and classic site. Next: Lehan's look, answers to §8, then `GO_LIVE.m
 | Round 4: headshot everywhere, sans headings (start page, classic, All versions, privacy, 404), no Overleaf edit logs | Done 2026-10-06 (memos 2026-10-06_headshot_and_heading_font, _backend_analytics_fonts); awaiting Lehan's review |
 | Minesweeper (V2-V4 desktops) | All four themes kept; the game is "Minesweeper", default theme Specification Search with spiky mines (2026-10-05) |
 | Backend for Paint drawings | Deployed by Lehan 2026-10-06; URL in `config.js`; answers its health check. A real drawing still to test (§8.5) |
-| Git | Pushed to the private GitHub repo Lehandimsim/website (`main`) 2026-10-06; the 2026-10-07 changes (trailers, memos, phone-text fix) pushed 2026-10-07. Netlify is not linked; the live site is a hand upload (§8.8) |
+| Git | Pushed to the private GitHub repo Lehandimsim/website (`main`) 2026-10-06; the 2026-10-07 changes (trailers, memos, phone-text fix) pushed 2026-10-07; 16 and 20 Oct from Euler; 2026-11-03 changes pushed in one commit. Netlify is not linked; the live site is a hand upload (§8.8) |
 | Analytics (PostHog) | Key set 2026-10-06 (EU project 296254); runs once live; IP setting and mode to Lehan (§8.3) |
-| SEO, privacy page, 404, favicons, social card | Done 2026-10-02 |
+| SEO, privacy page, 404, favicons, social card | Done 2026-10-02; photo icon and SEO fixes 6a–6d 2026-11-03 |
 | Hosting and domain | Recommendation: existing Netlify project, no DNS change (`GO_LIVE.md`); Lehan confirms (§8.6) |
 | Launch trailers (X + Instagram Stories) and X thread | Rendered 2026-10-06: six videos × two formats in `promo/out/`, posting copy `promo/POSTS.md` (memo 2026-10-06_launch_trailers_production); awaiting Lehan's look (§8.8b). Phase 2 will live in a new `promo/` folder, never in `site/` |

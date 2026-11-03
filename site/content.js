@@ -4,7 +4,7 @@
    The classic site and all four fun versions (kitchen, paint, powerpoint,
    overleaf) read from here, so editing a line below changes it everywhere.
 
-   Source: References/CV_lehanzhang_oct2026.pdf, with its typos fixed
+   Source: References/CV_lehanzhang_nov2026.pdf, with its typos fixed
    (list: Memos/2026-10-01_project_setup_and_build_plan.md §4.2).
    The home text is verbatim from the brief.
 
@@ -30,8 +30,11 @@ window.SITE = {
     // Placeholder for the V1 kitchen logo, until Lehan supplies an illustrated face.
     face: { src: "assets/img/lehan-face.jpg", alt: "Lehan Zhang" },
     links: {
+      // Scholar, LinkedIn and X show as logos side by side (SiteUtil.profileLinks; Lehan, 2026-11-03).
       scholar: "https://scholar.google.com/citations?user=JYuPwdgAAAAJ&hl=en",   // Lehan, 2026-10-05
-      cv: "assets/cv/CV_lehanzhang_oct2026.pdf",
+      linkedin: "https://www.linkedin.com/in/lehanzhang/",
+      x: "https://x.com/lehanzhang_",
+      cv: "assets/cv/CV_lehanzhang_nov2026.pdf",
       photography: "https://lehanzzhang.wixsite.com/photography",
       blog: "https://congeecosmicbinchicken.wordpress.com/"
     }
@@ -48,13 +51,13 @@ window.SITE = {
     { id: "art",        label: "Art" }
   ],
 
-  // From the brief ("/tab" = paragraph break), as amended by Lehan on 2026-10-02.
-  // The two labs are links wherever they appear on the site (Lehan, 2026-10-02).
+  // From the brief ("/tab" = paragraph break), as amended by Lehan on 2026-10-02 and 2026-11-03
+  // (ETH AI Center, linked). The labs are links wherever they appear on the site (Lehan, 2026-10-02).
   home: {
     heading: "Lehan Zhang",
     paragraphs: [
       "I am an economist and data scientist. My research focuses on political economics, media, and culture.",
-      "I am currently a third year PhD Candidate in the [AI & Economics Lab](https://ai-econ-lab.org/) at ETH Zurich, Switzerland. Previously, I completed a B. Data Science and Decisions (Quantitative), and B. Economics (Honours Class I) (Econometrics) from UNSW Sydney, Australia and worked as a research fellow at the [Resilient Democracy Lab](https://resilientdemocracylab.org/)."
+      "I am currently a third year PhD Candidate in the [AI & Economics Lab](https://ai-econ-lab.org/) at ETH Zurich, Switzerland and an Associated Researcher at the [ETH AI Center](https://ai.ethz.ch/). Previously, I completed a B. Data Science and Decisions (Quantitative), and B. Economics (Honours Class I) (Econometrics) from UNSW Sydney, Australia and worked as a research fellow at the [Resilient Democracy Lab](https://resilientdemocracylab.org/)."
     ],
     emailLine: "Email: lehan.zhang@gess.ethz.ch"
   },
@@ -164,6 +167,7 @@ window.SITE = {
       details: [
         "Chair of Law, Data Science, and Economics (Ash Group) at the [AI & Economics Lab](https://ai-econ-lab.org/), D-GESS",
         "Advisor: Prof. Elliott Ash. Secondary advisor: Prof. Karsten Donnay (UZH)",
+        "Associated Researcher at the [ETH AI Center](https://ai.ethz.ch/)",   // November CV (2026-11-03)
         "Coursework and summer schools: [Swiss Program for Beginning Doctoral Students in Economics](https://www.szgerzensee.ch/programs/beginning-doctoral-program) (Study Center Gerzensee), AI & Economics Summer Institute (Chicago Booth), Zurich Summer School in AI & Applied Economics (ETHZ), Language Models for Law and Social Science (Elliott Ash, ETHZ), Causal Inference (Alberto Abadie, Gerzensee Advanced Courses in Economics), Labor Economics (David Dorn, UZH), Social Norms and Development (Eliana La Ferrara, Gerzensee Advanced Courses in Economics), Economic History: Migration, Networks, Religion (Sascha Becker, ISEG Summer School)"
       ]
     },
@@ -185,7 +189,7 @@ window.SITE = {
   ],
 
   cv: {
-    pdf: "assets/cv/CV_lehanzhang_oct2026.pdf",
+    pdf: "assets/cv/CV_lehanzhang_nov2026.pdf",
     downloadLabel: "Download CV (PDF)"
   },
 
@@ -263,10 +267,11 @@ window.SITE = {
         role: "Research Assistant",
         type: null,
         dates: "Oct. 2020 – Apr. 2024",
+        // From the lean CV (2026_LZ_nov_lean.tex, Lehan 2026-11-03), like the rest of this list.
         bullets: [
-          "Undergraduate Research Fellow of the UNSW [Resilient Democracy Lab](https://resilientdemocracylab.org/): building the lab website and summarizing research for showcase on the website",
+          "Undergraduate Research Fellow of the UNSW [Resilient Democracy Lab](https://resilientdemocracylab.org/): building the lab website",
           "RA work for Prof. Pauline Grosjean on data visualization, textual analysis, and data cleaning for various projects, including [Grosjean, Masera, and Yousaf (2023), *QJE*](https://academic.oup.com/qje/article/138/1/413/6710386) and [*Patriarcapitalisme* (2021)](https://www.seuil.com/ouvrage/patriarcapitalisme-pauline-grosjean/9782021479867)",
-          "RA work for A.Prof. Jane Zhang: writing ethics applications, conducting literature review, co-designing an experiment on mental health and technology, building the experimental treatment mobile application and Qualtrics survey, managing logistics of pilot implementation"
+          "RA work: writing ethics applications, literature review, co-designing an experiment on mental health and technology, building the experimental treatment mobile application and Qualtrics survey, managing logistics of pilot implementation"
         ]
       },
       {
@@ -276,11 +281,9 @@ window.SITE = {
         type: null,
         dates: "Jan. 2017 – present",
         bullets: [
-          "Provide reportage photography services to private and corporate clients including MigrArt, 4A Centre for Contemporary Asian Art, Belvoir Street Theatre, UNSW Sydney, Gonski Institute, OutInCanberra, Region Canberra",
-          "Managing editor of Australian and Swiss music and entertainment media publication [*Music Beyond Headlines*](https://www.facebook.com/MusicBeyondHeadlines/), coordinating a team of 10+ photographers and writers across Australia to produce industry-standard content",
-          "Contributing music photographer to publications and venues including Roundhouse UNSW, FBi Radio, AAA-Backstage",
-          "Portrait and fashion photography published in magazines including Picton Magazine, Sheeba Magazine, Leiden",
-          "1 of 11 chosen from over 1300 applicants for a 6-month photography mentorship with Canon Australia in their inaugural Red Straps youth mentoring program in 2019"
+          "Provide reportage photography services to private and corporate clients including MigrArt, 4A Centre for Contemporary Asian Art, FBi Radio, Belvoir Street Theatre, UNSW Sydney, Gonski Institute, OutInCanberra, Region Canberra",
+          "Managing editor of Australian and Swiss music and entertainment media publication [*Music Beyond Headlines*](https://www.facebook.com/MusicBeyondHeadlines/)",
+          "Portrait and fashion photography published in magazines including Picton Magazine, Sheeba Magazine, Leiden"
         ]
       },
       {
@@ -290,9 +293,8 @@ window.SITE = {
         dates: "May 2021 – Jul. 2023",
         bullets: [
           "Selected to advise on national public engagement, media and brand strategy and development, governance, and risk and assurance for the National Youth Mental Health Foundation, established by the Australian Government",
-          "Attended the International Association of Youth Mental Health (IAYMH) conference in Copenhagen, Denmark 2022. Awarded financial bursary from IAYMH to attend.",
           "Public advocacy media features on cultural identity and mental health in an [*Australia-wide campaign*](https://headspace.org.au/our-impact/campaigns/cultural-identity/), invited speaker on [*SBS Insight*](https://www.sbs.com.au/ondemand/news-series/insight/insight-2023/insight-s2023-ep16/2206880323958), a current affairs TV program, and SBS news articles ([*web*](https://www.sbs.com.au/news/article/lehans-mental-health-suffered-during-covid-19-lockdown-its-a-struggle-many-young-people-shared/uqcj8puiv), radio, and TV)",
-          "Drafted submissions to the Australian Government Senate inquiry on ADHD and the National Mental Health Commission",
+          "Drafted submissions to the Australian Senate inquiry on ADHD and the National Mental Health Commission",
           "Consultant on [*Digital Safety in the Metaverse*](https://www.projectrockit.com.au/blog/our-metaverse/) with Meta and Project Rockit"
         ]
       },
@@ -301,20 +303,14 @@ window.SITE = {
         role: "Graduate Data Analyst",
         type: "full-time",
         dates: "Feb. 2023 – Apr. 2023",
-        bullets: [
-          "Data analyst in the data management team of global data science and AI company utilizing SQL and Python to maintain database and draw business insights from Woolworths Group data",
-          "Resigned to focus on pursuing career as an academic economist and to undertake pre-doc Research Fellow role full-time"
-        ]
+        bullets: []
       },
       {
         org: "New South Wales Ageing and Disability Commission",
-        role: "Project Officer Intern",
+        role: "Project Officer Intern, Strategy and Communications",
         type: "part-time",
         dates: "Jan. 2021 – May 2021",
-        bullets: [
-          "Internship placement within the Strategy and Communications team",
-          "Projects: setting up SQL database infrastructure, data analytics and communication to create marketing and quantitative collateral for external stakeholders, develop project briefs for multicultural community engagement and promotion of the rights of older people and adults with disability"
-        ]
+        bullets: []
       },
       {
         org: "Toyota Finance Australia",
@@ -322,8 +318,7 @@ window.SITE = {
         type: "full-time",
         dates: "Jun. 2020 – Dec. 2020",
         bullets: [
-          "UNSW Co-op Scholarship sponsored industry placement within the Data Science and Risk Management team",
-          "Projects: predictive modeling in R and PowerBI to monitor customer retention trends, designed and built a competitor pricing engine using webscraping in Python for KINTO car rental service"
+          "UNSW Co-op Scholarship sponsored industry placement within the Data Science and Risk Management team"
         ]
       },
       {
@@ -331,12 +326,7 @@ window.SITE = {
         role: "Program Coordinator",
         type: "part-time",
         dates: "Jul. 2019 – Mar. 2022",
-        bullets: [
-          "Developed, designed, and delivered entrepreneurial programs to UNSW students, staff, and alumni",
-          "Managed the Higher-Degree Research Program supporting graduate research students commercialize their research innovations (2022), and the New Wave Program for promoting female engagement in entrepreneurship and within the startup space (2019)",
-          "Developed an effective marketing strategy to recruit female participation in the New Wave program, resulting in the largest cohort since program inception",
-          "Facilitate and teach design thinking, rapid prototyping, and lean canvas workshops"
-        ]
+        bullets: []
       }
     ],
 
@@ -371,8 +361,8 @@ window.SITE = {
       { text: "Undergraduate representative on the Faculty of Science Equity, Diversity, and Inclusion working group", years: "2019 – 2022" },
       { text: "Student representative on the UNSW Centre for Ideas advisory committee", years: "2020 – 2022" },
       { text: "Youth advisory group member for headspace Camperdown", years: "2019 – 2023" },
-      { text: "Football Coach of the Randwick City Football Club's not-for-profit Purple Hearts all-abilities squads", years: "2019 – 2020" },
-      { text: "Women's Premier League (WPL) football player, Australian Capital Territory", years: "2015 – 2017 seasons" }
+      { text: "Football Coach of the Randwick City Football Club's not-for-profit Purple Hearts all-abilities squads", years: "2019 – 2020" }
+      // Women's Premier League football (2015 – 2017) is out of the lean CV, so out here too (2026-11-03).
     ],
 
     skills: [
@@ -385,11 +375,11 @@ window.SITE = {
   slides: {
     upcoming: "upcoming",
     teachingTitle: "Teaching and service",
-    awardsTitle: "Awards and extracurriculars",
+    awardsTitle: "Service and Awards",
     performancesTitle: "Performances",   // the two groups on the Art slide
     projectsTitle: "Art Projects",
     endTitle: "Thank you",
-    endLinks: { classic: "Classic website", scholar: "Google Scholar", cv: "CV", photography: "Photography", blog: "Blog" },
+    endLinks: { classic: "Classic website", scholar: "Google Scholar", linkedin: "LinkedIn", x: "X", cv: "CV", photography: "Photography", blog: "Blog" },
     // Speaker notes under the first slide in PowerPoint.
     homeNotes: "Welcome! Press From Beginning (Slide Show tab) to present, or pick any slide to look around."
   }

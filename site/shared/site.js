@@ -145,6 +145,51 @@
 
   function versionColours(id) { return VERSION_COLOURS[id] || VERSION_COLOURS.kitchen; }
 
+  // Profile logos: Google Scholar, LinkedIn and X shown as logos, not words, wherever the Scholar link
+  // was (Lehan, 2026-11-03). Each sits on a small white tile in its brand colour, so it reads the same
+  // on every version's background. Paths: Simple Icons (CC0), 24 x 24. A profile shows only if its
+  // address is in content.js person.links.
+  var PROFILES = [
+    { id: "scholar", label: "Google Scholar", fill: "#4285F4",   // cap, then head in a lighter blue, like Scholar's own logo
+      d: "M5.242 13.769 0 9.5 12 0l12 9.5-5.242 4.269C17.548 11.249 14.978 9.5 12 9.5c-2.977 0-5.548 1.748-6.758 4.269z",
+      d2: "M12 10a7 7 0 1 0 0 14 7 7 0 0 0 0-14z", fill2: "#8AB4F8" },
+    { id: "linkedin", label: "LinkedIn", fill: "#0A66C2",
+      d: "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.71 1.637-1.452 3.37-1.452 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 1 1 0-4.125 2.062 2.062 0 0 1 0 4.125zM7.119 20.452H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" },
+    { id: "x", label: "X", fill: "#000000",
+      d: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932zM17.61 20.644h2.039L6.486 3.24H4.298z" }
+  ];
+  var PROFILE_CSS =
+    ".profile-links{display:inline-flex;align-items:center;gap:6px;vertical-align:middle}" +
+    ".profile-link{box-sizing:border-box;display:inline-flex;align-items:center;justify-content:center;width:28px;height:28px;" +
+      "border:1px solid rgba(0,0,0,.16);border-radius:6px;background:#fff;text-decoration:none!important;transition:transform .15s,box-shadow .15s}" +
+    ".profile-link svg{display:block;width:17px;height:17px}" +
+    ".profile-link:hover{transform:translateY(-1px);box-shadow:0 2px 6px rgba(0,0,0,.18)}" +
+    ".profile-link:focus-visible{outline:2px solid #1f62d4;outline-offset:2px}" +
+    ".profile-links--sm .profile-link{width:24px;height:24px;border-radius:4px}.profile-links--sm svg{width:15px;height:15px}" +
+    ".profile-links--lg{gap:10px}.profile-links--lg .profile-link{width:44px;height:44px;border-radius:10px}.profile-links--lg svg{width:24px;height:24px}" +
+    "@media (prefers-reduced-motion: reduce){html:not(.motion-on) .profile-link{transition:none}html:not(.motion-on) .profile-link:hover{transform:none}}";
+
+  function profileLogo(p) {
+    return '<svg viewBox="0 0 24 24" width="17" height="17" aria-hidden="true" focusable="false"><path fill="' + p.fill + '" d="' + p.d + '"/>' +
+      (p.d2 ? '<path fill="' + p.fill2 + '" d="' + p.d2 + '"/>' : "") + "</svg>";
+  }
+
+  // HTML for the logos as links. size: "sm" (menu bars), "lg" (big buttons) or nothing (28px tiles).
+  function profileLinks(links, size) {
+    links = links || {};
+    if (!document.getElementById("profile-links-css")) {
+      var st = document.createElement("style");
+      st.id = "profile-links-css";
+      st.textContent = PROFILE_CSS;
+      document.head.appendChild(st);
+    }
+    var items = PROFILES.filter(function (p) { return links[p.id]; }).map(function (p) {
+      return '<a class="profile-link profile-link--' + p.id + '" ' + linkAttrs(links[p.id]) + ' title="' + esc(p.label) + '"' +
+        ' aria-label="' + esc(p.label) + ' (opens in a new tab)">' + profileLogo(p) + "</a>";
+    });
+    return items.length ? '<span class="profile-links' + (size ? " profile-links--" + size : "") + '">' + items.join("") + "</span>" : "";
+  }
+
   // The fun version chosen via ?fun=..., else the configured default.
   function currentFunId() {
     var m = /[?&]fun=([a-z]+)/.exec(location.search);
@@ -269,6 +314,7 @@
     funVersion: funVersion,
     versionIcon: versionIcon,
     versionColours: versionColours,
+    profileLinks: profileLinks,
     currentFunId: currentFunId,
     prefersReducedMotion: prefersReducedMotion,
     motionSetting: motionSetting,

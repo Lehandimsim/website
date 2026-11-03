@@ -147,7 +147,7 @@
       },
       {
         id: "awards", page: "experience", layout: "bullets", dense: true,
-        title: T.awardsTitle || "Awards and extracurriculars",
+        title: T.awardsTitle || "Service and Awards",
         bullets: X.awards.map(function (a) { return a.text + " (" + a.years + ")"; })
       }
     ];
@@ -198,6 +198,8 @@
         mail,
         "[" + (L.classic || "Classic website") + "](classic/index.html) · " +
           (P.links.scholar ? "[" + (L.scholar || "Google Scholar") + "](" + P.links.scholar + ") · " : "") +
+          (P.links.linkedin ? "[" + (L.linkedin || "LinkedIn") + "](" + P.links.linkedin + ") · " : "") +
+          (P.links.x ? "[" + (L.x || "X") + "](" + P.links.x + ") · " : "") +
           "[" + (L.cv || "CV") + "](" + P.links.cv + ") · [" +
           (L.photography || "Photography") + "](" + P.links.photography + ") · [" + (L.blog || "Blog") + "](" + P.links.blog + ")"
       ]

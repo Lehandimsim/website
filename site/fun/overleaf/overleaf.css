@@ -847,6 +847,7 @@ a.slide-box:hover .slide-box-label { background: #1e1e6e; }
 }
 .ol-menu-item:hover, .ol-menu-item:focus-visible { background: rgba(255, 255, 255, .09); }
 .ol-menu-item:focus-visible { outline: 2px solid var(--ol-focus); outline-offset: -2px; }
+.ol-menu-profiles { padding: 6px 18px; }   /* Google Scholar, LinkedIn and X logos in one row */
 .ol-menu-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 6px 18px; }
 .ol-menu-row select { padding: 3px 4px; border: 1px solid #45505f; border-radius: 4px; background: #1f2630; color: var(--ol-text); }
 .ol-menu-note { padding: 2px 18px 6px; color: var(--ol-muted); font-size: 12px; line-height: 1.45; }

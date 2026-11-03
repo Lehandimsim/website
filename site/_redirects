@@ -1,0 +1,4 @@
+# Netlify redirects. Read by Netlify on every deploy (drag-and-drop too); never served as a page.
+# The project's own address (regal-sunflower-00eb2f.netlify.app) served a full copy of the site,
+# which search engines can count as a duplicate. Send it to the real address instead.
+https://regal-sunflower-00eb2f.netlify.app/*  https://www.lehanzhang.com/:splat  301!

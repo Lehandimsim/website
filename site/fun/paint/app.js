@@ -46,9 +46,7 @@
     },
     classic: "Classic website",
     classicTip: "The plain-text version of this website",
-    scholarFirst: "Google",   // shown before "Scholar" except on phones, to keep the menu bar on two rows
-    scholar: "Scholar",
-    scholarTip: "Lehan's Google Scholar page, in a new tab",
+    profileTip: "Lehan's {name} page, in a new tab",   // status bar text over the Scholar, LinkedIn and X logos
     cvPdf: "CV (PDF)",
     cvPdfTip: "Lehan's CV as a PDF, in a new tab",
     paletteHint: "Click a colour to repaint the doodles on this page.",
@@ -234,8 +232,7 @@
     return '<div class="pt-menubar-end">' +
       '<a class="pt-menu pt-end-link pt-classic-link" href="' + U.esc(U.url("classic/index.html")) + '" title="' + U.esc(TEXT.classicTip) + '">' +
         XP.icon("globe") + "<span>" + U.esc(TEXT.classic) + "</span></a>" +
-      (LINKS.scholar ? '<a class="pt-menu pt-end-link pt-scholar-link" ' + U.linkAttrs(LINKS.scholar) + ' title="' + U.esc(TEXT.scholarTip) + '">' +
-        XP.icon("scholar") + '<span><span class="pt-end-long">' + U.esc(TEXT.scholarFirst) + " </span>" + U.esc(TEXT.scholar) + "</span></a>" : "") +
+      '<span class="pt-profiles">' + U.profileLinks(LINKS, "sm") + "</span>" +   // Scholar, LinkedIn, X as logos
       (LINKS.cv ? '<a class="pt-menu pt-end-link pt-cv-link" href="' + U.esc(U.url(LINKS.cv)) + '" target="_blank" rel="noopener" title="' + U.esc(TEXT.cvPdfTip) + '">' +
         XP.icon("cv") + "<span>" + U.esc(TEXT.cvPdf) + "</span></a>" : "") +
       "</div>";
@@ -950,7 +947,7 @@
     var tab = e.target.closest(".pt-tab");
     if (tab) setStatus("Opens the " + labelOf(tab.getAttribute("data-tab")) + " page.");
     else if (e.target.closest(".pt-classic-link")) setStatus(TEXT.classicTip + ".");
-    else if (e.target.closest(".pt-scholar-link")) setStatus(TEXT.scholarTip + ".");
+    else if (e.target.closest(".profile-link")) setStatus(TEXT.profileTip.replace("{name}", e.target.closest(".profile-link").title) + ".");
     else if (e.target.closest(".pt-cv-link")) setStatus(TEXT.cvPdfTip + ".");
   });
   menubar.addEventListener("mouseleave", function () { if (!openMenuId) setStatus(); });

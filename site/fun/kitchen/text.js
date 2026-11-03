@@ -166,7 +166,7 @@ window.KITCHEN_TEXT = {
     work: "Work experience",
     teaching: "Teaching",
     service: "Service",
-    awards: "Awards and extracurriculars",
+    awards: "Service and Awards",
     skills: "Skills"
   },
   labels: {
@@ -175,7 +175,6 @@ window.KITCHEN_TEXT = {
     newTab: "(opens in a new tab)",
     photoCaption: "Chef Lehan",
     quickClassic: "Classic site",
-    quickScholar: "Google Scholar",
     quickCv: "CV (PDF)",
     quickPhotography: "Photography",
     quickBlog: "Blog"

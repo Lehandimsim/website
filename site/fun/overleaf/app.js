@@ -646,7 +646,7 @@
       '<button type="button" class="ol-menu-item" data-act="keys">' + ico("keyboard") + "Keyboard shortcuts</button>" +
       "<h2>Lehan elsewhere</h2>" +
       '<a class="ol-menu-item" href="' + esc(U.url("classic/index.html")) + '">' + ico("globe") + "Classic website</a>" +
-      (L.scholar ? '<a class="ol-menu-item" ' + U.linkAttrs(L.scholar) + ">" + ico("scholar") + "Google Scholar</a>" : "") +
+      '<div class="ol-menu-profiles">' + U.profileLinks(L) + "</div>" +   // Scholar, LinkedIn, X as logos
       '<a class="ol-menu-item" href="' + esc(U.url(L.cv)) + '" target="_blank" rel="noopener">' + ico("pdf") + "CV (PDF)</a>" +
       '<a class="ol-menu-item" ' + U.linkAttrs(L.photography) + ">" + ico("camera") + "Photography</a>" +
       '<a class="ol-menu-item" ' + U.linkAttrs(L.blog) + ' title="' + esc(WRITING.linkLabel || "Blog") + '">' + ico("pen") + "Blog</a>" +

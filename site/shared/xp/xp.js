@@ -423,7 +423,7 @@
 
     var right =
       '<a class="xp-sm-item" href="' + U.esc(U.url("classic/index.html")) + '">' + icon("globe") + "<b>Classic website</b></a>" +
-      (links.scholar ? '<a class="xp-sm-item" ' + U.linkAttrs(links.scholar) + ">" + icon("scholar") + "Google Scholar</a>" : "") +
+      '<div class="xp-sm-profiles">' + U.profileLinks(links, "sm") + "</div>" +   // Scholar, LinkedIn, X as logos
       '<a class="xp-sm-item" ' + U.linkAttrs(links.cv) + ' target="_blank">' + icon("cv") + "My CV (PDF)</a>" +
       '<a class="xp-sm-item" ' + U.linkAttrs(links.photography) + ">" + icon("camera") + "Photography</a>" +
       '<a class="xp-sm-item" ' + U.linkAttrs(links.blog) + ">" + icon("notepad") + "Blog</a>" +

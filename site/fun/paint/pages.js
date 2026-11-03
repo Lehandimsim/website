@@ -47,7 +47,7 @@
     work: "Work experience",
     teaching: "Teaching",
     service: "Service",
-    awards: "Awards and extracurriculars",
+    awards: "Service and Awards",
     skills: "Skills",
     jumpTo: "Jump to:",
     next: "Next page:",

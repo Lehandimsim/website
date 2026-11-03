@@ -85,7 +85,7 @@
       "<div><h1>" + esc(H.heading) + "</h1>" +
       H.paragraphs.map(function (p) { return "<p>" + inline(p) + "</p>"; }).join("") +
       '<p>Email: <a href="mailto:' + esc(P.email) + '">' + esc(P.email) + "</a></p>" +
-      '<p class="quick-links"><a ' + U.linkAttrs(L.scholar) + ">Google Scholar</a> &middot; " +
+      '<p class="quick-links">' + U.profileLinks(L) + " &middot; " +
       '<a href="' + esc(U.url(L.cv)) + '">CV (PDF)</a> &middot; ' +
       "<a " + U.linkAttrs(L.photography) + ">Photography</a> &middot; " +
       "<a " + U.linkAttrs(L.blog) + ">Blog</a></p>" +
@@ -172,7 +172,8 @@
     var org = w.url ? "<a " + U.linkAttrs(w.url) + ">" + esc(w.org) + "</a>" : esc(w.org);
     return '<article class="role"><div class="head-row"><h3>' + org + '</h3><span class="dates">' + esc(w.dates) + "</span></div>" +
       '<div class="role-title">' + esc(w.role) + (w.type ? ", <em>" + esc(w.type) + "</em>" : "") + "</div>" +
-      "<ul>" + w.bullets.map(function (b) { return "<li>" + inline(b) + "</li>"; }).join("") + "</ul></article>";
+      (w.bullets.length ? "<ul>" + w.bullets.map(function (b) { return "<li>" + inline(b) + "</li>"; }).join("") + "</ul>" : "") +
+      "</article>";
   }
 
   // Teaching and service first (Lehan, 2026-10-02), then work, awards and skills.
@@ -186,7 +187,7 @@
       }).join("") +
       "<h2>Service</h2><ul class=\"plain\">" + X.service.map(function (s) { return "<li>" + inline(s) + "</li>"; }).join("") + "</ul>" +
       "<h2>Work experience</h2>" + X.work.map(role).join("") +
-      '<h2>Awards and extracurriculars</h2><ul class="awards">' + X.awards.map(function (a) {
+      '<h2>Service and Awards</h2><ul class="awards">' + X.awards.map(function (a) {
         return "<li><span>" + inline(a.text) + '</span><span class="dates">' + esc(a.years) + "</span></li>";
       }).join("") + "</ul>" +
       "<h2>Skills</h2>" + X.skills.map(function (s) {

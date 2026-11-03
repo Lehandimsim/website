@@ -109,6 +109,8 @@
 .pt-end-link { gap: 5px; color: #00136b; cursor: pointer; }
 .pt-end-link .xp-ico { width: 14px; height: 14px; flex: none; }
 .pt-end-link:hover { background: #c1d2ee; color: #000; border-color: var(--pt-select); }
+/* Google Scholar, LinkedIn and X as logos (SiteUtil.profileLinks), between Classic website and CV. */
+.pt-profiles { display: flex; align-items: center; padding: 0 6px; }
 
 /* Classic drop-down menus (File, Edit, ... before Start). */
 .pt-dropdown {
@@ -796,7 +798,6 @@
   .pt-tabs { flex: 1 1 auto; min-width: 0; }
   .pt-menubar-end { flex: none; padding-left: 2px; }
   .pt-end-link { padding: 0 7px; }
-  .pt-end-long { display: none; }   /* "Google Scholar" -> "Scholar" */
   .pt-act-hint { display: none; }
   .pt-act { height: 32px; padding: 0 7px; }
   .pt-act span { display: none; }

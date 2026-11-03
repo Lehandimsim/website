@@ -265,6 +265,7 @@ body.xp *, body.xp *::before, body.xp *::after { box-sizing: border-box; }
 .xp-sm-item .xp-ico { width: 26px; height: 26px; flex: none; }
 .xp-sm-col--right .xp-sm-item .xp-ico { width: 22px; height: 22px; }
 .xp-sm-item b { font-weight: bold; }
+.xp-sm-profiles { padding: 4px 10px; }   /* Google Scholar, LinkedIn and X logos in one row */
 .xp-sm-item:hover, .xp-sm-item:focus-visible { background: var(--xp-select); color: #fff; outline: none; }
 .xp-sm-sep { height: 1px; margin: 5px 10px; background: linear-gradient(to right, transparent, #c5c5c5 20%, #c5c5c5 80%, transparent); }
 .xp-sm-col--right .xp-sm-sep { background: linear-gradient(to right, transparent, #8db2e3 20%, #8db2e3 80%, transparent); }

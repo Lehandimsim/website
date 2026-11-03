@@ -67,7 +67,7 @@
           "<p>" + emailLine + "</p>" +
           '<div class="quick-links">' +
             '<a class="btn" href="' + esc(U.url("classic/index.html")) + '">' + esc(L.quickClassic) + "</a>" +
-            (P.links.scholar ? '<a class="btn" ' + U.linkAttrs(P.links.scholar) + ">" + esc(L.quickScholar) + ' <span aria-hidden="true">↗</span>' + newTabNote() + "</a>" : "") +
+            U.profileLinks(P.links, "lg") +
             '<a class="btn" href="' + esc(U.url(P.links.cv)) + '" target="_blank" rel="noopener">' + esc(L.quickCv) + "</a>" +
             '<a class="btn" ' + U.linkAttrs(P.links.photography) + ">" + esc(L.quickPhotography) + ' <span aria-hidden="true">↗</span>' + newTabNote() + "</a>" +
             '<a class="btn" ' + U.linkAttrs(P.links.blog) + ">" + esc(L.quickBlog) + ' <span aria-hidden="true">↗</span>' + newTabNote() + "</a>" +

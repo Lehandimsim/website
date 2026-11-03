@@ -15,6 +15,8 @@ Writes into site/assets/img/ (each JPEG well under 300 KB):
     lehan-wide.jpg       840 x 875   the photo on the first slide (PowerPoint, Overleaf)
     lehan-face.jpg       320 x 320   the Kitchen's chef logo, until an illustrated face exists
     social-card.png      1200 x 630  the picture shown when the site's link is shared (og:image)
+and into site/: favicon.ico (16/32/48), favicon.svg, apple-touch-icon.png (180), icon-192.png, the
+site icon shown in browser tabs and next to the site in search results (--icons-only: just these);
 and points SITE.person.photo / SITE.person.face in site/content.js at them, with alt text
 "Lehan Zhang". The placeholder (minion) files stay in assets/img/ until deleted by hand.
 """
@@ -29,6 +31,9 @@ ROOT = Path(__file__).resolve().parent.parent
 IMG = ROOT / "site" / "assets" / "img"
 CONTENT = ROOT / "site" / "content.js"
 FONTS = Path("C:/Windows/Fonts")
+
+SITE = ROOT / "site"
+ICON_ZOOM = 1.15   # the site icon: the photo filling the whole square, a little tighter than the avatar
 
 CROPS = {  # name: (width, height, extra zoom on top of --zoom)
     "lehan-headshot.jpg": (384, 384, 1.0),
@@ -84,6 +89,24 @@ def card(photo, fx, fy, zoom):
     return c
 
 
+def icons(photo, fx, fy, zoom, out):
+    """The site icon (browser tab, search results, phone home screen): the photo, square, edge to edge,
+    no border (Lehan, 2026-11-03). Same file names as before, so no page's <link> tags change."""
+    import base64, io
+    sq = crop(photo, 512, 512, fx, fy, zoom * ICON_ZOOM)
+    sq.save(out / "favicon.ico", sizes=[(16, 16), (32, 32), (48, 48)])
+    sq.resize((180, 180), Image.LANCZOS).save(out / "apple-touch-icon.png", optimize=True)
+    sq.resize((192, 192), Image.LANCZOS).save(out / "icon-192.png", optimize=True)
+    buf = io.BytesIO()
+    sq.resize((192, 192), Image.LANCZOS).save(buf, "JPEG", quality=85, optimize=True)
+    svg = ('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 192 192">'
+           '<image width="192" height="192" xlink:href="data:image/jpeg;base64,'
+           + base64.b64encode(buf.getvalue()).decode() + '"/></svg>')
+    (out / "favicon.svg").write_text(svg, encoding="utf-8", newline="\n")
+    for n in ("favicon.ico", "favicon.svg", "apple-touch-icon.png", "icon-192.png"):
+        print(f"wrote {out / n}  ({(out / n).stat().st_size // 1024} KB)")
+
+
 def update_content(names):
     js = CONTENT.read_text(encoding="utf-8")
     rel = lambda n: "assets/img/" + n
@@ -110,6 +133,7 @@ def main():
     ap.add_argument("--focus", default="0.5,0.38")
     ap.add_argument("--zoom", type=float, default=1.0)
     ap.add_argument("--card-only", action="store_true")
+    ap.add_argument("--icons-only", action="store_true", help="only the site icon files (site/favicon.* etc.)")
     ap.add_argument("--out", help="write here instead of site/assets/img/, and leave content.js alone")
     a = ap.parse_args()
     if not a.photo and not a.card_only:
@@ -117,6 +141,11 @@ def main():
     fx, fy = (float(v) for v in a.focus.split(","))
     out = Path(a.out) if a.out else IMG
     out.mkdir(parents=True, exist_ok=True)
+
+    if a.photo and not a.card_only:
+        icons(ImageOps.exif_transpose(Image.open(a.photo)).convert("RGB"), fx, fy, a.zoom, Path(a.out) if a.out else SITE)
+        if a.icons_only:
+            return
 
     photo = None
     if a.photo and not a.card_only:
