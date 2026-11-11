@@ -87,6 +87,7 @@
         if (p.coauthors.length) sub.push(U.withCoauthorsMd(p));
         var meta = paperMeta(p);
         if (meta) sub.push(meta);
+        if (p.media && p.media.length) sub.push((R.pressLabel || "Press") + ": " + p.media.map(function (m) { return "[" + m.outlet + "](" + m.url + ")"; }).join(", "));
         return { text: "**" + p.title + "**", sub: sub };
       })
     }];
@@ -104,16 +105,20 @@
     }
 
     // Talks: this year's on the left, earlier years on the right. Upcoming talks are marked.
-    var newest = S.talks[0], older = S.talks.slice(1);
+    // Left column: this year and any later year (upcoming talks in 2027 sit above 2026); right column: earlier years.
+    var thisYear = new Date().getFullYear();
+    var current = S.talks.filter(function (y) { return y.year >= thisYear; }), older = S.talks.filter(function (y) { return y.year < thisYear; });
     byPage.talks = [{
       id: "talks", page: "talks", layout: "two-column", dense: true,
       title: label("talks"),
       columns: [
         {
-          heading: String(newest.year),
-          bullets: newest.items.map(function (t) {
-            return talkLine(t) + (U.isUpcoming(newest.year, t.month) ? " · **" + (T.upcoming || "upcoming") + "**" : "");
-          })
+          heading: current[current.length - 1].year === current[0].year ? String(current[0].year) : current[current.length - 1].year + "–" + current[0].year,
+          bullets: current.reduce(function (acc, y) {
+            return acc.concat(y.items.map(function (t) {
+              return talkLine(t, y.year !== thisYear ? y.year : undefined) + (U.isUpcoming(y.year, t.month) ? " · **" + (T.upcoming || "upcoming") + "**" : "");
+            }));
+          }, [])
         },
         {
           heading: older.length ? older[older.length - 1].year + "–" + older[0].year : "",

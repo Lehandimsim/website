@@ -83,8 +83,9 @@
     if (R.interests && R.interests.length) html += "<dt>" + inline(R.interestsLabel) + "</dt><dd>" + chips(R.interests) + "</dd>";
     if (R.methods && R.methods.length) html += "<dt>" + inline(R.methodsLabel) + '</dt><dd class="is-methods">' + chips(R.methods) + "</dd>";
     html += "</dl>";
-    html += "<h2>" + esc(H.papers) + "</h2>";
-    html += R.papers.map(function (p) {
+    html += U.paperGroups().map(function (g) {
+      return "<h2>" + esc(g.label || H.papers) + "</h2>" + g.items.map(function (it) {
+      var p = it.p;
       var status = [p.status, p.year].filter(function (x) { return x != null && x !== ""; }).join(", ");
       if (status && p.statusUrl) status = "[" + status + "](" + p.statusUrl + ")";
       var withLine = U.withCoauthorsMd(p);   // "with [Name](homepage), ...": names link to their homepages
@@ -96,7 +97,9 @@
         "<h3>" + inline(p.title) + "</h3>" +
         (withLine ? '<p class="paper-with">' + inline(withLine) + "</p>" : "") +
         (meta.length ? '<p class="paper-meta">' + meta.join(' <span class="dot" aria-hidden="true">·</span> ') + "</p>" : "") +
+        (p.media && p.media.length ? '<p class="paper-with">' + esc(R.pressLabel || "Press") + ": " + p.media.map(function (m) { return link(m.outlet, m.url); }).join(" · ") + "</p>" : "") +
         "</div>";
+    }).join("");
     }).join("");
     return html;
   }

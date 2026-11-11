@@ -380,8 +380,10 @@
       }).join("") + "</dl>";
     }
     if (R.papers && R.papers.length) {
-      html += h2(TEXT.papers) + '<ol class="pt-papers">';
-      R.papers.forEach(function (p, i) {
+      U.paperGroups().forEach(function (g) {
+      html += h2(g.label || TEXT.papers) + '<ol class="pt-papers">';
+      g.items.forEach(function (it) {
+        var p = it.p, i = it.i;
         var meta = [p.status, p.year].filter(function (v) { return v != null && v !== ""; }).join(", ");
         if (meta && p.statusUrl) meta = "[" + meta + "](" + p.statusUrl + ")";
         var with_ = U.withCoauthorsMd(p);
@@ -396,10 +398,12 @@
             (with_ ? '<p class="pt-with">' + inline(with_) + "</p>" : "") +
             (meta ? '<p class="pt-meta">' + inline(meta) + "</p>" : "") +
             linkButtons(p.links, absBtn) +
+            (p.media && p.media.length ? '<p class="pt-with">' + inline((R.pressLabel || "Press") + ": " + p.media.map(function (m) { return "[" + m.outlet + "](" + m.url + ")"; }).join(" · ")) + "</p>" : "") +
           "</div>" +
         "</li>";
       });
       html += "</ol>";
+      });
     }
     return html + next("research") + "</div>";
   }

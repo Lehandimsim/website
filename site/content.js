@@ -62,13 +62,22 @@ window.SITE = {
     emailLine: "Email: lehan.zhang@gess.ethz.ch"
   },
 
+  // The start page's "News" box, newest first (Lehan, 2026-11-11). tag: "New" or "Upcoming"; url: a site address or a web address.
+  news: [
+    { tag: "New", date: "Nov 2026", text: "The Philosophy Engine: methodology report and interactive version", url: "research/ai-philosophy/index.html" },
+    { tag: "Upcoming", date: "Nov 26, 2026", text: "OB Research Seminar, HEC Lausanne (invited talk)", url: "classic/talks.html" }
+  ],
+
   research: {
+    pressLabel: "Press",
     interestsLabel: "Research interests",
     interests: ["culture and identity", "media", "political economics"],
     // Shown on its own line under the interests (Lehan, 2026-10-02).
     methodsLabel: "Methods",
     methods: ["Causal inference", "unstructured data", "NLP/AI"],
     abstractLabel: "Abstract",
+    // Papers are listed under headings. A paper without "group" is in the first group; set group: "Other Projects" to move one (Lehan, 2026-11-11).
+    groups: ["Working Papers & In Progress", "Other Projects"],
     // Coauthors' homepages (checked 2026-10-02). A coauthor's name links here wherever papers are listed.
     coauthorPages: {
       "Gabriele Gratton": "https://gratton.org/",
@@ -77,7 +86,9 @@ window.SITE = {
       "Elliott Ash": "https://elliottash.com/",
       "Sergio Galletta": "https://sergio-galletta.com/",
       "Federico Masera": "https://sites.google.com/site/fgmasera/home",
-      "Alexander Hoyle": "https://alexanderhoyle.com/"
+      "Alexander Hoyle": "https://alexanderhoyle.com/",
+      "Matthew Bonci": "https://www.linkedin.com/in/matthew-bonci/",
+      "David Zollikofer": "https://www.davidrzs.com/"
     },
     // statusUrl (optional): the status line, e.g. "CEPR Discussion Paper, 2026", links to it; links[] stay as buttons.
     // abstract: verbatim from the paper's PDF (only line-break hyphens rejoined). Papers without a PDF have none.
@@ -91,6 +102,11 @@ window.SITE = {
         links: [{ label: "PDF", url: "research/adding-fuel/AddingFuel.pdf" },   // latest v4 from Overleaf (Lehan, 2026-10-15)
                 { label: "Online Appendix", url: "research/adding-fuel/AddingFuel_onlineAppendixB.pdf" },   // Appendix B (af_supplementary.tex), same style as PDF (Lehan, 2026-10-20)
                 { label: "Interactive Version", url: "research/adding-fuel/index.html", isNew: true }],   // isNew: coloured, "new" next to it, jiggles on hover (Lehan, 2026-10-16)
+        // Press coverage, shown in a "Press (n)" fold next to the abstract (Lehan, 2026-11-11).
+        media: [
+          { outlet: "UNSW Newsroom", title: "How political violence risks deepening democratic divides", url: "https://www.unsw.edu.au/newsroom/news/2026/10/how-political-violence-risks-deepening-democratic-divides", date: "Oct 2026" },
+          { outlet: "Eureka Street", title: "Threats against MPs are rising: we must break the spiral of violence", url: "https://www.eurekastreet.com.au/threats-against-mps-are-rising-we-must-break-the-spiral-of-violence", date: "Oct 2026" }
+        ],
         // From the PDF dated October 15, 2026.
         abstract: "Do politicians polarize public debates? We collect 4.75 million tweets debating 57 U.S. mass shootings. We exploit variation in the timing of politicians’ first interventions into each debate and show that partisan and issue-polarized language increases after a politician first tweets about the event. These changes are not preceded by trends in polarization or debate activity, and the timing of political interventions is unrelated to event characteristics or the timing or content of tweets from other celebrities or news organizations. Comparable interventions by non-political celebrities generate no such effects. Politicians’ interventions are themselves unusually partisan, and interventions supplying partisan language produce larger subsequent shifts in both partisan and issue-polarized language. Our findings suggest that politicians supply partisan frames that shape subsequent public discourse and point to elite communication as a supply-side source of polarization on social media."
       },
@@ -111,12 +127,29 @@ window.SITE = {
         status: null,
         year: null,
         links: []
+      },
+      {
+        title: "The Philosophy Engine: Automating Philosophical Discovery",
+        group: "Other Projects",
+        coauthors: ["Matthew Bonci", "David Zollikofer"],   // alphabetical by surname (Lehan, 2026-11-11)
+        status: "Methodology Report, AI Philosophy Competition",
+        year: 2026,
+        links: [{ label: "Interactive Report", url: "research/ai-philosophy/index.html" },
+                { label: "PDF (more detailed)", url: "research/ai-philosophy/AI_Philosophy_Methodology_Report.pdf" },
+                { label: "Video", url: "research/ai-philosophy/index.html#video" }],
+        abstract: "Can AI systems originate genuinely novel research ideas, rather than merely write convincing academic papers? We developed a literature-grounded AI research pipeline that maps academic debates, identifies unanswered questions, and generates candidate theses both within and across research fields. Starting from 32,685 philosophy articles, the system uses citation networks to identify debates, then develops promising ideas into full papers through iterative screening, independent AI peer review, and editorial revision. We evaluate the resulting papers through blind comparisons with published scholarship, including held-out papers inaccessible to the AI authors. Humans designed the research architecture and evaluation framework; AI generated the substantive arguments and wrote the papers."   // process-only named edition: essay titles and texts withheld until results (Lehan, 2026-11-11)
       }
     ]
   },
 
   // Newest first. month (1-12) is used only to mark upcoming talks; leave null if unknown.
   talks: [
+    {
+      year: 2027,
+      items: [
+        { event: "Barcelona Political Science Colloquium", month: 5, detail: "May, University of Barcelona" }   // Lehan, 2026-11-11
+      ]
+    },
     {
       year: 2026,
       items: [

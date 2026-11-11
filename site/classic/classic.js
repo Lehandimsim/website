@@ -94,23 +94,32 @@
 
   function renderResearch() {
     var R = S.research;
+    function paper(p, i) {
+      var links = p.links || [];
+      var title = links.length ? "<a " + U.linkAttrs(links[0].url) + ">" + esc(p.title) + "</a>" : esc(p.title);
+      var status = p.status ? "<em>" + esc(p.status) + "</em>" + (p.year ? ", " + p.year : "") : "";
+      if (status && p.statusUrl) status = "<a class=\"text-link\" " + U.linkAttrs(p.statusUrl) + ">" + status + "</a>";
+      var chips = links.map(function (l) {
+        return '<a class="chip' + (l.isNew ? " chip--new" : "") + '" ' + U.linkAttrs(l.url) + ">" + esc(l.label) + "</a>" +
+          (l.isNew ? '<span class="new-tag">new</span>' : "");
+      }).join("");
+      return '<article class="paper" id="paper-' + (i + 1) + '"><h3>' + title + "</h3>" +
+        (p.coauthors.length ? '<p class="paper-meta">' + inline(U.withCoauthorsMd(p)) + "</p>" : "") +
+        (status || chips ? '<p class="paper-meta">' + status + chips + "</p>" : "") +
+        (p.abstract ? '<details class="abstract"><summary>' + esc(R.abstractLabel || "Abstract") + "</summary>" +
+          "<p>" + esc(p.abstract) + "</p></details>" : "") +
+        (p.media && p.media.length ? '<details class="abstract press"><summary>' + esc(R.pressLabel || "Press") + " (" + p.media.length + ")</summary>" +
+          '<ul class="press-list">' + p.media.map(function (m) {
+            return '<li><span class="outlet">' + esc(m.outlet) + "</span><a " + U.linkAttrs(m.url) + ">" + esc(m.title) + "</a>" +
+              (m.date ? ' <span class="muted">&middot; ' + esc(m.date) + "</span>" : "") + "</li>";
+          }).join("") + "</ul></details>" : "") +
+        "</article>";
+    }
     return "<h1>" + esc(label("research")) + "</h1>" +
       '<p class="lead">' + U.researchLines().map(esc).join("<br>") + "</p>" +
-      R.papers.map(function (p, i) {
-        var links = p.links || [];
-        var title = links.length ? "<a " + U.linkAttrs(links[0].url) + ">" + esc(p.title) + "</a>" : esc(p.title);
-        var status = p.status ? "<em>" + esc(p.status) + "</em>" + (p.year ? ", " + p.year : "") : "";
-        if (status && p.statusUrl) status = "<a class=\"text-link\" " + U.linkAttrs(p.statusUrl) + ">" + status + "</a>";
-        var chips = links.map(function (l) {
-          return '<a class="chip' + (l.isNew ? " chip--new" : "") + '" ' + U.linkAttrs(l.url) + ">" + esc(l.label) + "</a>" +
-            (l.isNew ? '<span class="new-tag">new</span>' : "");
-        }).join("");
-        return '<article class="paper" id="paper-' + (i + 1) + '"><h2>' + title + "</h2>" +
-          (p.coauthors.length ? '<p class="paper-meta">' + inline(U.withCoauthorsMd(p)) + "</p>" : "") +
-          (status || chips ? '<p class="paper-meta">' + status + chips + "</p>" : "") +
-          (p.abstract ? '<details class="abstract"><summary>' + esc(R.abstractLabel || "Abstract") + "</summary>" +
-            "<p>" + esc(p.abstract) + "</p></details>" : "") +
-          "</article>";
+      U.paperGroups().map(function (g) {
+        return (g.label ? '<h2 class="group">' + esc(g.label) + "</h2>" : "") +
+          g.items.map(function (it) { return paper(it.p, it.i); }).join("");
       }).join("");
   }
 
@@ -206,7 +215,7 @@
   setupFunMenu();
 
   // Statistics (no-op unless analytics is on): abstracts opened, fun versions picked from the footer.
-  Array.prototype.forEach.call(document.querySelectorAll("details.abstract"), function (d, i) {
+  Array.prototype.forEach.call(document.querySelectorAll("details.abstract:not(.press)"), function (d, i) {
     d.addEventListener("toggle", function () { if (d.open) U.track("classic_abstract_opened", { paper: i + 1 }); });
   });
   Array.prototype.forEach.call(document.querySelectorAll("#fun-list a"), function (a, i) {

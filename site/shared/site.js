@@ -88,6 +88,22 @@
     }));
   }
 
+  // The papers in display order under their headings: [{label, items: [{p, i}]}], i = index in research.papers
+  // (the number the page and popups use). A paper without "group" goes in the first group.
+  function paperGroups() {
+    var R = (window.SITE && SITE.research) || {}, names = R.groups || [""], out = names.map(function (n) { return { label: n, items: [] }; });
+    (R.papers || []).forEach(function (p, i) {
+      var g = out.filter(function (x) { return x.label === p.group; })[0] || out[0];
+      g.items.push({ p: p, i: i });
+    });
+    return out.filter(function (g) { return g.items.length; });
+  }
+
+  // Press items of a paper as mini-markdown lines: "UNSW Newsroom: [Headline](url), Oct 2026".
+  function pressLines(paper) {
+    return (paper.media || []).map(function (m) { return m.outlet + ": [" + m.title + "](" + m.url + ")" + (m.date ? ", " + m.date : ""); });
+  }
+
   // "Research interests: a, b, c" and "Methods: x, y, z", one string per line (mini-markdown free).
   function researchLines() {
     var R = (window.SITE && SITE.research) || {}, out = [];
@@ -309,6 +325,8 @@
     withCoauthors: withCoauthors,
     withCoauthorsMd: withCoauthorsMd,
     researchLines: researchLines,
+    paperGroups: paperGroups,
+    pressLines: pressLines,
     isUpcoming: isUpcoming,
     page: page,
     funVersion: funVersion,

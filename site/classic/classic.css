@@ -85,9 +85,9 @@ p { margin: 0 0 14px; }
 /* Research */
 .paper { padding: 16px 0 14px; border-top: 1px solid var(--rule); }
 .paper:last-child { border-bottom: 1px solid var(--rule); }
-.paper h2 { font: 600 18.5px/1.4 var(--sans); margin: 0 0 4px; }
-.paper h2 a { color: var(--ink); }
-.paper h2 a:hover { color: var(--accent); }
+.paper h3 { font: 600 18.5px/1.4 var(--sans); margin: 0 0 4px; }
+.paper h3 a { color: var(--ink); }
+.paper h3 a:hover { color: var(--accent); }
 .paper-meta { color: var(--muted); font-size: 15.5px; margin: 0; }
 .chip {
   display: inline-block;
@@ -118,6 +118,8 @@ p { margin: 0 0 14px; }
 .abstract[open] summary::before { transform: rotate(90deg); }
 .abstract summary:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
 .abstract p { margin: 8px 0 4px; font-size: 16px; line-height: 1.6; max-width: 46em; }
+.press-list { list-style: none; margin: 8px 0 4px; padding: 0; display: grid; gap: 10px; font-size: 16px; line-height: 1.45; max-width: 46em; }
+.press-list .outlet { display: block; font-variant-caps: all-small-caps; font-weight: 700; letter-spacing: .04em; color: var(--muted); }
 
 /* Talks */
 .talks { list-style: none; margin: 0; padding: 0; }

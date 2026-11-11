@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="en" data-edition="named" data-researcher="off">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Philosophy Engine: Automating Philosophical Discovery Through Literature, Argument, and Counterargument</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #ffffff; --paper: #fbfaf6; --soft: #f4f2ec; --rule: #e4dfd5; --ink: #1f2328; --ink-2: #3d434b; --muted: #5f6670;
+  --accent: #1f4e8c;
+  --ai: #2b78bd; --human: #b8326f; --chosen: #a87a00; --fail: #8b9097;
+  --ai-wash: #e2edf8; --chosen-wash: #f6edd2; --human-wash: #f7e3ec; --home: #1d5f99; --donor: #6fa6d6;
+  --wall: #4a5059;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --serif: "TeX Gyre Pagella", Palatino, "Book Antiqua", Georgia, serif;
+  --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  color-scheme: dark;
+  --bg: #0f141b; --paper: #141a23; --soft: #18202b; --rule: #273242; --ink: #e9edf2; --ink-2: #c3ccd7; --muted: #95a1b0;
+  --accent: #9cc7ef; --ai: #3a95c9; --human: #cc4d8a; --chosen: #b38d22; --fail: #6b7584;
+  --ai-wash: #13283a; --chosen-wash: #2c2410; --human-wash: #2e1522; --home: #5aa8e0; --donor: #2f6f9f; --wall: #c9d2dd; } }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0f141b; --paper: #141a23; --soft: #18202b; --rule: #273242; --ink: #e9edf2; --ink-2: #c3ccd7; --muted: #95a1b0;
+  --accent: #9cc7ef; --ai: #3a95c9; --human: #cc4d8a; --chosen: #b38d22; --fail: #6b7584;
+  --ai-wash: #13283a; --chosen-wash: #2c2410; --human-wash: #2e1522; --home: #5aa8e0; --donor: #2f6f9f; --wall: #c9d2dd; }
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.62 var(--sans); overflow-x: hidden; }
+a { color: var(--accent); text-underline-offset: 2px; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; border-radius: 3px; }
+button, select, input { font: inherit; color: inherit; }
+.skip { position: absolute; left: -999px; } .skip:focus { left: 8px; top: 8px; background: var(--bg); padding: 6px 10px; z-index: 30; }
+.kicker { font: 600 12.5px/1.3 var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+h1 { font-size: clamp(38px, 6.4vw, 70px); line-height: 1.05; letter-spacing: -.02em; margin: 8px 0 22px; text-wrap: balance; }
+h2 { font-size: clamp(23px, 3vw, 30px); line-height: 1.2; margin: 0 0 12px; text-wrap: balance; }
+h3 { font-size: 18px; margin: 18px 0 6px; }
+p { margin: 0 0 13px; } .muted { color: var(--muted); } .small { font-size: 15px; } .tiny { font-size: 13px; }
+.lede { font-size: clamp(18px, 2vw, 21px); color: var(--ink-2); max-width: 720px; }
+table { border-collapse: collapse; width: 100%; } td, th { text-align: left; vertical-align: top; padding: 5px 8px; border-bottom: 1px solid var(--rule); font-size: 14.5px; }
+th { font-weight: 600; color: var(--ink-2); }
+.wrap { overflow-x: auto; }
+.heat td:nth-child(2) { white-space: nowrap; }
+.heat td.b { text-align: center; font-variant-numeric: tabular-nums; min-width: 2.2em; }
+.heat th.b { text-align: center; font-weight: 600; font-size: 12px; }
+.badge { display: inline-block; font: 600 11px/1 var(--mono); border: 1px solid var(--chosen); color: var(--chosen); border-radius: 3px; padding: 2px 4px; margin-left: 4px; }
+#cpl text, #kmap text { fill: var(--ink); font: 12px var(--sans); }
+#kmap [role=button] { cursor: pointer; }
+#kmap [role=button]:focus-visible { outline: 2px solid var(--accent); }
+header.top { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
+header.top .in { max-width: 1280px; margin: 0 auto; display: flex; gap: 10px; align-items: center; padding: 6px 16px; font-size: 14px; }
+header.top .ttl { font-weight: 650; margin-right: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.toggle { border: 1px solid var(--rule); background: var(--bg); border-radius: 999px; padding: 3px 12px; cursor: pointer; min-height: 32px; }
+.toggle[aria-pressed=true] { background: var(--ink); color: var(--bg); }
+html[data-edition=named-pre] .essay { display: none; }
+html:not([data-edition=named-pre]) .embargoed { display: none; }
+.embargoed { border: 1px dashed var(--muted); color: var(--muted); padding: 6px 10px; border-radius: 5px; font-size: 14.5px; }
+html:not([data-researcher=on]) .rm { display: none; }
+.rm { font: 12.5px/1.5 var(--mono); color: var(--muted); background: var(--soft); border-left: 3px solid var(--ai); padding: 6px 10px; margin: 10px 0; overflow-wrap: anywhere; }
+.fact { background: none; border: 0; padding: 0 1px; border-bottom: 1px dotted currentColor; cursor: help; font-variant-numeric: tabular-nums; font-weight: 650; }
+.fact.st-provisional::after { content: "…"; font-size: .8em; color: var(--chosen); }
+.prov { position: absolute; z-index: 25; max-width: 340px; background: #1f2328; color: #fff; font: 13px/1.45 var(--sans); padding: 8px 10px; border-radius: 6px; margin-top: 4px; box-shadow: 0 8px 26px #0003; }
+.prov code { font-size: 12px; overflow-wrap: anywhere; color: #e8e6e1; } .prov b { color: #ffd98a; }
+.hero { max-width: 1080px; margin: 0 auto; padding: 8vh 20px 2vh; }
+.byline { color: var(--muted); font-size: 15px; margin: 0 0 26px; }
+.strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin: 28px 0 8px; padding: 0; }
+.strip div { padding: 6px 4px; border-top: 2px solid var(--rule); }
+.strip dd { margin: 0; font-size: clamp(26px, 3.2vw, 36px); font-weight: 650; line-height: 1.1; }
+.strip dt { font-size: 13px; color: var(--muted); margin-top: 4px; }
+.found { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 40px; margin-top: 6vh; }
+.found ol { padding-left: 20px; font-size: 15.5px; margin: 0; } .found li { margin-bottom: 8px; } .found .fact { font-weight: inherit; }
+details.box { background: var(--soft); border-radius: 6px; padding: 10px 14px; margin: 12px 0; } details.box summary { cursor: pointer; font-weight: 600; }
+.vid { display: inline-block; font-weight: 600; text-decoration: none; border: 1px solid var(--rule); border-radius: 999px; padding: 6px 14px; margin-bottom: 6px; }
+.toc { font-size: 14.5px; padding-left: 22px; margin: 0 0 6px; columns: 2; column-gap: 20px; } .toc li { margin-bottom: 3px; }
+.part { font: 600 11.5px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 8px 0 3px; }
+.status-line { font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--chosen); padding: 4px 10px; margin: 10px 0 0; max-width: 820px; }
+.scrolly { max-width: 1280px; margin: 0 auto; padding: 0 16px; display: grid; grid-template-columns: minmax(0, .92fr) minmax(0, 1.08fr); gap: 40px; border-top: 1px solid var(--rule); }
+.stage { position: sticky; top: 52px; height: calc(100vh - 60px); display: flex; flex-direction: column; justify-content: center; }
+#funnel { width: 100%; max-height: calc(100vh - 150px); }
+#funnel text { fill: var(--muted); font: 11.5px var(--sans); }
+#funnel .lbl { transition: opacity .5s; } #funnel .cnt { fill: var(--ink); font-weight: 650; font-size: 13px; }
+#funnel circle.e { transition: cx .7s ease, cy .7s ease, r .5s, opacity .5s, fill .5s; }
+#funnel .basin { fill: none; stroke: var(--rule); stroke-width: 1.4; transition: opacity .5s, stroke .5s; }
+#funnel .gate { stroke: var(--rule); stroke-width: 1.3; stroke-dasharray: 4 5; transition: stroke .4s, opacity .5s; }
+#funnel .gate.on { stroke: var(--ink-2); }
+#funnel .wall { stroke: var(--wall); stroke-width: 1.6; fill: none; transition: opacity .5s; }
+#funnel .seal { fill: var(--chosen-wash); stroke: var(--chosen); stroke-width: 1.4; transition: opacity .6s; }
+@media (prefers-reduced-motion: reduce) { #funnel * { transition: none !important; } html { scroll-behavior: auto; } }
+.stagecap { font-size: 14px; color: var(--ink-2); min-height: 3.4em; border-top: 1px solid var(--rule); padding-top: 6px; }
+.chap { font: 600 11.5px var(--mono); color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.story { padding-bottom: 30vh; min-width: 0; }
+.step { padding: 7vh 0 20vh; }
+.step.short { padding-bottom: 30vh; }
+.panel { background: var(--paper); border: 1px solid var(--rule); border-radius: 8px; padding: 14px 16px; margin: 12px 0; }
+.choice, .seg { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.choice button, .seg button, .chip { border: 1px solid var(--rule); background: var(--bg); border-radius: 6px; padding: 6px 12px; min-height: 40px; cursor: pointer; }
+.choice button[aria-pressed=true], .seg button[aria-pressed=true], .chip[aria-pressed=true] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.chip { min-height: 34px; padding: 4px 9px; font-size: 13.5px; }
+.reveal { border-left: 3px solid var(--ai); padding: 6px 10px; background: var(--ai-wash); font-size: 15px; margin-top: 8px; }
+.trap { border-left: 3px solid var(--fail); padding: 6px 10px; background: var(--soft); font-size: 14.5px; margin: 6px 0; }
+.trap b { font-family: var(--mono); font-size: 12px; text-transform: uppercase; color: var(--muted); }
+blockquote.th { font-family: var(--serif); font-size: 17.5px; line-height: 1.5; margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--chosen); }
+.lanes { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 10px 0; }
+.lane { flex: 1 1 120px; border: 1px solid var(--rule); border-top: 4px solid var(--ai); border-radius: 6px; padding: 6px 8px; font-size: 13px; background: var(--bg); }
+.lane.h { border-top-color: var(--human); } .lane.p { border-top-color: var(--fail); } .lane b { display: block; font-size: 13.5px; }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13.5px; color: var(--ink-2); margin: 6px 0; }
+.sw { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.items { max-height: 420px; overflow-y: auto; border: 1px solid var(--rule); border-radius: 6px; }
+.item { padding: 8px 10px; border-bottom: 1px solid var(--rule); font-size: 14.5px; }
+.item .f { font-family: var(--mono); font-size: 12.5px; color: var(--ink-2); margin: 3px 0; }
+.item .q { font-family: var(--serif); color: var(--muted); font-size: 14.5px; }
+.tag { display: inline-block; font: 11.5px/1 var(--mono); padding: 3px 5px; border: 1px solid var(--rule); border-radius: 3px; margin: 2px 3px 0 0; color: var(--muted); }
+.ty { font: 600 11px var(--mono); text-transform: uppercase; color: var(--ai); }
+.pair { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: start; }
+.pair .op { font: 600 13px var(--mono); color: var(--chosen); padding-top: 18px; text-align: center; }
+.verdict { font: 600 12px var(--mono); text-transform: uppercase; }
+.v-kill { color: var(--fail); } .v-keep { color: var(--ai); }
+.bars .row { display: grid; grid-template-columns: 9.5em 1fr 4.5em; gap: 8px; align-items: center; font-size: 13.5px; margin: 3px 0; }
+.bars .bar { height: 12px; background: var(--ai); border-radius: 0 4px 4px 0; }
+.bars .bar.k { background: var(--fail); } #killwall .row { grid-template-columns: 15em 1fr 3em; } .bars .row span:last-child { font-variant-numeric: tabular-nums; color: var(--ink-2); }
+.hash { font: 13px/1.5 var(--mono); overflow-wrap: anywhere; background: var(--chosen-wash); padding: 8px 10px; border-radius: 5px; }
+.status { font: 600 10.5px/1 var(--mono); text-transform: uppercase; letter-spacing: .05em; border: 1px solid; border-radius: 3px; padding: 3px 5px; white-space: nowrap; }
+.st-done { color: var(--ai); } .st-partial, .st-planned { color: var(--chosen); } .st-not_run { color: var(--fail); }
+ins { background: var(--chosen-wash); text-decoration: none; } del { color: var(--muted); }
+.answer { max-width: 900px; margin: 0 auto; padding: 8vh 20px; }
+.answer .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+footer { max-width: 1080px; margin: 0 auto; padding: 4vh 20px 8vh; font-size: 13px; color: var(--muted); border-top: 1px solid var(--rule); }
+.overview, .short, .part2 { max-width: 1080px; margin: 0 auto; padding: 4vh 20px; }
+.ov p { font-size: 16.5px; max-width: 820px; } .ov b { font-weight: 650; }
+.parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; margin: 18px 0 0; }
+.parts a { display: block; text-decoration: none; color: var(--ink); border: 1px solid var(--rule); border-left: 4px solid var(--accent); border-radius: 6px; padding: 10px 12px; }
+.parts a span { display: block; font-size: 14px; color: var(--muted); margin-top: 2px; }
+.part-h { font-size: clamp(28px, 4vw, 40px); }
+.mini-toc { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 14.5px; }
+.sec { border-top: 1px solid var(--rule); padding: 18px 0 22px; }
+.sec h3 { font-size: clamp(19px, 2.2vw, 23px); line-height: 1.3; margin: 4px 0 10px; text-wrap: balance; }
+.deeper { display: inline-block; font-weight: 600; font-size: 14.5px; margin-top: 4px; }
+.flow { display: flex; flex-wrap: wrap; gap: 6px; align-items: stretch; margin: 6px 0 12px; }
+.flow div { flex: 1 1 110px; border: 1px solid var(--rule); border-top: 3px solid var(--ai); border-radius: 6px; padding: 6px 8px; font-size: 13.5px; }
+.flow div b { display: block; font-size: 20px; } .flow div.h { border-top-color: var(--human); } .flow div.g { border-top-color: var(--chosen); }
+.path { padding-left: 22px; } .path li { margin-bottom: 5px; }
+.grp { border-top: 3px solid var(--ink); padding: 6vh 0 0; } .grp h2 { font-size: clamp(26px, 3.4vw, 34px); }
+.fig { margin: 10px 0; } .fig table td, .fig table th { font-size: 13.5px; padding: 4px 6px; vertical-align: middle; }
+.fig .cap { font-size: 13px; color: var(--muted); margin-top: 6px; } .fig .grph td { font-weight: 600; color: var(--ink-2); padding-top: 10px; border-bottom: 0; }
+.mk { display: inline-block; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--fail); margin-right: 4px; vertical-align: -2px; }
+.mk.won { background: var(--ai); border-color: var(--ai); } .mk.won.gold { background: var(--chosen); border-color: var(--chosen); } .mk.tie { background: linear-gradient(90deg, var(--ai) 50%, transparent 50%); border-color: var(--ai); }
+.strip-svg { width: 200px; max-width: 100%; height: 22px; display: block; } .strip-svg text { fill: var(--muted); font: 10px var(--sans); }
+@media (max-width: 900px) {
+  .scrolly { grid-template-columns: 1fr; gap: 0; }
+  .stage { position: sticky; top: 44px; height: auto; z-index: 5; background: var(--bg); padding: 4px 0; border-bottom: 1px solid var(--rule); }
+  #funnel { max-height: 24vh; } .stagecap { min-height: 0; font-size: 12.5px; line-height: 1.4; }
+  .chap { font-size: 10.5px; } .step { scroll-margin-top: calc(44px + 24vh + 70px); }
+  .found { grid-template-columns: 1fr; gap: 20px; } .toc { columns: 1; }
+  .step { padding: 4vh 0 10vh; } .pair { grid-template-columns: 1fr; } .pair .op { padding: 0; }
+  .bars .row, #killwall .row { grid-template-columns: 7.5em 1fr 4em; }
+}
+@media (max-width: 600px) { #funnel { max-height: 15vh; } #funnel .lbl { display: none; } .step { scroll-margin-top: calc(44px + 15vh + 70px); } }
+@media print { header.top, .stage { display: none; } .scrolly { display: block; } .step { padding: 8px 0; } details { display: block; } }
+.prompt { margin: 14px 0; padding: 4px 0 4px 16px; border-left: 2px solid var(--accent); max-width: 820px; }
+.prompt .pl { font: 600 12px/1.4 var(--sans); font-variant: small-caps; letter-spacing: .06em; text-transform: lowercase; color: var(--accent); margin: 0 0 4px; }
+.prompt .why { font-size: 14.5px; color: var(--ink-2); margin: 0 0 8px; }
+.prompt blockquote { margin: 0; font: 15.5px/1.55 var(--serif); color: var(--ink); white-space: pre-line; }
+.prompt blockquote::before { content: "Prompt text begins"; display: block; font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.prompt blockquote::after { content: "Prompt text ends"; display: block; font: 600 10.5px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: 6px; }
+.tcap { font-size: 13.5px; color: var(--ink-2); margin: 14px 0 4px; max-width: 900px; }
+.tcap b, .cap b { font-weight: 650; color: var(--ink); }
+figure.fig { margin: 12px 0; }
+.fig .cap, figcaption.cap { font-size: 13.5px; color: var(--ink-2); margin-top: 6px; max-width: 900px; }
+.lanelegend { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 13.5px; color: var(--ink-2); margin: 4px 0 0; }
+.lanelegend i { display: inline-block; width: 22px; height: 12px; border: 1px solid var(--rule); border-top: 4px solid var(--ai); border-radius: 3px; margin-right: 6px; vertical-align: -1px; }
+.lanelegend i.h { border-top-color: var(--human); } .lanelegend i.p { border-top-color: var(--fail); }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 10px 0; }
+.tiles div { border-top: 2px solid var(--rule); padding: 6px 2px; } .tiles b { display: block; font-size: 26px; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.tiles span { font-size: 13.5px; color: var(--muted); }
+.papers3 { display: grid; gap: 10px; margin: 8px 0; }
+.papers3 .pp { border: 1px solid var(--rule); border-left: 4px solid var(--chosen); border-radius: 6px; padding: 10px 14px; background: var(--paper); }
+.papers3 .pp h4 { margin: 0 0 4px; font: 600 17px/1.35 var(--serif); }
+.papers3 .pp .meta { font-size: 13.5px; color: var(--muted); margin: 0 0 6px; }
+.papers3 .pp p { font-size: 15px; margin: 0; }
+.lit td:first-child { white-space: nowrap; font-weight: 600; color: var(--ink-2); }
+@media (max-width: 600px) { #gates, #gates tbody, #gates tr, #gates td { display: block; width: auto; } #gates tr:first-child { display: none; } #gates td { border: 0; padding: 2px 0; } #gates td.num { text-align: left; } #gates td[data-label]::before { content: attr(data-label) ": "; font-weight: 600; color: var(--ink-2); } #gates tr { border-bottom: 1px solid var(--rule); padding: 8px 0; } }
+@media (max-width: 600px) { #t-papers, #t-papers tbody, #t-papers tr, #t-papers td { display: block; width: auto; } #t-papers tr:first-child { display: none; } #t-papers td { border: 0; padding: 2px 0; } #t-papers td.num { text-align: left; } #t-papers tr { border-bottom: 1px solid var(--rule); padding: 8px 0; } }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+@media (max-width: 600px) { .lit td:first-child { white-space: normal; } .tiles b { font-size: 22px; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#story">Skip to the detailed version</a>
+<header class="top"><div class="in">
+  <a class="ttl" href="../../classic/research.html" style="text-decoration:none">← Research</a>
+  <span class="ttl">The Philosophy Engine</span>
+  <button class="toggle" id="researcher" aria-pressed="false" title="Show the source records beside the text">Sources</button>
+  <button class="toggle" id="theme" aria-pressed="false">Dark</button>
+</div></header>
+
+<main>
+<section class="hero" aria-labelledby="h-title">
+  <div class="kicker">Methodology companion</div>
+  <h1 id="h-title">The Philosophy Engine</h1>
+  <p class="lede" style="font-size:clamp(20px,2.6vw,28px);line-height:1.3;color:var(--ink);font-weight:600;margin-top:-6px">Automating Philosophical Discovery Through Literature, Argument, and Counterargument</p>
+  <p class="lede">How an AI pipeline grounded in the philosophy literature found ideas for papers, developed them under AI review, and tested them against published work.</p>
+  <p class="lede">We built the pipeline for the <a href="https://www.zacharygoodsell.com/ai-philosophy-competition" rel="noopener noreferrer">AI Philosophy Competition</a>. It starts from the journal literature: <span data-fact="universe.articles"></span> articles, grouped into <span data-fact="universe.clusters"></span> debates by the works they cite. Inside a single debate, an AI maps the positions, tensions, open problems and unanswered objections, and proposes candidate theses that answer to that literature. This within-cluster route is the baseline, and all three submitted papers came from it. A variation, the cross-cluster route, combines debates that rarely cite each other in search of less conventional ideas. Surviving theses become memos and then papers under AI referees and an AI editor, and every accepted paper is compared with published papers from its debate and with hidden test papers held back from the author.</p>
+  <p class="byline">By <a href="https://www.linkedin.com/in/matthew-bonci/" rel="noopener noreferrer">Matthew Bonci</a>, <a href="https://www.lehanzhang.com/" rel="noopener noreferrer">Lehan Zhang</a> and <a href="https://www.davidrzs.com/" rel="noopener noreferrer">David Zollikofer</a> · <a href="AI_Philosophy_Methodology_Report.pdf">Read the report as a PDF</a></p>
+  <p class="byline">The titles and texts of the essays, and the names of the debates they came from, are withheld until the competition’s results are announced.</p>
+  <p class="byline">Click a number with a dotted underline to see the record it comes from.</p>
+  <dl class="strip">
+    <div><dd data-fact="universe.articles"></dd><dt>Journal articles in the literature map</dt></div>
+    <div><dd data-fact="universe.clusters"></dd><dt>Debates found by shared references</dt></div>
+    <div><dd data-fact="pool.theses"></dd><dt>Candidate theses in the runs that produced the candidate papers</dt></div>
+    <div><dd data-fact="pool.papers"></dd><dt>Full papers written from them</dt></div>
+    <div><dd data-fact="pool.submitted"></dd><dt>Papers submitted, all from the within-cluster route</dt></div>
+    <div><dd id="calls-round"></dd><dt>AI calls across all trials, approximately</dt></div>
+  </dl>
+</section>
+
+<section class="overview" id="overview" aria-labelledby="h-ov">
+  <div class="kicker">Overview</div>
+  <h2 id="h-ov">How the system works, in five paragraphs</h2>
+  <div class="ov">
+    <p>We began by grouping journal articles into <span data-fact="universe.clusters"></span> literature clusters based on shared references: papers were connected when they cited sufficiently similar work. These clusters help identify ongoing conversations in the literature, though a cluster may contain several debates. We ranked them using proxies for which conversations might be ripe for a new contribution, including research activity, relevance, access to key literature and connections to other debates.</p>
+    <p>We explored two routes to finding ideas. In our <b>within-cluster route</b>, the baseline, AI uses a cluster’s catalogue and citation network to map positions, tensions, open problems and existing objections and replies. It reads selected literature and records source passages for its claims. In its fullest version it also reads five influential short papers in full, examining how they bound their claims, develop their arguments and engage the literature. Using the map and those examples, it proposes distinct candidate theses. Each states a thesis and an argument, explains its relationship to at least ten relevant papers of the cluster, and considers how the contribution might fit within the competition’s 6,000-word limit.</p>
+    <p>The <b>cross-cluster route</b> is a variation designed to elicit more unconventional, cross-domain ideas. AI mapped the literature of different clusters and combined elements, for example a method from a debate with an open problem from another. The combinations passed through a series of checks, and the strongest survivors were prepared as candidate theses. This route also produced papers the AI editor accepted, but none of them was among the three selected.</p>
+    <p>Next, the candidate theses enter the paper-development stage. Two AI referees assess each one. One checks the existing literature, including related fields, for work that may already contain the proposed claim; the other asks whether the argument is convincing and would matter to readers. When several survive, a ranker selects which advance. An AI author develops each selected thesis into a short working memo that spells out its argument, assumptions and consequences before the full paper is written. Four referees and, when enabled, a panel modelled on the competition’s judges assess each memo. The author responds to their criticism, and an editor decides which memos survive.</p>
+    <p>The pipeline then drafts a paper, checks and revises it, and compares it with published papers. If a paper is rejected, the pipeline can return to another surviving idea. Humans design the process and write the rules; AI proposes and develops the arguments, subject to checks and review. AI referees reviewed the candidate papers as if for a top journal, and on that basis the AI chose the three submitted.</p>
+  </div>
+  <nav class="parts" aria-label="Parts of this page">
+    <a href="#short"><b>Part I · The short version</b><span>Six sections, one screen each, each with an interactive view and a link to its details.</span></a>
+    <a href="#detail"><b>Part II · The detailed version</b><span>The same six sections, step by step, with every gate, table and source.</span></a>
+    <a href="#video" data-video><b>▶ Watch the video</b><span>A short explainer that follows Paper K from the literature to the editor’s decision (narrated by an AI voice).</span></a>
+  </nav>
+</section>
+
+<section class="short" id="short" aria-labelledby="h-short">
+  <div class="kicker">Part I</div>
+  <h2 id="h-short" class="part-h">The short version</h2>
+  <p class="mini-toc"><a href="#s1">1 Literature</a> <a href="#s2">2 Ideas</a> <a href="#s3">3 From thesis to paper</a> <a href="#s4">4 Judging</a> <a href="#s5">5 The submitted papers</a> <a href="#s6">6 Who did what</a></p>
+
+  <article class="sec" id="s1">
+    <div class="kicker">1 · Literature</div>
+    <h3>The pipeline starts from the literature: <span data-fact="universe.articles"></span> articles in <span data-fact="universe.clusters"></span> debates, of which the <span data-fact="kit.packets"></span> best-ranked were packaged with their full texts</h3>
+    <figure class="fig">
+      <div class="flow" id="s1-flow"></div>
+      <figcaption class="cap"><b>Figure 1.</b> From articles to packaged debates. Grey boxes are steps a program performed; the rose box is a step whose rule a person set.</figcaption>
+    </figure>
+    <p class="small">Philosophy proceeds in conversations, so the pipeline first finds them. Articles that cite overlapping work were linked, and a standard community-detection algorithm grouped them into clusters, which we call debates. A ranking script then scored each debate on research activity, relevance, access to key texts and connections to other debates, and the best-ranked were packaged with their full texts and citation graphs. The literature is not only the starting point: it is consulted, quoted and checked at every later stage.</p>
+    <p class="tcap"><b>Table 1.</b> Where the literature enters the pipeline.</p>
+    <div class="wrap"><table class="lit small">
+      <tr><th>Stage</th><th>What the literature does there</th></tr>
+      <tr><td>Choosing debates</td><td>Debates are defined by shared references and ranked by activity, relevance and access to their key texts.</td></tr>
+      <tr><td>Finding ideas</td><td>An AI maps the debate from its texts, and every claim about the literature carries a quotation that a script finds word for word in its source. In the standalone within-cluster generator each candidate thesis must engage at least ten papers of its debate.</td></tr>
+      <tr><td>Screening</td><td>A prior-art referee searches the library and its own knowledge for work that already makes the claim; most candidates die here.</td></tr>
+      <tr><td>Writing</td><td>The AI author works from a library of <span data-fact="library.texts"></span> licensed full texts. Scripts check that most cited works are held in full and that quotations match the cited texts.</td></tr>
+      <tr><td>Judging</td><td>Each paper is compared with published papers from its own debate, and with hidden test papers that were removed from the author’s library before it began.</td></tr>
+    </table></div>
+    <a class="deeper" href="#d1">Details: the clustering method, the ranking and the packets →</a>
+  </article>
+
+  <article class="sec" id="s2">
+    <div class="kicker">2 · Ideas</div>
+    <h3>Ideas come from inside a single debate, the baseline route that produced all three submitted papers, or, as a variation, from combining two debates</h3>
+    <div class="seg" id="s2-seg" role="group" aria-label="Route"></div>
+    <figure class="fig">
+      <div id="s2-out" class="panel small"></div>
+      <figcaption class="cap"><b>Figure 2.</b> The two routes to candidate theses, step by step. Choose a route above.</figcaption>
+    </figure>
+    <a class="deeper" href="#d2">Details: the within-cluster generators, the item bank, the draws, the seven gates, the freeze and the hand-off →</a>
+  </article>
+
+  <article class="sec" id="s3">
+    <div class="kicker">3 · From thesis to paper</div>
+    <h3>Every candidate thesis is screened, developed into a memo under four referees, written up under scripted checks and review, and accepted or rejected by an AI editor</h3>
+    <p class="small">The stages exist to kill weak ideas early and cheaply. Two AI referees screen each thesis, one for prior publication and one as a sceptical reader. A survivor becomes a short memo, which four AI referees attack; the author answers every objection, and an editor decides whether the memo survives. The paper is then written, checked by scripts, read cold by an outside reader in the later runs, revised under new referee reports, and judged by an editor who never sees its history. Paper K’s run shows the whole path: of <span data-fact="k.theses"></span> candidate theses, <span data-fact="k.killed_screen"></span> died at screening because the prior-art referee found them already argued in print. Pick a thesis to see its path (the thesis texts are withheld).</p>
+    <div class="seg" id="s3-seg" role="group" aria-label="Candidate thesis"></div>
+    <figure class="fig">
+      <ol id="s3-out" class="path small"></ol>
+      <figcaption class="cap"><b>Figure 3.</b> The path of each of the <span data-fact="k.theses"></span> candidate theses in Paper K’s run, read from the run’s records. Thesis 6 became Paper K.</figcaption>
+    </figure>
+    <a class="deeper" href="#d3">Details: screening, the memo and its referees, the replaced thesis, every paper version →</a>
+  </article>
+
+  <article class="sec" id="s4">
+    <div class="kicker">4 · Judging</div>
+    <h3>Paper K won <span data-fact="k.full_points"></span> of <span data-fact="k.full_games"></span> games against published papers from its debate and <span data-fact="k.held_wins"></span> of <span data-fact="k.held_games"></span> against hidden papers its author never had</h3>
+    <p class="small">An AI judge from a different developer than the author (<span data-fact="k.judge"></span>) reads two papers without author names and says which is better on each of the competition’s six criteria, then reads them again in the opposite order. Each reading is one game. The <span data-fact="k.cmp_papers"></span> comparison papers are published papers from the same debate; the <span data-fact="k.held_papers"></span> hidden test papers were removed from the author’s library before it started. During revision the author was shown the judge’s account of what three of the comparison papers do better, so the hidden papers are the cleaner test.</p>
+    <figure class="fig" id="fig-games"></figure>
+    <a class="deeper" href="#d4">Details: how a game works, the rubric, results per criterion, what the judge gives Noûs papers →</a>
+  </article>
+
+  <article class="sec" id="s5">
+    <div class="kicker">5 · The submitted papers</div>
+    <h3>Three papers were submitted, one each from three different debates</h3>
+    <p class="small">Several runs, on several debates and by both routes, produced candidate papers that the AI editor accepted. AI referees reviewed these candidates as if for a top journal, and on that basis the AI chose three. All three came from the within-cluster route.</p>
+    <p class="tcap"><b>Table 2.</b> The three submitted papers. Titles, debates and summaries are withheld until the results are announced. Game results count games won against published papers from the paper’s own debate and against hidden test papers; papers A and C were judged under the first rubric and Paper K under the revised one, so the results are not on one scale.</p>
+    <div class="wrap"><table id="t-papers" class="small"></table></div>
+    <a class="deeper" href="#d5">Details: the candidate pool, the final review and each paper’s games →</a>
+  </article>
+
+  <article class="sec" id="s6">
+    <div class="kicker">6 · Who did what</div>
+    <h3>Humans designed the process and wrote the rules; AI proposed, criticised, wrote, judged and chose the three submitted papers</h3>
+    <ul class="small">
+      <li>Humans built the pipelines, chose the corpus and the ranking measures, wrote the rules, restarted runs, and wrote the instruction for the final review. No human wrote or edited a sentence of any paper.</li>
+      <li>The AI proposed every idea, wrote every sentence, refereed, judged, reviewed the candidate papers and chose the three submitted.</li>
+    </ul>
+    <div class="tiles" id="s6-tiles"></div>
+    <p class="small muted">Calls made through subscriptions are valued at list prices, so the costs are estimates, not invoices.</p>
+    <a class="deeper" href="#d6">Details: robustness checks, models and harnesses, version control, resources →</a>
+  </article>
+</section>
+
+<section class="part2" id="detail" aria-labelledby="h-detail">
+  <div class="kicker">Part II</div>
+  <h2 id="h-detail" class="part-h">The detailed version</h2>
+  <p class="small muted">The same six sections, in the same order. On wide screens a funnel on the left follows the records as you scroll: each dot is an item, a combination, a candidate thesis or a paper version. In sections 1 and 2 it follows the cross-cluster run, whose item bank, gates and freeze show the filtering most visibly; from section 3 it follows Paper K.</p>
+</section>
+<div class="scrolly" id="story">
+  <div class="stage" aria-live="polite">
+    <div class="chap" id="chap">1.1 · The question</div>
+    <svg id="funnel" viewBox="0 0 560 900" role="img" aria-labelledby="f-t"><title id="f-t">The funnel: every dot is a record (an item, a combination, a candidate thesis, a paper version). Its current state is described in the caption below.</title></svg>
+    <div class="stagecap" id="cap"></div>
+  </div>
+  <div class="story">
+
+    <div class="grp" id="d1"><div class="kicker">Part II · section 1</div><h2>1 · Literature and debates</h2><a class="back small" href="#s1">↑ back to the short version</a></div>
+
+    <section class="step" id="c1" data-state="hero" data-chap="1.1 · The question">
+      <div class="kicker">1.1 · The question</div>
+      <h2>Can an AI come up with a genuinely new idea in philosophy, and how would anyone check?</h2>
+      <p>Language models can now write a passable philosophy paper. The hard part is the idea. Most ideas that sound new are not: someone has already published them, or they fall apart when examined closely. A pipeline that hopes to contribute must therefore know the literature it contributes to, and must try hard to kill its own ideas before it spends effort on them.</p>
+      <p>The project used two routes to new ideas. The <b>within-cluster route</b>, our baseline, stays inside one conversation: it compares the papers of a single debate to find overlooked points, open questions, unanswered objections and similar openings (section 2.1). All three submitted papers came from this route. The <b>cross-cluster route</b> is a variation of it, designed to elicit less conventional ideas: it takes two debates that rarely cite each other and combines something from one (a claim, a problem, a method) with something from the other (sections 2.2 to 2.6). Most such combinations are empty, because the two sides share a word but mean different things by it, or because a method is pointed at a problem it cannot handle; so this route proposes many combinations and then tries hard to kill each one. It produced candidate papers that the AI editor accepted, none of which was selected.</p>
+      <p>Both routes feed the same paper pipeline, which turns a candidate thesis into a memo and then a paper under AI review (section 3) and compares the accepted paper with published work (section 4).</p>
+      <details class="box"><summary>Words you will meet</summary><p class="small"><b>Debate</b> (literature cluster): a group of journal articles whose reference lists overlap; a cluster may hold several debates. <b>Candidate thesis</b>: a short statement of a proposed claim, its argument and its closest existing work; the pipeline calls it a card. <b>Debate map</b>: an AI’s account of a debate’s positions, tensions, open problems and unanswered objections, tied to quotations. <b>Item</b> (cross-cluster route): one claim, problem or method from a debate, with a checked quotation. <b>Combination</b> (pairing): an item from a debate put together with an item from another. <b>Gate</b>: a test that can kill a combination. <b>Seed</b>: the starting number of a random draw, so anyone can repeat the draw exactly. <b>Pivot</b>: a thesis replaced outright while the idea is written up; it is screened again as a new candidate. <b>Game</b>: one blind comparison of two papers by an AI judge. <b>Rubric</b>: the judge’s instructions for the six criteria; it was revised once during the project.</p></details>
+    </section>
+
+    <section class="step" id="c2" data-state="hero" data-chap="1.2 · The design">
+      <div class="kicker">1.2 · The design</div>
+      <h2>A pipeline built to kill its own ideas, with every rule written down before it ran</h2>
+      <figure class="fig">
+        <div class="lanes" id="lanes"></div>
+        <div class="lanelegend"><span><i></i>An AI call</span><span><i class="p"></i>A program</span><span><i class="h"></i>A human action</span></div>
+        <figcaption class="cap"><b>Figure 5.</b> The pipeline, one box per step, read left to right and top to bottom. The two idea routes are alternatives; both hand their candidate theses to the same screening step. Loops back: a failed scripted check sends a version back to its author; a replaced thesis goes back to screening as a new candidate; a paper goes through up to two revision rounds; a dead paper is replaced by the next surviving idea.</figcaption>
+      </figure>
+      <details class="box"><summary>Seven design choices, and why</summary>
+      <ol class="small">
+        <li><b>Ground every idea in the literature.</b> Candidate theses are proposed from a map of a real debate, not from a topic name, so that each one answers to what has actually been argued.</li>
+        <li><b>Check every quotation.</b> A script looks for each quotation word for word in its source text and drops claims whose quotation is not found; the paper’s quotations are checked the same way.</li>
+        <li><b>Search for prior art before spending effort.</b> A prior-art referee screens every thesis, and the cross-cluster route adds a library search ranked by BM25, a public index and a web search. A partly anticipated claim may pass, with a note of what remains new.</li>
+        <li><b>Rank comparatively.</b> Screening scores bunch at 2 of 5, so when several theses survive, a ranker orders them side by side, three times in shuffled order.</li>
+        <li><b>Treat a changed thesis as a new idea.</b> A separate check compares each revised thesis with its predecessor; a replaced thesis goes back to screening.</li>
+        <li><b>Keep test papers back.</b> Hidden test papers are removed from the AI author’s library and blocked from retrieval, so the final test compares the paper with work it could not have drawn on.</li>
+        <li><b>Fix the rules in advance.</b> The rules live in code and prompts under version control; the cross-cluster generator was fingerprinted before its first draw.</li>
+      </ol>
+      </details>
+    </section>
+
+    <section class="step" id="c3" data-state="universe" data-chap="1.3 · The debates">
+      <div class="kicker">1.3 · The debates</div>
+      <h2>A script mapped <span data-fact="universe.clusters"></span> debates from shared references and ranked them; the top <span data-fact="kit.packets"></span> were packaged by rule</h2>
+      <p>A script linked articles from <span data-fact="universe.journals"></span> philosophy journals whose reference lists overlapped, and a standard clustering method grouped them into <span data-fact="universe.clusters"></span> clusters; we call each cluster a debate. A script then ranked all of them on nine equally weighted measures in three groups: activity and relevance (recent output, share in top generalist journals, authorship by members of the judging committee, growth), researchability (access to core texts, reference coverage, stability of the cluster, access to short papers) and connections to other debates. The 15 highest-ranked debates, a cutoff set by hand, were packaged by rule. Each packet is a reading folder with the debate’s articles held in full text, its citation graph and its most-cited texts.</p>
+      <p>For the runs in which the paper pipeline mapped a debate itself, candidate debates went to four AI assessors, who judged the room for a contribution, the likely reception, the feasibility with our library and the risk. The standalone within-cluster generator started from the six top debates of the numerical ranking (section 2.1).</p>
+      <dl class="strip" aria-label="From articles to debates">
+        <div><dd>27,346</dd><dt>Research articles, after removing reviews and front matter</dt></div>
+        <div><dd>19,499</dd><dt>Core articles with at least five recorded references</dt></div>
+        <div><dd>1,281,667</dd><dt>Links between articles sharing at least two references</dt></div>
+        <div><dd>427</dd><dt>Groups found by community detection</dt></div>
+        <div><dd data-fact="universe.clusters"></dd><dt>Debates kept: groups of at least 20 core articles</dt></div>
+      </dl>
+      <p class="small muted">From articles to debates. Earlier and reference-poor articles were then attached to the debates already found.</p>
+      <figure class="fig panel" id="cpl-fig">
+        <div class="seg" role="group" aria-label="Step of the illustration"><button type="button" data-step="0" aria-pressed="true">1 · References</button><button type="button" data-step="1" aria-pressed="false">2 · Links</button><button type="button" data-step="2" aria-pressed="false">3 · Groups</button></div>
+        <svg id="cpl" viewBox="0 0 560 300" width="100%" style="max-width:620px;display:block;margin:0 auto" role="img" aria-labelledby="cpl-text"></svg>
+        <p class="small" id="cpl-text" aria-live="polite"></p>
+        <figcaption class="cap"><b>Figure 6.</b> How shared references become debates, in three steps. Papers A to H are made up to explain the rule; they are not records from the study. Each paper also cites two works of its own, which are not drawn but count in the overlap. In the real study a link needs at least two shared references and an overlap of at least 0.05, where overlap is the number of shared references divided by the square root of the product of the two reference-list lengths. Weighted Louvain community detection then found the groups.</figcaption>
+      </figure>
+      <details class="box"><summary>How the <span data-fact="universe.clusters"></span> clusters were made</summary><p class="small" id="clus-text"></p></details>
+      <p class="tcap"><b>Table 3.</b> The <span data-fact="kit.packets"></span> packaged debates in rank order, scored on the nine measures. Each cell is the debate’s band among all <span data-fact="universe.clusters"></span> debates, from 1 (lowest tenth) to 10 (highest tenth); darker cells score higher. The score is the plain mean of the nine bands. ◆ marks the six debates the standalone within-cluster generator started from; letters mark the debates of the three submitted papers.</p>
+      <div class="wrap"><table id="rank-t" class="small heat"></table></div>
+      <p class="small muted">Activity: papers in recent years. Top journals: share in top generalist journals. Committee: papers by members of the judging committee. Growth: recent growth, adjusted for size. Access: core texts held in full. Coverage: recorded references. Stability: the same cluster found again under other random seeds. Short: short papers among the central ones. Links: connections to other debates.</p>
+      <p>The AI author searches only a library of <span data-fact="library.texts"></span> licensed full texts, with no web search; it may fetch open-access copies of works it already knows, never the hidden test papers. Only the prior-art checks search beyond the library.</p>
+      <figure class="fig panel">
+        <svg id="ring" viewBox="0 0 360 360" width="100%" style="max-width:420px;display:block;margin:0 auto" role="img" aria-label="The packaged debates on a ring; lines join pairs of debates the cross-cluster draw could choose."></svg>
+        <div class="tip small" id="ring-tip">Point at or tab to a debate.</div>
+        <figcaption class="cap"><b>Figure 7.</b> The <span data-fact="kit.packets"></span> packaged debates on a ring, each circle sized by its number of full texts. Lines join the pairs of debates the cross-cluster draw could choose; thicker lines have higher draw weight. Pairs whose literatures already share the most references (the top 10%) were never drawn: <span data-fact="pool.pairs_blocked"></span> of <span data-fact="pool.pairs"></span>. Gold: the pair whose survivor the cross-cluster run handed on.</figcaption>
+      </figure>
+      <div class="rm">kit/packets/*/manifest.json · kit/data/analysis.json · xcluster/v2/bank/pool.json</div>
+    </section>
+
+    <div class="grp" id="d2"><div class="kicker">Part II · section 2</div><h2>2 · Ideas</h2><a class="back small" href="#s2">↑ back to the short version</a></div>
+
+    <section class="step" id="c8b" data-state="universe" data-chap="2.1 · Within-cluster">
+      <div class="kicker">2.1 · The baseline: the within-cluster route</div>
+      <h2>Inside a single debate, an AI maps what has been argued and proposes theses that answer to the map</h2>
+      <p>Most contributions to philosophy answer a live question in an existing conversation: an overlooked distinction, an unanswered objection, an open problem. The within-cluster route builds that situation in. The AI reads a single debate, writes a map in four parts (positions, principles in tension, open problems, unanswered objections), and proposes candidate theses tied to entries of the map. Two implementations were used.</p>
+      <h3>The paper pipeline’s own mapping session (papers A and C)</h3>
+      <p class="small">An AI author session reads the debate’s literature in the library, writes the debate map, and proposes <span id="ac-theses"></span> candidate theses; a second card writer adds <span id="ac-second"></span> more. All of them enter screening (section 3.1). Paper A came from the second writer’s set, Paper C from the mapping session.</p>
+      <h3>The standalone within-cluster generator (Paper K)</h3>
+      <p class="small">This generator adds explicit reading and grounding requirements. It started from the six top debates of the numerical ranking and kept those with at least five available papers of at most 6,000 words, so that the AI could study how short published papers bound their claims; three debates qualified. For each, it received a packet with the debate’s text-available papers, the membership catalogue, the citation graph and preselected readings. It had to read the five most-cited short papers in full, build the four-part map with every entry linked to source passages, and propose ten distinct candidate theses. Each thesis had to engage at least ten papers of its own debate, each through a quotation of at least 40 characters that a script then located in the stored text, and had to include a plan for a 6,000-word paper with a six-part word budget. A script checked the hashes, headings, map references, reading declarations, quotations and word budgets before the theses were handed on.</p>
+      <p class="small">For Paper K’s debate, the generator worked from <span data-fact="k.gen_papers"></span> text-available papers, reported <span data-fact="k.gen_readings"></span> readings including <span data-fact="k.gen_full"></span> in full, built a map of <span data-fact="k.gen_map"></span> entries, and grounded its ten theses in <span data-fact="k.gen_passages"></span> verified passages. The ten theses entered the paper pipeline at screening; one became Paper K.</p>
+      <dl class="strip" aria-label="How the standalone generator chose its debates">
+        <div><dd data-fact="universe.clusters"></dd><dt>Debates ranked</dt></div>
+        <div><dd>6</dd><dt>Top of the numerical ranking, not chosen by the AI</dt></div>
+        <div><dd>3</dd><dt>With at least five short papers available in full text</dt></div>
+        <div><dd>10</dd><dt>Candidate theses proposed for each of the three</dt></div>
+      </dl>
+      <div class="prompt"><div class="pl">From the within-cluster generator’s prompt</div><p class="why">Shown because it states the grounding requirement that distinguishes this route: every thesis must be placed against at least ten papers the model has actually read.</p><blockquote>Under Closest existing work and the precise difference include at least TEN DISTINCT relevant papers belonging to this cluster and available in the supplied updated corpus. […] The ten may provide premises, methods, objections or prior results; the thesis need not oppose all ten. Do not pad with irrelevant titles or count abstract-only/unread metadata as grounded full-text evidence. Every counted paper requires a verified passage from its supplied full text.
+[…]
+Scope: a 6,000-word paper. Explain relevant selected short-paper comparisons, argument boundaries, what existing work supplies, essential new dependencies, and the main scope risk with a first check.</blockquote></div>
+      <p class="tcap"><b>Table 4.</b> The standalone generator’s batch, one row per debate. Readings and full readings are the model’s own declarations; verified passages are quotations a script found word for word in the stored texts.</p>
+      <div class="wrap"><table id="within-t" class="small"></table></div>
+      <p class="small"><b>Figure 8 (withheld).</b> The map of the source papers and the ten candidate theses of Paper K’s debate is shown after the results are announced.</p>
+    </section>
+
+    <section class="step" id="c4" data-state="items" data-chap="2.2 · Items">
+      <div class="kicker">2.2 · The variation: combining two debates</div>
+      <h2>The cross-cluster route first wrote down what each debate’s literature says, and a script checked every quotation</h2>
+      <p>The cross-cluster route looks for ideas that a specialist in a single debate would not reach alone: a method from a debate applied to a problem in another, or an objection carried across. Each combination joins a <b>home</b> debate, which the new idea is about, and a <b>donor</b> debate, which lends it a method or an objection. To compare debates that use different vocabularies, the route first reduces each debate to items.</p>
+      <p>For each debate, one AI call read excerpts (the first 2,500 and last 1,200 words) of five core full texts and every article’s abstract, and listed items of seven kinds, such as positions, tensions and open problems. Each item has a plain statement, a field-neutral form (letters in place of the field’s terms, so that items from different fields can be lined up), two to five tags for its logical shape from a fixed list, and a supporting quotation. A script dropped <span data-fact="bank.dropped"></span> of <span data-fact="bank.items_raw"></span> items because their quotation was not found word for word in the source.</p>
+      <details class="box" open><summary>How to read the item viewer</summary><p class="small">The first row of buttons picks a debate (the first two are the home and donor debates of the pair the run handed on, then the other 13 by code); the second row filters by kind of item, with the number of such items in the whole bank. Each entry is one item: its kind and identifier; the plain statement; the field-neutral form, in monospace, which the bridge test in section 2.4 compares across debates; its tags for logical shape, from a fixed list of 25 (the draw pairs items that share a tag); and the quotation that supports it, with the source article in which it was found word for word. Scroll inside the box for more items. In this edition the entries show only their counts; the texts are withheld until the results are announced.</p></details>
+      <figure class="fig panel">
+        <div class="seg" id="it-cl" role="group" aria-label="Debate"></div>
+        <div class="seg" id="it-ty" role="group" aria-label="Item type"></div>
+        <div class="items" id="it-list"></div>
+        <figcaption class="cap"><b>Figure 9.</b> The cross-cluster item bank: <span data-fact="bank.items"></span> items from <span data-fact="kit.packets"></span> debates, each with a verified quotation.</figcaption>
+      </figure>
+      <div class="rm">xcluster/v2/bank/items.jsonl · extract_report.json · prompt xcluster/prompts/extract.md</div>
+    </section>
+
+    <section class="step" id="c5" data-state="pairs" data-chap="2.3 · Combinations">
+      <div class="kicker">2.3 · Combinations</div>
+      <h2>A random draw, fixed in advance, combined items across debates; most combinations were doomed</h2>
+      <p>Three main draws produced <span data-fact="draw.size"></span> combinations each. Each draw starts from a seed, a number fixed in advance, so anyone can repeat it; a fourth draw, later, stayed inside the top card’s pair of debates. Each combination follows one of three recipes, picked with weights of one half, one quarter and one quarter (realised: <span data-fact="cascade.op_O1"></span>, <span data-fact="cascade.op_O2"></span> and <span data-fact="cascade.op_O3"></span> of <span data-fact="cascade.drawn"></span>): one field’s method applied to another field’s open problem (O1); one field’s unanswered objection turned against a position in another (O2); two tensions with the same shape set side by side (O3). Gate K0 first dropped <span data-fact="cascade.k0_killed"></span> combinations whose two sources are already cited together by three or more papers.</p>
+      <figure class="fig panel">
+        <div class="seg" id="dr-seed" role="group" aria-label="Draw"></div>
+        <label class="small">Combination <input type="range" id="dr-n" min="0" max="59" value="0" style="width:60%;vertical-align:middle"> <span id="dr-lab"></span></label>
+        <div id="dr-card"></div>
+        <figcaption class="cap"><b>Figure 10.</b> Replay of the draws. Each combination shows its recipe, the kinds of its donor and home items, and the bridge test’s verdict.</figcaption>
+      </figure>
+    </section>
+
+    <section class="step" id="c6" data-state="k1" data-chap="2.4 · The gates">
+      <div class="kicker">2.4 · The gates</div>
+      <h2>Seven gates in a row: a combination must pass each to reach the next</h2>
+      <p>The gates are ordered from cheap to expensive. A script and a quick structural test remove the hopeless combinations first, so that the costlier searches and the cold critic are spent only on combinations with a chance.</p>
+      <p class="tcap"><b>Table 5.</b> The seven gates of the cross-cluster route, in order. The models for each role are listed in Table 13. The last column counts combinations entering and leaving each gate in the three main draws, and below it in the later draw inside one pair of debates.</p>
+      <div class="wrap"><table id="gates" class="small"></table></div>
+      <div class="prompt"><div class="pl">From the bridge test’s prompt</div><p class="why">Shown because the field-neutral test, stating both items with the same letters, is the route’s most distinctive idea, and because the prompt forbids killing a combination merely for being risky.</p><blockquote>For each combination decide only whether it is hopeless. Do not kill a combination because its thesis would probably turn out false; high-risk combinations should pass.
+Kill (keep = false) only for one of these reasons:
+- equivocation: the items share a word but not a structure. Test: state both items with the SAME schematic letters; if either statement is then false of its field, it is equivocation;
+- preconditions_unmet (O1): the target lacks a structure the method requires […]
+- no_deliverable: nothing statable would come out (no theorem, countermodel, verdict, or changed argument);
+- trivial: the result is immediate or already standard practice in the home field;
+- incoherent: the items cannot be brought into contact at all.</blockquote></div>
+      <figure class="fig panel"><div class="bars" id="killwall"></div><div id="killlist" class="small"></div>
+        <figcaption class="cap"><b>Figure 11.</b> Why the bridge test killed combinations in the three main draws, by reason. Click a reason for a note on the examples.</figcaption></figure>
+    </section>
+    <section class="step short" data-state="k3" data-chap="2.4 · The gates">
+      <p class="small">The ranker (K3) ordered the survivors of each draw three times, shuffling the input order each time; the average place decides which six go on. Each line below follows one combination through the three rankings of one draw. One later within-cluster run, of a port of the paper pipeline, searched prior art differently, combining BM25 with vector search over text embeddings.</p>
+      <figure class="fig panel"><svg id="bump" viewBox="0 0 360 240" width="100%" role="img" aria-label="Three shuffled rankings of one draw"></svg>
+        <figcaption class="cap" id="bump-note"></figcaption></figure>
+    </section>
+    <section class="step" data-state="k6" data-chap="2.4 · The gates">
+      <p>Of the <span data-fact="cascade.drawn"></span> combinations of the three main draws, <span data-fact="cascade.k6"></span> passed all seven gates; of the <span data-fact="cascade.pair_drawn"></span> in the later pair draw, <span id="pair-k6"></span>.</p>
+    </section>
+
+    <section class="step" id="c7" data-state="freeze" data-chap="2.5 · The freeze">
+      <div class="kicker">2.5 · The freeze</div>
+      <h2>The cross-cluster generator’s rules were fingerprinted before the first real draw, and did not change</h2>
+      <p>A rule that can be changed after the results are seen is not a rule. Before the first real draw, a script fingerprinted (hashed) the <span data-fact="freeze.files"></span> files that define the generator: every script, prompt and configuration, the item bank and the packets. Together they fix the model for each role, the seeds, the recipe weights, the kill rules and the top-card rule. After the draws, and again when this page was built, a script fingerprinted every file again; <span data-fact="freeze.changed_now"></span> had changed. No human read a card from the real draws before the hand-off.</p>
+    </section>
+
+    <section class="step" id="c8" data-state="handoff" data-chap="2.6 · The hand-off">
+      <div class="kicker">2.6 · The hand-off</div>
+      <h2>One top card by a fixed rule, three companions from its pair of debates, and reading lists chosen by a script</h2>
+      <p>Each paper is built from one pair of debates, so only one survivor goes on: the card with the best normalised rank across the main draws, as a fixed rule required. (Normalised rank is a card’s average place divided by the number of combinations ranked in its draw, so that draws of different sizes compare fairly.) The other survivors stop here. To give the paper stage a choice, more cards came from the same two debates: two from a fresh seeded draw of <span data-fact="cascade.pair_drawn"></span> combinations inside that pair, and one top-up. Fixed rules chose the reading lists: five core papers, six comparison papers and three hidden test papers. From here the cards follow the same paper pipeline as every other candidate thesis.</p>
+      <figure class="fig panel">
+        <p class="small">Would another rule have picked another top card? The orders below are recomputed from the saved gate results, with no new AI calls.</p>
+        <div class="seg" id="wr" role="group" aria-label="Top-card rule"></div>
+        <p class="small" id="wr-sum"></p>
+        <div id="wr-out" class="small"></div>
+        <figcaption class="cap"><b>Figure 13.</b> The top card under four possible rules, recomputed from the records.</figcaption>
+      </figure>
+    </section>
+
+    <div class="grp" id="d3"><div class="kicker">Part II · section 3</div><h2>3 · From thesis to paper</h2><a class="back small" href="#s3">↑ back to the short version</a></div>
+
+    <section class="step" id="c9" data-state="screen" data-chap="3.1 · Screening">
+      <div class="kicker">3.1 · Screening</div>
+      <h2>Two referees screen every candidate thesis; nine of Paper K’s ten were already argued in print</h2>
+      <p>Screening is the cheapest place to stop a bad idea. Two AI referees read each candidate thesis with no other context: one checks for prior publication, searching the library and drawing on its own knowledge; the other reads sceptically. Each gives a verdict and a promise score from 1 to 5. A thesis dies if it is already published, has a fatal flaw, or is rejected. When several survive, a separate AI editor ranks them three times in shuffled order, because screening scores bunch: in three runs, each referee gave 2 of 5 in 148 of 174 reports. In Paper K’s run only one thesis survived, so no ranking was needed.</p>
+      <p class="tcap"><b>Table 6.</b> Screening of the ten candidate theses in Paper K’s run. Each referee gives a verdict and a promise score from 1 to 5.</p>
+      <div class="wrap"><table id="screen" class="small"></table></div>
+    </section>
+
+    <section class="step" id="c10" data-state="critics" data-chap="3.2 · The memo">
+      <div class="kicker">3.2 · The memo and its referees</div>
+      <h2>Four referees raised <span data-fact="k.objections"></span> objections to the memo; the author answered each, and the thesis changed enough to be screened again</h2>
+      <p>Before a paper is written, a fresh AI author session writes a memo of two to three pages that spells out the argument, its assumptions and its consequences. Four AI referees, working separately (a field specialist, a prior-art referee, an argument critic and a sceptical reader), rate each objection fatal, major or minor and give a verdict. In some runs a fifth report came from a juror panel, AI readers modelled on the competition judges’ public articles; it was not used in the runs of the three submitted papers. The author answers every objection by its label, and an editor decides whether the memo survives.</p>
+      <p class="tcap"><b>Table 7.</b> The four referee reports on Paper K’s memo, and the check of whether the thesis changed.</p>
+      <div class="wrap"><table id="r2" class="small"></table></div>
+      <p class="small" id="r2-note"></p>
+    </section>
+    <section class="step short" data-state="pivot" data-chap="3.2 · The memo">
+      <p>A changed thesis counts as a new idea. A separate check compares each memo’s thesis with its candidate thesis twice: when the memo is written, and again after the author’s reply to the referees. In Paper K’s run the thesis was the same when the memo was written but replaced after the reply, so the new thesis went back to the screening referees as a new candidate, and passed.</p>
+      <p class="tcap"><b>Table 8.</b> Screening of the replaced thesis.</p>
+      <div class="wrap"><table id="screen2" class="small"></table></div>
+      <p class="small"><b>Figure 14 (withheld).</b> The candidate thesis and the replaced thesis, word by word, are shown after the results are announced.</p>
+    </section>
+
+    <section class="step" id="c11" data-state="paper" data-chap="3.3 · The paper">
+      <div class="kicker">3.3 · The paper</div>
+      <h2>Paper K’s first draft failed three scripted checks, passed after a fix, and was accepted after one round of review</h2>
+      <p>The author writes the paper on a fixed template. Its brief asks for one central claim, a quarter of the words spent on framing, every term explained, and every formal result also stated in words. Scripts check that the paper compiles, stays under 5,700 words, holds most of the works it cites in full text, quotes them accurately, and contains no talk about its own writing process; a failed check sends the version back to the author. In the later runs, including Paper K’s, an outside reader given nothing but the paper reports where it loses the thread. Up to two rounds of referee reports and revisions follow, and an editor who never sees the paper’s history accepts, asks for revision or rejects.</p>
+      <p class="tcap"><b>Table 9.</b> Every version of Paper K. Referees and the outside reader report on the version before each revision; games against three published papers decide between versions during revision.</p>
+      <figure class="fig" id="paper"></figure>
+      <div class="prompt"><div class="pl">From the editor’s instructions, with the rule that enforces them</div><p class="why">Shown because it is the pipeline’s strictest safeguard: the editor cannot accept a paper while an objection the paper could answer from its own resources is still open.</p><blockquote>Set answerable_resolved to true only if the document as it stands resolves every issue not binned needs_work (then none of them is in unresolved_issue_ids).
+[…]
+if decision == "accept" and not resolved: raise ValueError("accept needs answerable_resolved true")</blockquote></div>
+    </section>
+
+    <div class="grp" id="d4"><div class="kicker">Part II · section 4</div><h2>4 · Judging</h2><a class="back small" href="#s4">↑ back to the short version</a></div>
+
+    <section class="step" id="c12" data-state="games" data-chap="4.1 · The games">
+      <div class="kicker">4.1 · The games</div>
+      <h2>An AI judge from another developer compared Paper K with nine published papers, each both ways round</h2>
+      <p>Each comparison is called a game. The judge reads two papers without author names and says which is better on each of the competition’s six criteria, then reads them again in the opposite order, so that the order of reading cannot decide the result. During revision, games against three of the published comparison papers decide whether a revision is kept, and the author is shown the judge’s account of what those papers do better. The accepted version then plays all six comparison papers from its debate, including those three, and finally the three hidden test papers that were kept out of the author’s library. Only the hidden papers played no part in development, so they are the cleaner test.</p>
+      <p>The rubric changed once during the project. Under the first rubric the top level of each criterion read “a top journal would accept”; the revised rubric’s levels name no venue. Papers A and C were judged under the first rubric and Paper K under the revised one, by the same judge model. Results under different rubrics are therefore reported side by side but not compared.</p>
+      <p class="tcap"><b>Table 10.</b> Paper K’s points per criterion: against the six comparison papers (12 games) and against the three hidden test papers (6 games). A win scores one point and a tie half.</p>
+      <div class="wrap"><table id="percrit" class="small"></table></div>
+      <h3>What the judge gives Noûs papers</h3>
+      <p class="small">The rubric’s levels are relative, not a verdict of any journal. In earlier runs, under the first rubric, the gpt-6.1-sol judge scored nine published papers 382 times. Papers from Noûs and The Philosophical Review never received the top level on argument or scholarship. On average the generated essays of those runs scored above the published papers on clarity, argument and scholarship, and below the Noûs and Philosophical Review papers on significance, originality and literature.</p>
+      <figure class="fig" id="fig-calib"></figure>
+    </section>
+
+    <div class="grp" id="d5"><div class="kicker">Part II · section 5</div><h2>5 · The submitted papers</h2><a class="back small" href="#s5">↑ back to the short version</a></div>
+
+    <section class="step" id="c13" data-state="pool" data-chap="5.1 · The selection">
+      <div class="kicker">5.1 · The selection</div>
+      <h2>Several candidate papers were accepted by the AI editor; AI referees reviewed them, and the AI chose three</h2>
+      <p>The same paper pipeline ran on several debates, with candidate theses from both routes. Across the runs that produced the candidate papers, it proposed <span data-fact="pool.theses"></span> candidate theses and wrote <span data-fact="pool.papers"></span> full papers, several of which the AI editor accepted. AI referees then reviewed the accepted candidates with the instruction below. On the basis of these reviews the AI chose the three submitted papers.</p>
+      <div class="prompt"><div class="pl">The final-review instruction, verbatim</div><p class="why">Shown in full because it decided which papers were submitted.</p><blockquote>you are a top philosopher refereeing this paper for a nous submission. give an honest review and assessment of its philosophical contribution, novelty and execution.</blockquote></div>
+      <div class="papers3" id="papers3"></div>
+      <figure class="fig" id="fig-runs"></figure>
+    </section>
+
+    <div class="grp" id="d6"><div class="kicker">Part II · section 6</div><h2>6 · Checks, credits and resources</h2><a class="back small" href="#s6">↑ back to the short version</a></div>
+
+    <section class="step" id="c14" data-state="pool" data-chap="6.1 · Robustness">
+      <div class="kicker">6.1 · Robustness</div>
+      <h2>Swapping the referee model changes 9 of 24 kill decisions; most planted defects are detected by the judge</h2>
+      <p class="small">These checks ask how much the pipeline’s decisions depend on the particular models and rubric used.</p>
+      <p class="tcap"><b>Table 12.</b> Robustness checks of the referees, the judge and the screening scores.</p>
+      <div class="wrap"><table id="tests" class="small"></table></div>
+    </section>
+
+    <section class="step" id="c15" data-state="audit" data-chap="6.2 · Who did what">
+      <div class="kicker">6.2 · Who did what</div>
+      <h2>Humans built the pipelines and wrote the rules; the AI proposed, wrote, refereed, judged and chose</h2>
+      <p class="small">Humans built the pipelines, chose the corpus and the ranking measures, wrote and fixed the rules, restarted runs, and wrote the instruction for the final review. The AI proposed every idea, wrote every sentence, refereed, judged, reviewed the candidate papers and chose the three submitted. No human proposed an idea, wrote or edited a sentence of any paper, judged a draft, or supplied a work a referee asked for.</p>
+      <h3>Models and harnesses</h3>
+      <p class="tcap"><b>Table 13.</b> The AI models used, by role, with their reasoning effort and the software that ran them.</p>
+      <div class="wrap"><table class="small">
+        <tr><th>Role</th><th>Model (reasoning effort)</th><th>Harness</th></tr>
+        <tr><td>Debate map and candidate theses in the paper pipeline (papers A and C)</td><td>Claude Opus 5.5 (high in A’s run, very high in C’s)</td><td>The paper pipeline’s agent runtime</td></tr>
+        <tr><td>Standalone within-cluster generator (Paper K)</td><td>gpt-6-astra (high)</td><td>Codex command line, read-only sandbox</td></tr>
+        <tr><td>Cross-cluster generator</td><td>Claude Opus 5.5 (high); bridge test: Claude Sonnet 5.5 (medium)</td><td>Claude Code command line</td></tr>
+        <tr><td>Screening and memo referees, author, outside reader, paper referees, editor</td><td>Claude Opus 5.5 (high in A’s run, very high in C’s and K’s)</td><td>The paper pipeline: agent sessions for the author, fresh calls for referees and editor</td></tr>
+        <tr><td>Game judge (published and hidden papers)</td><td>gpt-6.1-sol, for all three submitted papers</td><td>The paper pipeline</td></tr>
+        <tr><td>Final review of the candidate papers</td><td>AI referees (model not recorded)</td><td>—</td></tr>
+      </table></div>
+      <h3>Version control and records</h3>
+      <p class="small">The paper pipeline is kept in a Git repository, and its runs record the code version they used. The cross-cluster generator’s code, prompts and configuration were fingerprinted before its first draw, and the within-cluster generator’s packages carry file fingerprints. Every model call is logged with its role and cost. Together these let each submitted paper be traced to the code, prompts and records that produced it.</p>
+      <h3>Resources</h3>
+      <div class="tiles" id="res-tiles"></div>
+      <p class="small"><span id="calls-def"></span> Subscription calls are valued at list prices, so the costs are estimates, not invoices; they cover all three team members’ work and all trials, including runs that produced no submitted paper.</p>
+      <figure class="fig"><div class="bars" id="calls"></div>
+        <figcaption class="cap"><b>Figure 16.</b> AI calls by stage, across all team members and trials.</figcaption></figure>
+    </section>
+  </div>
+</div>
+
+<section class="answer" id="c16" aria-labelledby="h-ans">
+  <div class="kicker">6.3 · The answer</div>
+  <h2 id="h-ans">A machine can find, prune and develop ideas grounded in the literature, on the record; whether the results are new and good is for philosophers to judge</h2>
+  <p>Section 1.1 asked whether an AI can come up with a genuinely new idea in philosophy, and how anyone would check. Here is what the runs show, and what would settle the rest.</p>
+  <div class="cols">
+    <div><h3>What the runs show</h3><ul class="small">
+      <li>A process written down in advance can map a debate, propose theses that answer to its literature, and kill most of them with stated reasons: <span data-fact="k.killed_screen"></span> of the <span data-fact="k.theses"></span> theses in Paper K’s run died at screening as already argued in print.</li>
+      <li>Every idea, objection, reply and sentence was written by AI models; humans built the process, wrote its rules, restarted runs, and wrote the instruction for the final review, on the basis of which the AI chose the three submitted papers.</li>
+      <li>Each of the three submitted papers was accepted by the AI editor and won every game it played against hidden test papers.</li>
+      <li>The process leaves a complete, checkable record.</li></ul></div>
+    <div><h3>What would settle it</h3><ul class="small">
+      <li>The judgement of philosophers, starting with the competition’s own judging.</li></ul></div>
+  </div>
+  <h3>Disclosures</h3><ul class="small">
+    <li>The author, referees and editor of the three submitted papers are Claude Opus 5.5; their game judge is gpt-6.1-sol, from a different developer.</li>
+    <li>Where it was used, the juror panel modelled the competition’s judges from their public articles, named them only by label, and added objections, never scores. It was not used in the runs of the three submitted papers.</li>
+    <li>The rubric is derived from the competition’s six criteria. Its levels are relative: under the first rubric the judge never gave its top level to a published paper on argument or scholarship, in 382 scores that include five papers from Noûs and The Philosophical Review.</li>
+    <li>In the cross-cluster route the starting debate map was built by a script from the item bank, not by an AI author reading the debate.</li>
+    <li>Quotations in the item bank come from licensed texts and are short (at most 43 words; the rule asks for 8 to 40).</li>
+  </ul>
+  <h3>Can it be reproduced?</h3>
+  <ul class="small"><li>✓ Code, prompts and configurations under version control or fingerprinted; seeds fixed in advance.</li><li>✓ Every call in a log; every kill with its reason.</li><li>✓ The library is licensed; logs that quote it are available to the organisers on request.</li></ul>
+</section>
+</main>
+<footer>Methodology companion, named edition · authors: Matthew Bonci, Lehan Zhang, David Zollikofer · built from the run records by a script (data.js), with a curated layer (curated.js) · no tracking and no external requests; the only outside links are to the authors and the competition.</footer>
+
+<script src="data.js"></script>
+<script src="curated.js"></script>
+<script src="finals.js"></script>
+<script>
+(function () {
+"use strict";
+const M = window.MANIFEST, C = window.CURATED, FIN = window.FINALS, F = Object.assign(M.facts, FIN.facts), root = document.documentElement, $ = id => document.getElementById(id) || document.createElement("div");
+const q = new URLSearchParams(location.search);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmt = v => typeof v === "number" ? v.toLocaleString("en-US") : String(v);
+const cap = s => { s = String(s ?? ""); return s.charAt(0).toUpperCase() + s.slice(1); };
+const MN = id => String(id || "—").replace(/^claude-([a-z]+)-(\d+)-(\d+)$/, (m, a, b, c) => "Claude " + cap(a) + " " + b + "." + c);
+const HOME = M.handoff.winner.home, DONOR = M.handoff.winner.donor;
+const CL = {}; M.kit.pool.forEach(c => CL[c.cluster] = c);
+const cname = c => CL[c] ? CL[c].name.split(" / ").slice(0, 2).join(" / ") : c;
+const SELP = M.selected, PK = SELP.find(p => p.letter === "K");
+
+// --- theme, sources mode ---
+const th = $("theme");
+const dark = () => root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+const syncTheme = () => th.setAttribute("aria-pressed", dark());
+th.onclick = () => { root.dataset.theme = dark() ? "light" : "dark"; syncTheme(); };
+if (q.get("theme")) root.dataset.theme = q.get("theme"); syncTheme();
+$("researcher").onclick = e => { const on = e.currentTarget.getAttribute("aria-pressed") !== "true"; e.currentTarget.setAttribute("aria-pressed", on); root.dataset.researcher = on ? "on" : "off"; };
+
+// --- facts with provenance ---
+let open = null;
+const closePop = () => { if (open) { open.b.setAttribute("aria-expanded", "false"); open.p.remove(); open = null; } };
+function factify(scope) {
+  scope.querySelectorAll("[data-fact]").forEach(el => {
+    const f = F[el.dataset.fact];
+    if (!f) { el.textContent = "??"; el.style.color = "var(--human)"; return; }
+    const b = document.createElement("button"); b.type = "button"; b.className = "fact st-" + f.status; b.textContent = fmt(f.v);
+    b.setAttribute("aria-expanded", "false"); b.setAttribute("aria-label", `${fmt(f.v)}, ${f.status}. Show source`);
+    b.onclick = e => { e.stopPropagation(); const was = open && open.b === b; closePop(); if (was) return;
+      const p = document.createElement("div"); p.className = "prov"; p.setAttribute("role", "note");
+      p.innerHTML = `<b>${cap(f.status)}</b><br><code>${esc(f.src)}</code>`; b.after(p); b.setAttribute("aria-expanded", "true"); open = { b, p }; };
+    el.replaceChildren(b);
+  });
+}
+document.addEventListener("click", closePop); document.addEventListener("keydown", e => e.key === "Escape" && closePop());
+
+// --- data helpers (cross-cluster draws) ---
+const SEEDS = ["20261101", "20261102", "20261103"], PAIR = "20261104";
+const D = M.draws;
+const fate = {};
+SEEDS.concat([PAIR]).forEach(s => {
+  const d = D[s], ranked = Object.keys(d.mean_rank).sort((a, b) => d.mean_rank[a] - d.mean_rank[b]);
+  const carded = Object.keys(d.cards);
+  d.combos.forEach(c => {
+    let gate = 7;
+    if (c.k0 !== "pass") gate = 0;
+    else if (!c.k1 || !c.k1.keep) gate = 1;
+    else if (!(c.id in d.mean_rank)) gate = 2;
+    else if (!carded.includes(c.id)) gate = 4;
+    else if (d.novelty[c.id] === "anticipated") gate = 5;
+    else if (!d.final.includes(c.id)) gate = 6;
+    fate[c.id] = { gate, seed: s, rank: ranked.indexOf(c.id), nrank: c.id in d.mean_rank ? d.mean_rank[c.id] / ranked.length : null };
+  });
+});
+const WIN = M.handoff.winner.combo;
+
+// --- paper K's run (sections 3 and 4) ---
+const LI = M.ladder.ideas, KID = Object.keys(LI).find(i => LI[i].status === "done");
+const base = Object.keys(LI).filter(i => LI[i].source !== "pivot").sort();
+const pivots = Object.keys(LI).filter(i => LI[i].status === "pivot");
+const paperIdea = LI[KID];
+const thName = id => "Thesis " + (+id.slice(1, 3)) + (id.endsWith("p") ? " (replaced)" : "");
+const FAIL = { words: "over the word limit", citations_with_text: "too few cited works held in full text", process_talk: "talk about its own writing process", quotations: "quotations not matching their sources", compile: "did not compile" };
+
+// --- the funnel ---
+const NS = "http://www.w3.org/2000/svg", svg = $("funnel");
+const mk = (tag, a, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); parent.appendChild(e); return e; };
+const GY = [262, 292, 322, 352, 382, 412, 442];
+const GN = ["K0 Co-citation", "K1 Bridge test", "K2 Prior art", "K3 Ranking", "K4 Thesis writing", "K5 Web search", "K6 Cold critic"];
+const others = M.kit.pool.map(c => c.cluster).filter(c => c !== HOME && c !== DONOR);
+const BAS = {}; others.forEach((c, i) => BAS[c] = { x: 24 + i * 42.5, y: 26, r: 16 });
+BAS[HOME] = { x: 150, y: 112, r: 58 }; BAS[DONOR] = { x: 410, y: 112, r: 58 };
+const L = {};
+const lbl = (k, x, y, t, cls = "lbl", anchor = "middle") => (L[k] = mk("text", { x, y, class: cls, "text-anchor": anchor, opacity: 0 })).textContent = t;
+Object.entries(BAS).forEach(([c, b]) => { b.el = mk("circle", { cx: b.x, cy: b.y, r: b.r, class: "basin", opacity: 0 }); });
+lbl("home", 150, 186, "Home: " + cname(HOME)); lbl("donor", 410, 186, "Donor: " + cname(DONOR));
+lbl("others", 280, 56, "The other " + others.length + " debates");
+GY.forEach((y, i) => { L["g" + i] = mk("line", { x1: 70, x2: 540, y1: y, y2: y, class: "gate", opacity: 0 }); lbl("gl" + i, 72, y - 3, GN[i], "lbl", "start"); });
+lbl("kills", 34, 236, "Killed", "lbl"); lbl("parked", 520, 236, "Set aside", "lbl");
+L.seal = mk("rect", { x: 70, y: 458, width: 470, height: 20, rx: 4, class: "seal", opacity: 0 });
+lbl("sealt", 305, 472, "Fingerprinted before the first draw");
+lbl("tray", 305, 498, "Hand-off: " + M.handoff.cards.length + " cards");
+const LY = { screen: 560, select: 592, memo: 630, paper: 700, vers: 734, editor: 768, games: 800, held: 832, pool: 878 };
+L.wall = mk("path", { d: "M70 540 L176 848 M540 540 L434 848", class: "wall", opacity: 0 });
+const inset = y => (y - 540) * 110 / 320 + 10;
+[["screen", "Paper K’s run: screening referees"], ["select", "Selection (only one survivor)"], ["memo", "Memo + 4 referees"], ["paper", "The paper"], ["vers", "Versions"], ["editor", "Editor"], ["games", "Games vs published papers"], ["held", "Hidden test papers"]].forEach(([k, t]) => {
+  const d = inset(LY[k]);
+  L["L" + k] = mk("line", { x1: 70 + d, x2: 540 - d, y1: LY[k], y2: LY[k], class: "gate", opacity: 0 }); lbl("t" + k, 74 + d, LY[k] - 3, t, "lbl", "start"); });
+lbl("tpool", 305, 864, "The three submitted papers: A, C and K");
+
+const ENT = [];
+function phyllo(b, i, n) { const a = i * 2.39996, rad = Math.sqrt((i + .5) / n) * (b.r - 4); return { x: b.x + rad * Math.cos(a), y: b.y + rad * Math.sin(a) }; }
+const byCl = {}; M.bank.items.forEach(it => (byCl[it.c] = byCl[it.c] || []).push(it));
+Object.entries(byCl).forEach(([c, list]) => list.forEach((it, i) => {
+  const p = phyllo(BAS[c], i, list.length), big = c === HOME || c === DONOR;
+  ENT.push({ kind: "item", c, big, home: { ...p, r: big ? 2.6 : 1.4 }, el: mk("circle", { class: "e", cx: p.x, cy: p.y, r: 0, opacity: 0 }) });
+}));
+const prodCombos = SEEDS.flatMap(s => D[s].combos);
+const killStack = {}, parkStack = {};
+prodCombos.forEach((c, i) => {
+  const s = SEEDS.indexOf(String(c.id.slice(1, 9))), col = i % 60;
+  ENT.push({ kind: "combo", c, f: fate[c.id], bridge: { x: 60 + col * 8, y: 206 + s * 11 }, el: mk("circle", { class: "e", cx: 280, cy: 190, r: 0, opacity: 0 }) });
+});
+const TRAY = M.handoff.cards.map((c, i) => ({ kind: "card", c, x: 230 + i * 50, y: 512, el: mk("circle", { class: "e", cx: 305, cy: 512, r: 0, opacity: 0 }) }));
+ENT.push(...TRAY);
+const LAD = base.map(id => ({ kind: "lad", id, el: mk("circle", { class: "e", cx: 305, cy: 540, r: 0, opacity: 0 }) }));
+const PIV = pivots.map(id => ({ kind: "piv", id, el: mk("circle", { class: "e", cx: 305, cy: LY.memo, r: 0, opacity: 0 }) }));
+const VERS = paperIdea.versions.map((v, i) => ({ kind: "ver", v, i, el: mk("circle", { class: "e", cx: 305, cy: LY.paper, r: 0, opacity: 0 }) }));
+const POOL = SELP.map((a, i) => ({ kind: "pool", a, i, el: mk("circle", { class: "e", cx: 305, cy: LY.pool, r: 0, opacity: 0 }) }));
+ENT.push(...LAD, ...PIV, ...VERS, ...POOL);
+
+const STATES = ["hero", "universe", "items", "pairs", "k1", "k3", "k6", "freeze", "handoff", "screen", "select", "critics", "pivot", "paper", "games", "pool", "audit"];
+const at = s => STATES.indexOf(s);
+const GATE_STATE = [3, 4, 5, 5, 6, 6, 6];
+function look(e, s) {
+  const i = at(s);
+  if (e.kind === "item") {
+    if (i < 1) return { ...e.home, r: 0, o: 0 };
+    const o = i < 2 ? .25 : (e.big ? 1 : .45);
+    return { ...e.home, o: i >= 7 ? o * .5 : o, fill: e.c === HOME ? "var(--home)" : e.c === DONOR ? "var(--donor)" : "var(--fail)" };
+  }
+  if (e.kind === "combo") {
+    if (i < 3) return { x: 280, y: 190, r: 0, o: 0 };
+    const g = e.f.gate, dead = g <= 6 && i >= GATE_STATE[g] && g !== 4 && g !== 2;
+    const win = e.c.id === WIN, fin = g === 7, k = e.c.id;
+    if (dead) { const n = killStack[k] ?? (killStack[k] = Object.keys(killStack).length); return { x: 14 + (n % 6) * 7, y: 252 + Math.floor(n / 6) * 6.2, r: 2.2, o: .8, fill: "var(--fail)" }; }
+    if (g === 4 && i >= 5) { const n = parkStack[k] ?? (parkStack[k] = Object.keys(parkStack).length); return { x: 506 + (n % 6) * 7, y: 252 + Math.floor(n / 6) * 6.2, r: 2.2, o: .6, fill: "var(--muted)" }; }
+    if (i === 3) return { ...e.bridge, r: 2.6, o: .9, fill: "var(--ai)" };
+    const lvl = i === 4 ? 1 : i === 5 ? 3 : 6, y = GY[lvl] + 13;
+    const alive = prodCombos.filter(c => { const ff = fate[c.id]; return ff.gate > lvl || ff.gate === 7 || (ff.gate === 4 && lvl < 4); });
+    const n = alive.findIndex(c => c.id === k);
+    if (i >= 7) { if (!fin) return { x: 300, y: 450, r: 0, o: 0 }; return { x: 140 + n * 34, y: 448, r: win ? 5 : 3.4, o: i >= 8 ? .35 : 1, fill: win ? "var(--chosen)" : "var(--ai)" }; }
+    const span = 440 / Math.max(alive.length, 1);
+    return { x: 90 + (n + .5) * span, y, r: 2.8, o: 1, fill: win && i >= 6 ? "var(--chosen)" : "var(--ai)" };
+  }
+  if (e.kind === "card") { if (i < 8) return { x: 305, y: 512, r: 0, o: 0 }; return { x: e.x, y: e.y, r: 7, o: i >= 9 ? .3 : 1, fill: e.c.n === 1 ? "var(--chosen)" : "var(--ai)" }; }
+  if (e.kind === "lad") {
+    if (i < 9) return { x: 305, y: 540, r: 0, o: 0 };
+    const dead = LI[e.id].status === "dead", sx = 125 + base.indexOf(e.id) * 40;
+    if (i === 9) return { x: sx, y: LY.screen + 12, r: 6, o: 1, fill: dead ? "var(--fail)" : "var(--chosen)" };
+    if (dead) return { x: sx, y: LY.screen + 12, r: 5, o: .45, fill: "var(--fail)" };
+    if (i === 10) return { x: 305, y: LY.select + 12, r: 6, o: 1, fill: "var(--chosen)" };
+    if (i >= 13) return { x: 305, y: LY.paper + 10, r: 8, o: 1, fill: "var(--chosen)" };
+    return { x: 305, y: LY.memo + 14, r: 7, o: 1, fill: "var(--chosen)" };
+  }
+  if (e.kind === "piv") { if (i < 12) return { x: 305, y: LY.memo, r: 0, o: 0 }; return { x: 345, y: LY.memo + 14, r: 6, o: 1, fill: "var(--human-wash)", stroke: true }; }
+  if (e.kind === "ver") { if (i < 13) return { x: 305, y: LY.paper, r: 0, o: 0 }; return { x: 281 + e.i * 24, y: LY.vers + 10, r: 5, o: 1, fill: e.v.checks_ok === false ? "var(--fail)" : "var(--ai)" }; }
+  if (e.kind === "pool") { if (i < 15) return { x: 305, y: LY.pool, r: 0, o: 0 }; return { x: 269 + e.i * 36, y: LY.pool, r: 8, o: 1, fill: "var(--chosen)" }; }
+  return { o: 0 };
+}
+const SHOW = { home: 1, donor: 1, others: 1, kills: 4, parked: 5, sealt: 7, tray: 8, tpool: 15 };
+const cnt = k => fmt(F[k] ? F[k].v : "?");
+const CAP = {
+  hero: "<b>Before anything runs.</b> " + cnt("kit.packets") + " packaged debates wait at the top.",
+  universe: "<b>The debates.</b> The " + cnt("kit.packets") + " packaged debates of the " + cnt("universe.clusters") + ". The two large circles are the pair whose survivor the cross-cluster run handed on (section 2.2).",
+  items: "<b>Items.</b> Each dot is one quoted item: " + cnt("bank.items") + " in all. Dark: home debate; light: donor debate; grey: the other " + others.length + ".",
+  pairs: "<b>Combinations.</b> " + cnt("cascade.drawn") + " cross-field combinations from three main draws, one row per draw.",
+  k1: "<b>K1, the bridge test.</b> Killed combinations move left: " + cnt("cascade.k1_killed") + " killed, " + cnt("cascade.k1") + " pass.",
+  k3: "<b>K2 and K3.</b> Prior art kills " + cnt("cascade.k2_killed") + "; the ranker orders the rest; those outside each draw’s top six are set aside on the right (ranked out, not refuted).",
+  k6: "<b>K4 to K6.</b> Cards are written, searched on the web, and read cold by a critic. " + cnt("cascade.k6") + " survive; gold is the top card.",
+  freeze: "<b>The freeze.</b> Everything above this line was fingerprinted before the first real draw.",
+  handoff: "<b>The hand-off.</b> Only the gold survivor goes on, with " + (M.handoff.cards.length - 1) + " more cards from the same two debates.",
+  screen: "<b>Paper K’s run.</b> Its " + cnt("k.theses") + " candidate theses came from the within-cluster generator. Grey: killed at screening (" + cnt("k.killed_screen") + ").",
+  select: "<b>Selection.</b> Only one thesis survived, so no ranking was needed.",
+  critics: "<b>The memo.</b> Four referees raised " + cnt("k.objections") + " objections; the author answered each.",
+  pivot: "<b>The replaced thesis.</b> The rose ring is the new thesis, sent back to screening; it passed.",
+  paper: "<b>The paper.</b> One dot per version; the grey one failed the scripted checks.",
+  games: "<b>The games.</b> The accepted version faces six published papers, then three hidden ones, each in both orders.",
+  pool: "<b>The submitted papers.</b> A, C and K, all from the within-cluster route.",
+  audit: "<b>The whole record.</b> Every dot is a record someone can open."
+};
+function render(s) {
+  const i = at(s);
+  ENT.forEach(e => { const p = look(e, s), el = e.el;
+    el.setAttribute("cx", (p.x ?? 0).toFixed(1)); el.setAttribute("cy", (p.y ?? 0).toFixed(1)); el.setAttribute("r", p.r ?? 0); el.setAttribute("opacity", p.o ?? 0);
+    if (p.fill) el.style.fill = p.fill; el.style.stroke = p.stroke ? "var(--human)" : ""; el.style.strokeWidth = p.stroke ? 1.6 : ""; });
+  Object.values(BAS).forEach(b => b.el.setAttribute("opacity", i >= 1 ? 1 : (b.r > 30 ? .6 : 0)));
+  for (const k in SHOW) L[k].setAttribute("opacity", i >= SHOW[k] ? 1 : 0);
+  GY.forEach((y, g) => { L["g" + g].setAttribute("opacity", i >= 3 && i <= 8 ? 1 : (i > 8 ? .35 : 0)); L["g" + g].classList.toggle("on", i >= GATE_STATE[g] && i <= 6); L["gl" + g].setAttribute("opacity", i >= 3 && i <= 7 ? 1 : 0); });
+  L.seal.setAttribute("opacity", i >= 7 ? 1 : 0); L.wall.setAttribute("opacity", i >= 9 ? 1 : 0);
+  ["screen", "select", "memo", "paper", "vers", "editor", "games", "held"].forEach(k => { const v = i >= 9 ? 1 : 0; L["L" + k].setAttribute("opacity", v); L["t" + k].setAttribute("opacity", v); });
+  $("cap").innerHTML = CAP[s] || "";
+  if (matchMedia("(max-width: 900px)").matches) svg.setAttribute("viewBox", i < 9 ? "0 0 560 520" : "0 450 560 450");
+  else svg.setAttribute("viewBox", "0 0 560 900");
+}
+const steps = [...document.querySelectorAll(".step[data-state]")];
+let cur = "", curStep = null;
+function pick() {
+  const mid = innerHeight * .5; let best = steps[0], bd = 1e9;
+  steps.forEach(st => { const r = st.getBoundingClientRect(); const d = r.top <= mid && r.bottom >= mid ? 0 : Math.min(Math.abs(r.top - mid), Math.abs(r.bottom - mid)); if (d < bd) { bd = d; best = st; } });
+  if (best !== curStep) { curStep = best; $("chap").textContent = best.dataset.chap; }
+  const s = best.dataset.state; if (s !== cur) { cur = s; render(s); }
+}
+addEventListener("scroll", () => requestAnimationFrame(pick), { passive: true }); addEventListener("resize", pick);
+render("hero"); setTimeout(pick, 50);
+
+// --- 1.2 lanes ---
+const lanes = [["h", "Library", "Licensed full texts, " + cnt("library.texts")], ["p", "Debates", cnt("universe.clusters") + " clusters by shared references"], ["p", "Packets", cnt("kit.packets") + " top-ranked, with texts"],
+  ["", "Within-cluster map", "Baseline: map a single debate, propose theses"], ["", "Cross-cluster draw", "Variation: items, seeded combinations, seven gates"],
+  ["", "Screening", "Two referees; a ranker if several survive"], ["", "Memo", "Four referees, author’s reply, editor"], ["", "Paper", "Scripted checks, outside reader, up to two revision rounds"],
+  ["", "Editor", "Accept, revise or reject"], ["", "Games", "Published and hidden papers"], ["", "Final selection", "AI referees review the candidates; the AI chooses three"]];
+$("lanes").innerHTML = lanes.map(([c, t, d]) => `<div class="lane ${c}"><b>${t}</b>${d}</div>`).join("");
+$("clus-text").textContent = C.clustering.text;
+
+// --- 1.3 ring ---
+(function () {
+  const g = $("ring"), cx = 180, cy = 180, R = 135, cls = M.kit.pool.map(c => c.cluster), P = {};
+  cls.forEach((c, i) => { const a = -Math.PI / 2 + i * 2 * Math.PI / cls.length; P[c] = { x: cx + R * Math.cos(a), y: cy + R * Math.sin(a), a }; });
+  M.kit.pairs.filter(p => p.weight > 0).forEach(p => { const gold = (p.a === HOME && p.b === DONOR) || (p.b === HOME && p.a === DONOR);
+    mk("line", { x1: P[p.a].x, y1: P[p.a].y, x2: P[p.b].x, y2: P[p.b].y, stroke: gold ? "var(--chosen)" : "var(--ai)", "stroke-opacity": gold ? 1 : .05 + .12 * p.weight, "stroke-width": gold ? 3 : .5 + p.weight, "data-a": p.a, "data-b": p.b }, g); });
+  cls.forEach(c => { const n = CL[c], feat = c === HOME || c === DONOR;
+    const nd = mk("circle", { cx: P[c].x, cy: P[c].y, r: 5 + Math.sqrt(n.n_fulltext) * .8, fill: feat ? "var(--chosen)" : "var(--bg)", stroke: "var(--ai)", "stroke-width": 1.6, tabindex: 0, role: "button", "aria-label": c + ", " + n.name }, g);
+    const t = mk("text", { x: cx + (R + 24) * Math.cos(P[c].a), y: cy + (R + 24) * Math.sin(P[c].a) + 4, "text-anchor": "middle", fill: "var(--muted)", "font-size": 10.5 }, g); t.textContent = c;
+    const show = () => { $("ring-tip").innerHTML = `<b>${c}</b> · ${esc(n.name)}<br>Rank ${n.rank} of ${cnt("universe.clusters")} · ${n.n_total} members · ${n.n_fulltext} full texts`;
+      g.querySelectorAll("line").forEach(l => l.style.opacity = l.dataset.a === c || l.dataset.b === c ? 1 : .15); };
+    nd.addEventListener("mouseenter", show); nd.addEventListener("focus", show); nd.addEventListener("mouseleave", () => g.querySelectorAll("line").forEach(l => l.style.opacity = "")); });
+})();
+
+// --- 2.1 within-cluster ---
+(function () {
+  const A = SELP.find(p => p.letter === "A");
+  $("ac-theses").textContent = A.theses; $("ac-second").textContent = A.theses_second;
+  const T = C.within_table;
+  $("within-t").innerHTML = `<tr>${T.head.map((h, i) => `<th${i ? ' class="num"' : ""}>${esc(h)}</th>`).join("")}</tr>` + T.rows.map(r => `<tr>${r.map((v, i) => `<td${i ? ' class="num"' : ""}>${esc(v)}</td>`).join("")}</tr>`).join("");
+})();
+
+// --- 2.2 items ---
+(function () {
+  const types = ["position", "tension", "open_problem", "objection", "assumption", "method", "case"];
+  let cl = HOME, ty = "all";
+  const order = [HOME, DONOR, ...others];
+  $("it-cl").innerHTML = order.map(c => `<button class="chip" data-c="${c}">${c === HOME ? "Home " : c === DONOR ? "Donor " : ""}${c}</button>`).join("");
+  $("it-ty").innerHTML = ["all", ...types].map(t => `<button class="chip" data-t="${t}">${cap(t.replace("_", " "))} ${t === "all" ? "" : "(" + (M.bank.by_type[t] || 0) + ")"}</button>`).join("");
+  function draw() {
+    document.querySelectorAll("#it-cl .chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.c === cl)); document.querySelectorAll("#it-ty .chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === ty));
+    const list = M.bank.items.filter(i => i.c === cl && (ty === "all" || i.t === ty));
+    $("it-list").innerHTML = `<p class="small">${list.length} items. Their texts and quotations are withheld until the competition results are announced.</p>`;
+  }
+  $("it-cl").onclick = e => { if (e.target.dataset.c) { cl = e.target.dataset.c; draw(); } }; $("it-ty").onclick = e => { const t = e.target.closest("[data-t]"); if (t) { ty = t.dataset.t; draw(); } }; draw();
+})();
+
+// --- 2.3 draw replay ---
+(function () {
+  let seed = SEEDS[0];
+  $("dr-seed").innerHTML = SEEDS.concat([PAIR]).map((s, i) => `<button class="chip" data-s="${s}">${s === PAIR ? "Pair draw" : "Main draw " + (i + 1)}</button>`).join("");
+  const r = $("dr-n");
+  function draw() {
+    document.querySelectorAll("#dr-seed .chip").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === seed));
+    const list = D[seed].combos; r.max = list.length - 1; const c = list[Math.min(+r.value, list.length - 1)];
+    $("dr-lab").textContent = `${+r.value + 1} of ${list.length}`;
+    const v = c.k1 ? `<span class="verdict ${c.k1.keep ? "v-keep" : "v-kill"}">K1: ${c.k1.keep ? "kept" : "killed (" + c.k1.why.replace("_", " ") + ")"}</span>` : `<span class="verdict v-kill">K0: dropped (sources already cited together)</span>`;
+    $("dr-card").innerHTML = `<p class="small">Recipe ${c.op}: an item of kind ${esc(c.a.t)} from donor ${esc(c.donor)} and an item of kind ${esc(c.b.t)} from home ${esc(c.home)}. ${v} Item texts and reasons are withheld until the competition results are announced.</p>`;
+  }
+  $("dr-seed").onclick = e => { if (e.target.dataset.s) { seed = e.target.dataset.s; r.value = 0; draw(); } }; r.oninput = draw; draw();
+})();
+
+// --- 2.4 gates table, kill reasons, bump chart ---
+(function () {
+  const v = k => F[k].v, P = D[PAIR];
+  const main = [v("cascade.drawn"), v("cascade.drawn") - v("cascade.k0_killed"), v("cascade.k1"), v("cascade.k2"), v("cascade.cards"), v("cascade.cards"), v("cascade.k5"), v("cascade.k6")];
+  const pair = [P.n_drawn, P.n_k0, P.n_k1, P.n_k2, P.n_cards, P.n_cards, P.n_k5, P.n_k6];
+  const G = [
+    ["Co-citation (K0)", "Are the two source papers already cited together by three or more papers?", "A script over the citation graph", "Yes: the literature already links them"],
+    ["Bridge test (K1)", "Written with letters in place of each field’s terms, do both items still hold, and do they line up?", "An AI tester, ten combinations per call", "Only hopeless combinations, where the link is a shared word; never for being probably false"],
+    ["Prior art (K2)", "Is the combination already published?", `A script searches the library’s full texts (ranked by BM25, top 8) and adds 8 hits from a public index across all fields; an AI referee then judges from these hits and its own knowledge`, "“Anticipated” fails; “partly anticipated” passes with a note of what remains new"],
+    ["Ranking (K3)", "Which survivors are most promising?", "An AI ranker, three times in shuffled order, with the prior-art notes in view", "Not a kill: only the top six per draw go on; the rest are set aside, not refuted"],
+    ["Thesis writing (K4)", "None: each survivor is written up as a candidate thesis (claim, argument in steps, closest work and the difference)", "An AI card writer, with the prior-art note, so a partly anticipated claim is sharpened, not dropped", "Nothing"],
+    ["Web search (K5)", "Is the thesis already published anywhere on the web?", "An AI with web search", "Yes, found in print"],
+    ["Cold critic (K6)", "Is the link between the two debates substantive, or a shared word or loose analogy?", "An AI critic that sees only the thesis", "Shallow link"]];
+  $("gates").innerHTML = "<tr><th>Gate</th><th>What it asks</th><th>Who answers</th><th>What fails</th><th class='num'>In → out</th></tr>"
+    + G.map((g, i) => `<tr><td><b>${esc(g[0])}</b></td><td data-label="Asks">${esc(g[1])}</td><td data-label="Who answers">${esc(g[2])}</td><td data-label="Fails">${esc(g[3])}</td><td class="num" data-label="In → out">${fmt(main[i])} → ${fmt(main[i + 1])}<br><span class="tiny muted">pair: ${fmt(pair[i])} → ${fmt(pair[i + 1])}</span></td></tr>`).join("");
+  $("pair-k6").textContent = fmt(P.n_k6);
+  const allC = SEEDS.flatMap(s => D[s].combos).filter(c => c.k1 && c.k1.reason);
+  const k = {}; SEEDS.forEach(s => Object.entries(D[s].kills_k1).forEach(([w, n]) => k[w] = (k[w] || 0) + n));
+  const tot = Object.values(k).reduce((a, b) => a + b, 0), mx = Math.max(...Object.values(k));
+  const rows = Object.entries(k).sort((a, b) => b[1] - a[1]);
+  const GL = { equivocation: "Same word, different meaning", preconditions_unmet: "Method can’t apply to this problem", incoherent: "Doesn’t make sense", no_deliverable: "Nothing would follow", trivial: "Obvious" };
+  $("killwall").innerHTML = `<p class="small" style="margin-bottom:4px">${tot} combinations killed by the bridge test. The two failures section 1.1 warned about lead the list.</p>` + rows.map(([w, n]) => `<div class="row" role="button" tabindex="0" data-w="${w}"><span>${esc(GL[w] || cap(w.replace("_", " ")))}</span><div class="bar k" style="width:${100 * n / mx}%"></div><span>${n}</span></div>`).join("");
+  const showW = w => { $("killlist").innerHTML = `<p class="small">Examples are withheld until the competition results are announced.</p>`; };
+  $("killwall").onclick = e => { const r = e.target.closest("[data-w]"); if (r) showW(r.dataset.w); };
+  $("killwall").onkeydown = e => { const r = e.target.closest("[data-w]"); if (r && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); showW(r.dataset.w); } };
+  const s = WIN.slice(1, 9), d = D[s], RK = d.rankings, ids = RK[0], n = ids.length, g = $("bump");
+  const x = j => 40 + j * 140, y = r => 14 + r * (210 / Math.max(n - 1, 1));
+  RK.forEach((rk, j) => { const t = mk("text", { x: x(j), y: 236, "text-anchor": "middle", fill: "var(--muted)", "font-size": 10.5 }, g); t.textContent = "Shuffle " + (j + 1); });
+  const pos = RK.map(r => r.indexOf(WIN) + 1), lst = a => a.length > 1 ? a.slice(0, -1).join(", ") + " and " + a[a.length - 1] : String(a[0]);
+  ids.forEach(id => { const pts = RK.map((rk, j) => [x(j), y(rk.indexOf(id))]); const gold = id === WIN;
+    mk("polyline", { points: pts.map(p => p.join(",")).join(" "), fill: "none", stroke: gold ? "var(--chosen)" : "var(--ai)", "stroke-opacity": gold ? 1 : .35, "stroke-width": gold ? 2.6 : 1.2 }, g);
+    pts.forEach(p => mk("circle", { cx: p[0], cy: p[1], r: gold ? 4 : 2.6, fill: gold ? "var(--chosen)" : "var(--ai)" }, g)); });
+  const rho = (a, b) => { const m = a.length; let s2 = 0; a.forEach((id, i) => { const j = b.indexOf(id); s2 += (i - j) ** 2; }); return 1 - 6 * s2 / (m * (m * m - 1)); };
+  $("bump-note").innerHTML = `<b>Figure 12.</b> Three shuffled rankings of main draw ${SEEDS.indexOf(s) + 1}, ${n} ranked combinations, top at the top. Blue lines: one combination each. Gold: the eventual top card, placed ${lst(pos)} in the ${RK.length} shuffles. Rank agreement between shuffles (Spearman): ${[rho(RK[0], RK[1]), rho(RK[0], RK[2]), rho(RK[1], RK[2])].map(v => v.toFixed(2)).join(", ")}.`;
+})();
+
+// --- 2.6 top-card rule sandbox ---
+(function () {
+  const fin = SEEDS.flatMap(s => D[s].final.map(id => ({ id, s, mr: D[s].mean_rank[id], nr: D[s].mean_rank[id] / Object.keys(D[s].mean_rank).length, p: (D[s].combos.find(c => c.id === id).k1 || {}).p })));
+  const RULES = [["As run: lowest normalised rank", a => a.sort((x, y) => x.nr - y.nr)], ["Lowest average rank, not normalised", a => a.sort((x, y) => x.mr - y.mr)], ["Most likely to pass the bridge test", a => a.sort((x, y) => (y.p ?? 0) - (x.p ?? 0))], ["Only the first draw", a => a.filter(x => x.s === SEEDS[0]).sort((x, y) => x.nr - y.nr)]];
+  const nDiff = RULES.filter(r => r[1]([...fin])[0].id !== WIN).length;
+  $("wr-sum").textContent = nDiff ? `${nDiff} of these ${RULES.length} rules pick a different top card. The rule was fixed before the run, but the choice of rule mattered.` : `All ${RULES.length} rules pick the same top card.`;
+  $("wr").innerHTML = RULES.map((r, i) => `<button data-i="${i}">${r[0]}</button>`).join("");
+  const show = i => { document.querySelectorAll("#wr button").forEach(b => b.setAttribute("aria-pressed", +b.dataset.i === i)); const w = RULES[i][1]([...fin])[0];
+    $("wr-out").innerHTML = `<p>Top card under this rule: ${w.id === WIN ? "the actual top card" : "a different card"} · main draw ${SEEDS.indexOf(w.s) + 1}, average rank ${w.mr.toFixed(2)}, normalised ${w.nr.toFixed(3)}${w.p != null ? ", survival estimate " + w.p : ""}.</p>`; };
+  $("wr").onclick = e => { const b = e.target.closest("[data-i]"); if (b) show(+b.dataset.i); }; show(0);
+})();
+
+// --- 3.1 screening, 3.2 memo, pivot ---
+const ST = { done: "survived; became Paper K", dead: "killed at screening", pivot: "replaced thesis; passed" };
+const screenTable = ids => "<tr><th>Candidate thesis</th><th>Prior-art referee</th><th>Sceptical reader</th><th class='num'>Promise (sum)</th><th>Outcome</th></tr>" + ids.map(id => { const I = LI[id], sc = I.screen || {}, pa = sc.prior_art || {}, sr = sc.skeptical_reader || {};
+  const th = (I.thesis || "").length > 170 ? I.thesis.slice(0, 170).replace(/\s+\S*$/, "") + "…" : (I.thesis || "");
+  return `<tr${id === KID || id.endsWith("p") ? ' style="background:var(--chosen-wash)"' : ""}><td><b>${thName(id)}</b></td><td>${esc(pa.verdict || "—")}${pa.anticipation ? "; " + esc(pa.anticipation === "partly" ? "partly anticipated" : pa.anticipation) : ""}</td><td>${esc(sr.verdict || "—")}</td><td class="num">${pa.promise ?? "—"} + ${sr.promise ?? "—"} = ${(+pa.promise || 0) + (+sr.promise || 0)}</td><td>${esc(ST[I.status] || I.status)}</td></tr>`; }).join("");
+$("screen").innerHTML = screenTable(base);
+$("screen2").innerHTML = screenTable(pivots);
+(function () {
+  const ROLES = ["field_specialist", "prior_art", "argument_critic", "skeptical_reader"], NM = { field_specialist: "Field specialist", prior_art: "Prior-art referee", argument_critic: "Argument critic", skeptical_reader: "Sceptical reader" };
+  const r2 = paperIdea.rung2;
+  $("r2").innerHTML = "<tr><th>Report</th><th>Verdict</th><th class='num'>Objections</th><th>By severity</th></tr>" + ROLES.filter(r => r2[r]).map(r => { const x = r2[r];
+    return `<tr><td>${NM[r]}</td><td>${esc(x.verdict)}</td><td class="num">${x.n}</td><td>${["fatal", "major", "minor"].map(s => x.sev[s] ? x.sev[s] + " " + s : "").filter(Boolean).join(", ")}</td></tr>`; }).join("")
+    + `<tr><td>Thesis when the memo was written</td><td colspan="3">${esc((paperIdea["pivot-memo"] || {}).relation || "—")}</td></tr><tr><td>Thesis after the reply</td><td colspan="3">${esc((paperIdea["pivot-reply"] || {}).relation || "—")}</td></tr>`;
+  const reps = ROLES.map(r => r2[r]).filter(Boolean), fatal = reps.reduce((a, x) => a + (x.sev.fatal || 0), 0);
+  $("r2-note").textContent = `Every report asked for revision${fatal ? `, and ${fatal} objections were rated fatal` : "; none found a fatal flaw"}. The memo editor’s decision: ${(paperIdea.editor2 || {}).decision || "—"}.`;
+  const wdiff = (a, b) => { const A = a.split(/\s+/), B = b.split(/\s+/), n = A.length, m = B.length, T = Array.from({ length: n + 1 }, () => new Int16Array(m + 1));
+    for (let i = n - 1; i >= 0; i--) for (let j = m - 1; j >= 0; j--) T[i][j] = A[i] === B[j] ? T[i + 1][j + 1] + 1 : Math.max(T[i + 1][j], T[i][j + 1]);
+    let i = 0, j = 0, o = []; while (i < n && j < m) { if (A[i] === B[j]) { o.push(esc(A[i])); i++; j++; } else if (T[i + 1][j] >= T[i][j + 1]) o.push(`<del>${esc(A[i++])}</del>`); else o.push(`<ins>${esc(B[j++])}</ins>`); }
+    while (i < n) o.push(`<del>${esc(A[i++])}</del>`); while (j < m) o.push(`<ins>${esc(B[j++])}</ins>`); return o.join(" "); };
+  const Pv = LI[pivots[0]] || {};
+  $("rp").innerHTML = `<p class="tiny muted">${esc((paperIdea["pivot-reply"] || {}).reason || "")}</p><blockquote class="th">${wdiff(paperIdea.thesis || "", Pv.thesis || "")}</blockquote>`;
+})();
+
+// --- 3.3 the paper's versions ---
+(function () {
+  const RV = { reject: "reject", major_revision: "major revision", minor_revision: "minor revision", accept: "accept" };
+  const tally = o => { const c = {}; Object.values(o || {}).forEach(v => c[RV[v] || v] = (c[RV[v] || v] || 0) + 1); return Object.entries(c).map(([k, n]) => n + " " + k).join(", "); };
+  const V = paperIdea.versions;
+  $("paper").innerHTML = `<div class="wrap"><table class="small"><tr><th>Version</th><th>Scripted checks</th><th class="num">Words</th><th>Review of this version</th><th>Editor</th><th class="num">Games</th></tr>${V.map(v => `<tr${v.v === paperIdea.incumbent ? ' style="background:var(--chosen-wash)"' : ""}><td>${v.v}${v.label ? "<br><span class='tiny muted'>" + esc(cap(v.label)) + "</span>" : ""}</td><td>${v.checks_ok === false ? "× failed: " + esc((v.failed || []).map(f => FAIL[f] || f).join("; ")) : v.checks_ok ? "✓ passed" : "—"}</td><td class="num">${v.words ? fmt(v.words) : "—"}</td><td>${v.referees && Object.keys(v.referees).length ? "Referees: " + esc(tally(v.referees)) : "—"}${v.outside_reader ? "<br>Outside reader: " + (v.outside_reader.followable ? "followable" : "not followable") + ", " + v.outside_reader.lost + " places lost" : ""}</td><td>${esc(v.editor || "—")}</td><td class="num">${v.loop ? `${v.loop.points} of ${v.loop.games}` : "—"}</td></tr>`).join("")}</table></div><figcaption class="cap">Highlighted row: the accepted version. Games: points against three published papers in six games, used to choose between versions. The word limit for the checks is 5,700.</figcaption>`;
+})();
+
+// --- 4.1 per criterion; Part I and II games figures ---
+const JG = M.judging, JP = JG.papers[KID];
+(function () {
+  const pc = JP.full.per_criterion, hc = JP.heldout.per_criterion;
+  $("percrit").innerHTML = "<tr><th>Criterion</th><th class='num'>Comparison papers (of 12)</th><th class='num'>Hidden test papers (of 6)</th></tr>" + Object.keys(pc).map(k => `<tr><td>${cap(k)}</td><td class="num">${fmt(pc[k])}</td><td class="num">${fmt(hc[k])}</td></tr>`).join("");
+})();
+const markLegend = `<span class="legend"><span><span class="mk won"></span>The AI paper won the game</span><span><span class="mk"></span>The published paper won</span><span><span class="mk tie"></span>Tie (half a point)</span></span>`;
+(function () {
+  const P = JP, row = o => `<tr><td>${esc(o.who)} · <span class="muted">${esc(o.venue)}</span></td><td>${o.games.map(g => `<span class="mk ${g.pts === 1 ? "won" : g.pts === .5 ? "tie" : ""}" role="img" aria-label="${g.order}: ${g.pts === 1 ? "won" : g.pts === .5 ? "tie" : "lost"}" title="${esc(o.title)} · ${g.order}: ${g.pts === 1 ? "won" : g.pts === .5 ? "tie" : "lost"}"></span>`).join("")}</td><td class="num">${fmt(o.points)} of ${o.games.length}</td></tr>`;
+  const cmp = P.opponents.filter(o => !o.heldout), hid = P.opponents.filter(o => o.heldout);
+  $("fig-games").innerHTML = markLegend + `<div class="wrap"><table class="small"><tr><th>Published paper (journal)</th><th>Two games</th><th class="num">Won</th></tr><tr class="grph"><td colspan="3">Comparison papers from the debate (the author could read them): ${fmt(P.full.points)} of ${P.full.games}</td></tr>${cmp.map(row).join("")}<tr class="grph"><td colspan="3">Hidden test papers (kept out of the author’s library): ${fmt(P.heldout.wins + .5 * P.heldout.ties)} of ${P.heldout.games}</td></tr>${hid.map(row).join("")}</table></div><figcaption class="cap"><b>Figure 4.</b> Paper K’s games. Each mark is one game; the first mark of a pair has Paper K read first, the second has it read second. Hover a mark for the published paper’s title. Judge: ${esc(MN(JG.judge))}, ${esc(JG.rubric)}.</figcaption>`;
+})();
+(function () {  // Part II 5.1: the three submitted papers, games won
+  const x = v => 6 + v * 188, ax = [0, .5, 1];
+  const dot = (cx) => `<circle cx="${cx}" cy="11" r="5" fill="var(--ai)" stroke="var(--bg)" stroke-width="1.5"/>`, dia = (cx) => `<rect x="${cx - 4.5}" y="6.5" width="9" height="9" transform="rotate(45 ${cx} 11)" fill="var(--bg)" stroke="var(--ai)" stroke-width="2"/>`;
+  const strip = p => `<svg class="strip-svg" viewBox="0 0 200 22" role="img" aria-label="Paper ${p.letter}: comparison papers ${p.full[0]} of ${p.full[1]}, hidden papers ${p.heldout[0]} of ${p.heldout[1]}">${ax.map(a => `<line x1="${x(a)}" x2="${x(a)}" y1="2" y2="20" stroke="var(--rule)" stroke-width="${a === .5 ? 1.2 : .6}"/>`).join("")}${dot(x(p.full[0] / p.full[1]))}${dia(x(p.heldout[0] / p.heldout[1]))}</svg>`;
+  $("fig-runs").innerHTML = `<p class="tcap"><b>Table 11.</b> Games won by the three submitted papers. Each row gives its own judge and rubric; rows under different rubrics are not on one scale.</p><div class="legend"><span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--ai)"/></svg> Share of games won against the six comparison papers</span><span><svg width="14" height="14" aria-hidden="true"><rect x="3" y="3" width="8" height="8" transform="rotate(45 7 7)" fill="var(--bg)" stroke="var(--ai)" stroke-width="2"/></svg> Share won against the hidden test papers</span></div><div class="wrap"><table class="small"><tr><th>Paper</th><th>Debate</th><th>Judge (rubric)</th><th style="min-width:180px">Share of games won <span class="tiny muted">0 · 50% · 100%</span></th><th class="num">Comparison</th><th class="num">Hidden</th></tr>${SELP.map(p => `<tr><td><b>${p.letter}</b></td><td>${esc(p.debate)}</td><td>${esc(p.judge)} (${esc(p.rubric)})</td><td>${strip(p)}</td><td class="num">${fmt(p.full[0])} of ${p.full[1]}</td><td class="num">${fmt(p.heldout[0])} of ${p.heldout[1]}</td></tr>`).join("")}</table></div><p class="tiny muted">Paper A’s hidden games were played after its run, against two hidden papers; C and K played three hidden papers each within their runs.</p>`;
+})();
+(function () {  // judge calibration (first rubric)
+  const K = C.calib; if (!K) return;
+  const x = v => 10 + (v - 2.5) / 2.5 * 180, SH = ["circle", "ring", "diamond"], COL = ["var(--ai)", "var(--ai)", "var(--human)"];
+  const mark = (g, v, i) => { const cx = x(v), t = `<title>${esc(K.groups[g].name)}: mean ${v}, top level in ${K.groups[g].top[i]}% of scores</title>`;
+    return SH[g] === "diamond" ? `<rect x="${cx - 4}" y="7" width="8" height="8" transform="rotate(45 ${cx} 11)" fill="${COL[g]}" stroke="var(--bg)" stroke-width="1.5">${t}</rect>` : `<circle cx="${cx}" cy="11" r="5" fill="${SH[g] === "ring" ? "var(--bg)" : COL[g]}" stroke="${COL[g]}" stroke-width="2">${t}</circle>`; };
+  const ax = [2.5, 3, 3.5, 4, 4.5, 5];
+  $("fig-calib").innerHTML = `<div class="legend"><span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--ai)" stroke="var(--ai)" stroke-width="2"/></svg> ${esc(K.groups[0].name)} (${esc(K.groups[0].n)})</span><span><svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="5" fill="var(--bg)" stroke="var(--ai)" stroke-width="2"/></svg> ${esc(K.groups[1].name)} (${esc(K.groups[1].n)})</span><span><svg width="14" height="14" aria-hidden="true"><rect x="3" y="3" width="8" height="8" transform="rotate(45 7 7)" fill="var(--human)"/></svg> ${esc(K.groups[2].name)} (${esc(K.groups[2].n)})</span></div><div class="wrap"><table class="small"><tr><th>Criterion</th><th style="min-width:200px">Mean level (2.5 · 3 · 3.5 · 4 · 4.5 · 5)</th><th class="num">Top level given to Noûs / Phil Review</th></tr>${K.criteria.map((c, i) => `<tr><td>${cap(c)}</td><td><svg class="strip-svg" viewBox="0 0 200 22" role="img" aria-label="${c}: ${K.groups.map(g => g.name + " " + g.mean[i]).join("; ")}">${ax.map(a => `<line x1="${x(a)}" x2="${x(a)}" y1="2" y2="20" stroke="var(--rule)" stroke-width="${a === 5 ? 1.2 : .6}"/>`).join("")}${[0, 1, 2].map(g => mark(g, K.groups[g].mean[i], i)).join("")}</svg></td><td class="num">${K.groups[0].top[i]}%</td></tr>`).join("")}</table></div><figcaption class="cap"><b>Figure 15.</b> Mean level (1 to 5) the gpt-6.1-sol judge gave per criterion under the first rubric, whose level 5 read “a top journal such as Noûs would accept”. Hover a mark for the share of top-level scores. Source: the team’s analysis of rubric independence.</figcaption>`;
+})();
+
+// --- Part I: flow, routes, thesis paths, the three papers, resources ---
+(function () {
+  $("s1-flow").innerHTML = [["p", "universe.articles", "Journal articles from 24 journals"], ["p", "universe.linked", "Linked by shared references"], ["p", "universe.clusters", "Clusters (debates)"], ["h", "kit.packets", "Top-ranked, packaged with full texts"]].map(([c, k, t]) => `<div class="${c}"><b data-fact="${k}"></b>${t}</div>`).join("");
+  const A = SELP.find(p => p.letter === "A");
+  const ROUTES = {
+    within: { t: "Within-cluster (baseline)", s: [
+      "The AI reads the debate and writes a map in four parts: positions, principles in tension, open problems and unanswered objections, each entry tied to source passages.",
+      `From the map it proposes candidate theses. In the paper pipeline’s own mapping session (papers A and C), an AI author proposed ${A.theses} and a second writer ${A.theses_second} more per run. The standalone generator (Paper K) first read five short papers of the debate in full to calibrate scope, then proposed ten, each engaging at least ten papers of the debate through quotations a script found word for word, and each with a plan for a 6,000-word paper.`,
+      "Every candidate thesis then enters the paper pipeline at screening. All three submitted papers came from this route."], d: "#c8b" },
+    cross: { t: "Cross-cluster (variation)", s: [
+      `One AI call per debate wrote down what its literature says: ${cnt("bank.items")} items (positions, tensions, open problems, objections, methods), each with a quotation a script found word for word.`,
+      `Seeded draws combined items across debates that rarely cite each other: ${cnt("cascade.drawn")} combinations in three draws, for example a method from a debate applied to an open problem in another.`,
+      `Seven gates, applied in order, tried to kill each one: a co-citation check, a bridge test, a prior-art search, a ranking, thesis writing, a web search and a cold-read critic. ${cnt("cascade.k6")} survived. Every rule was fingerprinted before the first draw.`,
+      `The best survivor by a fixed rule, with three more cards from the same two debates, went to the paper pipeline. This route produced candidate papers the AI editor accepted; none was among the three selected.`], d: "#c4" } };
+  let r = "within";
+  $("s2-seg").innerHTML = Object.entries(ROUTES).map(([k, v]) => `<button data-r="${k}">${esc(v.t)}</button>`).join("");
+  const draw = () => { document.querySelectorAll("#s2-seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.r === r));
+    $("s2-out").innerHTML = `<ol>${ROUTES[r].s.map(s => `<li>${s}</li>`).join("")}</ol><a href="${ROUTES[r].d}" class="small">Read this route in detail →</a>`; };
+  $("s2-seg").onclick = e => { const x = e.target.closest("[data-r]"); if (x) { r = x.dataset.r; draw(); } }; draw();
+  // thesis paths in paper K's run
+  let c = KID;
+  $("s3-seg").innerHTML = base.map(i => `<button data-i="${i}">${thName(i)}${i === KID ? " · Paper K" : ""}</button>`).join("");
+  const path = id => { const I = LI[id], sc = I.screen || {}, pa = sc.prior_art || {}, sr = sc.skeptical_reader || {};
+    const out = [`Screening: the prior-art referee said “${esc(pa.verdict || "—")}”${pa.anticipation === "anticipated" ? ", already argued in print" : pa.anticipation === "partly" ? ", partly anticipated" : ""}; the sceptical reader said “${esc(sr.verdict || "—")}”.`];
+    if (I.status === "dead") { out.push(`<b>Killed at screening.</b>`); return out.map(s => `<li>${s}</li>`).join(""); }
+    const r2 = I.rung2, nObj = Object.values(r2).reduce((a, x) => a + x.n, 0), V = I.versions;
+    out.push(`Memo: ${nObj} objections from ${Object.keys(r2).length} referees, each answered by the author; the editor let the memo survive.`);
+    out.push(`After the reply the thesis was ${esc((I["pivot-reply"] || {}).relation || "—")}, so the new thesis was screened again as a new candidate, and passed.`);
+    out.push(`Paper: ${V.map(v => v.v + (v.checks_ok === false ? " failed " + (v.failed || []).length + " scripted checks (" + (v.failed || []).map(f => FAIL[f] || f).join("; ") + ")" : v.label === "draft fix of v001" ? " fixed them and went to four referees and an outside reader" : v.editor ? ", the revision after one round of review, was accepted by the editor" : "")).join("; ")}.`);
+    out.push(`<b>Accepted</b> as Paper K; then ${cnt("k.full_points")} of ${cnt("k.full_games")} games against published papers and ${cnt("k.held_wins")} of ${cnt("k.held_games")} against hidden papers.`);
+    return out.map(s => `<li>${s}</li>`).join(""); };
+  const d3 = () => { document.querySelectorAll("#s3-seg button").forEach(x => x.setAttribute("aria-pressed", x.dataset.i === c)); $("s3-out").innerHTML = path(c); };
+  $("s3-seg").onclick = e => { const x = e.target.closest("[data-i]"); if (x) { c = x.dataset.i; d3(); } }; d3();
+  // the three papers
+  $("t-papers").innerHTML = "<tr><th>Paper</th><th>Debate and route</th><th>Summary</th><th class='num'>Games won</th></tr>" + SELP.map(p => `<tr><td><b>${p.letter}</b></td><td>${esc(cap(p.debate))}; within-cluster (${esc(p.impl)})</td><td>${esc(p.summary)}</td><td class="num">${fmt(p.full[0])} of ${p.full[1]} vs published<br>${fmt(p.heldout[0])} of ${p.heldout[1]} vs hidden<br><span class="tiny muted">${esc(p.judge)}, ${esc(p.rubric)}</span></td></tr>`).join("");
+  $("papers3").innerHTML = SELP.map(p => `<div class="pp"><h4>Paper ${p.letter}</h4><p class="meta">${esc(cap(p.debate))} · within-cluster route (${esc(p.impl)})</p><p>${esc(p.summary)}</p></div>`).join("");
+  // resources (rounded: the totals are estimates)
+  const r10 = v => Math.round(v / 10) * 10, r50 = v => Math.round(v / 50) * 50;
+  $("calls-round").textContent = "≈ " + fmt(r10(F["calls.all"].v));
+  const tiles = `<div><b>about ${fmt(r10(F["calls.all"].v))}</b><span>AI calls across all three team members’ work and all trials</span></div><div><b>about $${fmt(r10(F["cost.usd"].v))}</b><span>at list prices, for the whole project</span></div><div><b>about $${fmt(r50(F["cost.per_paper"].v))}</b><span>per submitted paper (the total divided by three)</span></div>`;
+  $("s6-tiles").innerHTML = tiles; $("res-tiles").innerHTML = tiles;
+  const K = FIN.calls, mx = Math.max(...Object.values(K.by_stage));
+  $("calls-def").textContent = "A call is one completed model invocation recorded in a run’s call log; failed, rate-limited, mock and test-fixture calls and copies of other runs are not counted.";
+  $("calls").innerHTML = Object.entries(K.by_stage).map(([s, n]) => `<div class="row"><span>${esc(cap(s))}</span><div class="bar" style="width:${100 * n / mx}%"></div><span>${fmt(n)}</span></div>`).join("");
+})();
+
+// --- 6.1 robustness ---
+(function () {
+  const SG = { done: "✓ Done", partial: "◐ Partial", planned: "○ Planned", not_run: "— Not run" };
+  $("tests").innerHTML = "<tr><th>Check</th><th>Status</th><th>What it shows</th></tr>" + C.tests.map(t => `<tr><td><b>${esc(t.title)}</b><br><span class="tiny muted">${esc(t.what)}</span><div class="rm">${esc(t.src)}</div></td><td><span class="status st-${t.status}">${SG[t.status]}</span></td><td>${esc(t.result)}</td></tr>`).join("");
+})();
+
+// --- review 048: shared references -> links -> groups (illustration, made-up papers A-H) ---
+(() => {
+  const P = "ABCDEFGH".split(""), refs = {};
+  P.forEach((p, i) => refs[p] = (i < 4 ? ["R1", "R2", "R3"] : ["R4", "R5", "R6"]).concat([p + "1", p + "2"]));
+  refs.D.push("R7", "R8"); refs.E.push("R7", "R8");
+  const ov = (a, b) => { const sh = refs[a].filter(r => refs[b].includes(r)).length; return [sh, sh / Math.sqrt(refs[a].length * refs[b].length)]; };
+  const pos = { A: [70, 80], B: [70, 220], C: [200, 230], D: [210, 90], E: [350, 90], F: [480, 70], G: [490, 220], H: [360, 230] };
+  const R = ["R1", "R2", "R3", "R7", "R8", "R4", "R5", "R6"];
+  const TXT = [
+    "Each line joins a paper (left) to a work it cites (right). Papers A to D cite R1 to R3, papers E to H cite R4 to R6, and D and E both also cite R7 and R8.",
+    "Papers that share at least two references are linked, even if neither cites the other. Thicker lines mean more overlap: A and B share three of five references each (overlap 0.60); D and E share two of seven each (0.29).",
+    "Densely linked papers form groups. A to D form one, E to H another; the single link between D and E does not merge them. A group need not be an island.",
+  ];
+  const svg = $("cpl"), pr = (x, y, t, r = 15) => `<circle cx="${x}" cy="${y}" r="${r}" fill="var(--bg)" stroke="var(--ink)" stroke-width="1.5"/><text x="${x}" y="${y + 4}" text-anchor="middle" font-weight="600">${t}</text>`;
+  const draw = st => {
+    let o = "";
+    if (st === 0) {
+      const py = i => 22 + i * 33, ry = i => 22 + i * 33;
+      P.forEach((p, i) => refs[p].filter(r => R.includes(r)).forEach(r => {
+        const j = R.indexOf(r), hot = r === "R7" || r === "R8";
+        o += `<line x1="130" y1="${py(i)}" x2="420" y2="${ry(j)}" stroke="${hot ? "var(--chosen)" : "var(--muted)"}" stroke-width="${hot ? 2 : 1.2}" opacity=".8"/>`;
+      }));
+      P.forEach((p, i) => o += pr(115, py(i), p, 13));
+      R.forEach((r, j) => o += `<rect x="420" y="${ry(j) - 11}" width="40" height="22" rx="4" fill="var(--soft)" stroke="var(--rule)"/><text x="440" y="${ry(j) + 4}" text-anchor="middle">${r}</text>`);
+      o += `<text x="115" y="294" text-anchor="middle" fill="var(--muted)">Papers</text><text x="440" y="294" text-anchor="middle">Cited works</text>`;
+    } else {
+      if (st === 2) o += `<rect x="30" y="40" width="220" height="230" rx="18" fill="var(--ai-wash)" stroke="var(--ai)" stroke-dasharray="5 4"/><rect x="310" y="35" width="220" height="235" rx="18" fill="var(--chosen-wash)" stroke="var(--chosen)" stroke-dasharray="5 4"/><text x="140" y="290" text-anchor="middle">Group 1: A to D</text><text x="420" y="290" text-anchor="middle">Group 2: E to H</text>`;
+      for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) {
+        const [a, b] = [P[i], P[j]], [sh, w] = ov(a, b);
+        if (sh < 2 || w < 0.05) continue;
+        const [x1, y1] = pos[a], [x2, y2] = pos[b], cross = (i < 4) !== (j < 4);
+        o += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${cross ? "var(--chosen)" : "var(--ai)"}" stroke-width="${(w * 7).toFixed(1)}" ${cross ? 'stroke-dasharray="6 4"' : ""}/>`;
+        if (cross) o += `<text x="${(x1 + x2) / 2}" y="${y1 - 10}" text-anchor="middle" fill="var(--muted)">0.29</text>`;
+        if (a === "A" && b === "B") o += `<text x="${x1 - 32}" y="${(y1 + y2) / 2}" text-anchor="middle" fill="var(--muted)">0.60</text>`;
+      }
+      P.forEach(p => o += pr(pos[p][0], pos[p][1], p));
+    }
+    svg.innerHTML = o; $("cpl-text").textContent = TXT[st];
+    $("cpl-fig").querySelectorAll("[data-step]").forEach(b => b.setAttribute("aria-pressed", +b.dataset.step === st));
+  };
+  $("cpl-fig").querySelectorAll("[data-step]").forEach(b => b.onclick = () => draw(+b.dataset.step));
+  draw(0);
+})();
+
+// --- review 048: the ranking of the packaged debates (Table 3) ---
+(() => {
+  const H = ["Activity", "Top journals", "Committee", "Growth", "Access", "Coverage", "Stability", "Short", "Links"];
+  $("rank-t").innerHTML = `<tr><th class="num">Rank</th><th>Debate</th>${H.map(h => `<th class="b">${h}</th>`).join("")}<th class="num">Score</th></tr>` +
+    M.ranking.map(r => `<tr><td class="num">${r.rank}</td><td>${r.gen ? "◆ " : ""}${esc(r.name)}${r.letter ? `<span class="badge">Paper ${r.letter}</span>` : ""}</td>` +
+      r.bands.map(b => `<td class="b" style="background:color-mix(in srgb, var(--ai) ${b * 6}%, transparent)">${b}</td>`).join("") +
+      `<td class="num"><b>${r.score.toFixed(2)}</b></td></tr>`).join("");
+})();
+
+factify(document);
+})();
+
+</script>
+<style>
+.vmodal { position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center; padding: 16px; background: rgba(8,10,14,.82); }
+.vmodal[hidden] { display: none; }
+.vbox { position: relative; width: min(960px, 100%); }
+.vbox video { display: block; width: 100%; max-height: 82vh; background: #000; border-radius: 6px; }
+.vclose { position: absolute; top: -44px; right: 0; width: 40px; height: 40px; border: 0; border-radius: 50%; background: #fff; color: #111; font-size: 26px; line-height: 1; cursor: pointer; }
+.vclose:focus-visible { outline: 3px solid #8db6ee; outline-offset: 2px; }
+</style>
+<div id="vmodal" class="vmodal" hidden role="dialog" aria-modal="true" aria-label="Video: from the literature to the editor’s decision">
+  <div class="vbox"><button type="button" class="vclose" id="vclose" aria-label="Close video">×</button><div id="vslot"></div></div>
+</div>
+<script>
+(function () {
+  var m = document.getElementById("vmodal"), slot = document.getElementById("vslot"), last = null;
+  function open() {
+    if (!m.hidden) return;
+    last = document.activeElement;
+    slot.innerHTML = '<video controls playsinline src="video/essay-video.mp4">Your browser cannot play this video.</video>';
+    m.hidden = false; document.body.style.overflow = "hidden";
+    var v = slot.firstChild; if (v.play) v.play().catch(function () {});   // sound may need a click
+    document.getElementById("vclose").focus();
+  }
+  function close() {
+    if (m.hidden) return;
+    slot.innerHTML = ""; m.hidden = true; document.body.style.overflow = "";
+    if (location.hash === "#video") history.replaceState(null, "", location.pathname + location.search);
+    if (last && last.focus) last.focus();
+  }
+  document.querySelectorAll("a[data-video]").forEach(function (a) { a.addEventListener("click", function (e) { e.preventDefault(); open(); }); });
+  document.getElementById("vclose").addEventListener("click", close);
+  m.addEventListener("click", function (e) { if (e.target === m) close(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  function fromHash() { if (location.hash === "#video") open(); }
+  window.addEventListener("hashchange", fromHash); fromHash();
+})();
+</script>
+</body>
+</html>

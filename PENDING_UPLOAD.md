@@ -11,7 +11,10 @@ lehanzhang.com on 16 Oct; Netlify's shorter link addresses are the only differen
 
 | # | Asked | Change | Where | Status |
 |---|---|---|---|---|
-| – | – | (nothing waiting: everything below is on GitHub and waits for Lehan's one Netlify drag) | – | – |
+| 1 | 11 Nov 2026 | Research tab: headings "Working Papers & In Progress" and "Other Projects"; new entry "The Philosophy Engine: Automating Philosophical Discovery" (named, process-only edition of the competition methodology report: interactive page, PDF, video pop-up), with essay titles and texts withheld until results (end Jan 2027) | `content.js`, `shared/site.js`, `classic/`, `fun/kitchen`, `fun/paint`, `site/research/ai-philosophy/` | on GitHub, waits for the Netlify drag |
+| 2 | 11 Nov 2026 | Talks: Barcelona Political Science Colloquium, University of Barcelona, May 2027 (upcoming) | `content.js`, `shared/slides/deck.js` | on GitHub, waits for the Netlify drag |
+| 3 | 11 Nov 2026 | Start page: "News" box under the bio (Philosophy Engine; HEC Lausanne talk, 26 Nov 2026) | `content.js` `news`, `index.html` | on GitHub, waits for the Netlify drag |
+| 4 | 11 Nov 2026 | "Adding Fuel": "Press (2)" fold next to the abstract (UNSW Newsroom, Eureka Street, both Oct 2026) | `content.js` `media`, `classic/`, `fun/kitchen`, `fun/paint`, `shared/slides/deck.js` | on GitHub, waits for the Netlify drag |
 
 ## When Lehan says "push to Netlify"
 
